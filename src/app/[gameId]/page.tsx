@@ -2,8 +2,8 @@
 "use client";
 import Link from "next/link";
 
-import { propertyColors, squares } from "~/utils/monopoly";
-import type { PropertySquare } from "~/utils/monopoly";
+import { chanceCards, propertyColors, squares } from "~/utils/monopoly";
+import type { Chance, PropertySquare } from "~/utils/monopoly";
 import {
   CreditCard,
   Zap,
@@ -64,6 +64,7 @@ type Player = {
   colour: string;
   money: number;
   ownedProperties?: number[];
+  pardons?: number;
 };
 
 const playerColors = [
@@ -87,6 +88,8 @@ export default function Home() {
   const [players, setPlayers] = useState<Player[]>([
     { id: 0, position: 0, colour: playerColors[0] ?? "", money: 1500 },
   ]);
+
+  const [chance, setChance] = useState<Chance | null>(null);
 
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState(0);
@@ -145,19 +148,58 @@ export default function Home() {
     const newSquare = getSquare(newPlayer.position);
     if (!newSquare) return;
 
-    // if player passes go
-    if (newPlayer.position < player.position) {
-      newPlayer.money += 200;
-    }
-
     // if player lands on community chest
     if (newSquare.name === "Community Chest") {
       // TODO: implement community chest
     }
 
     // if player lands on chance
-    if (newSquare.name === "Chance") {
-      // TODO: implement chance
+    if (newSquare.name === "Chance" || newSquare.name === "Community Chest") {
+      const chanceCard =
+        chanceCards[Math.floor(Math.random() * chanceCards.length)];
+      if (!chanceCard) return;
+
+      setChance(chanceCard);
+
+      switch (chanceCard.type) {
+        case "move":
+          newPlayer.position = chanceCard.value;
+          break;
+        case "pay":
+          newPlayer.money -= chanceCard.value;
+          break;
+        case "collect":
+          newPlayer.money += chanceCard.value;
+          break;
+        case "back":
+          newPlayer.position =
+            (newPlayer.position - chanceCard.value + totalSquares) %
+            totalSquares;
+          break;
+        case "pardon":
+          newPlayer.pardons = (newPlayer.pardons ?? 0) + 1;
+          break;
+        case "go":
+          newPlayer.position = 0;
+          break;
+        case "jail":
+          newPlayer.position = 10;
+          break;
+        case "birthday":
+          players.forEach((player) => {
+            if (player.id !== playerId) {
+              player.money -= 10;
+              newPlayer.money += 10;
+            }
+          });
+          break;
+        // TODO: implement repairs and houses
+      }
+    }
+
+    // if player passes go
+    if (newPlayer.position < player.position) {
+      newPlayer.money += 200;
     }
 
     // if player lands on tax
@@ -319,6 +361,26 @@ export default function Home() {
                   }}
                 >
                   Pass
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        {/* Chance or community chest dialog box */}
+        <Dialog open={!!chance}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Chance</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <h1 className="text-lg">{chance?.description}</h1>
+              <div className="flex gap-4">
+                <Button
+                  onClick={() => {
+                    setChance(null);
+                  }}
+                >
+                  OK
                 </Button>
               </div>
             </div>

@@ -1,48 +1,3 @@
-// Monopoly UK squares
-// export const squares: string[] = [
-//   "Go",
-//   "Old Kent Road",
-//   "Community Chest",
-//   "Whitechapel Road",
-//   "Income Tax",
-//   "Kings Cross Station",
-//   "The Angel Islington",
-//   "Chance",
-//   "Euston Road",
-//   "Pentonville Road",
-//   "Jail",
-//   "Pall Mall",
-//   "Electric Company",
-//   "Whitehall",
-//   "Northumberland Avenue",
-//   "Marylebone Station",
-//   "Bow Street",
-//   "Community Chest",
-//   "Marlborough Street",
-//   "Vine Street",
-//   "Free Parking",
-//   "Strand",
-//   "Chance",
-//   "Fleet Street",
-//   "Trafalgar Square",
-//   "Fenchurch Street Station",
-//   "Leicester Square",
-//   "Coventry Street",
-//   "Water Works",
-//   "Piccadilly",
-//   "Go To Jail",
-//   "Regent Street",
-//   "Oxford Street",
-//   "Community Chest",
-//   "Bond Street",
-//   "Liverpool Street Station",
-//   "Chance",
-//   "Park Lane",
-//   "Super Tax",
-//   "Mayfair",
-// ];
-
-// New version of the squares thing above but with more information. Same content.
 type EntityType = "property" | "utility" | "station" | "other";
 
 type Group =
@@ -258,7 +213,7 @@ export const squares: Square[] = [
     name: "Leicester Square",
     group: "yellow",
     price: 260,
-    rent: [22,110,330,800,975,1150],
+    rent: [22, 110, 330, 800, 975, 1150],
     houseCost: 150,
   },
   {
@@ -266,7 +221,7 @@ export const squares: Square[] = [
     name: "Coventry Street",
     group: "yellow",
     price: 260,
-    rent: [22,110,330,800,975,1150],
+    rent: [22, 110, 330, 800, 975, 1150],
     houseCost: 150,
   },
   {
@@ -279,7 +234,7 @@ export const squares: Square[] = [
     name: "Piccadilly",
     group: "yellow",
     price: 280,
-    rent: [22,120,360,850,1025,1200],
+    rent: [22, 120, 360, 850, 1025, 1200],
     houseCost: 150,
   },
   {
@@ -291,7 +246,7 @@ export const squares: Square[] = [
     name: "Regent Street",
     group: "green",
     price: 300,
-    rent: [26,130,390,900,1100,1275],
+    rent: [26, 130, 390, 900, 1100, 1275],
     houseCost: 200,
   },
   {
@@ -299,7 +254,7 @@ export const squares: Square[] = [
     name: "Oxford Street",
     group: "green",
     price: 300,
-    rent: [26,130,390,900,1100,1275],
+    rent: [26, 130, 390, 900, 1100, 1275],
     houseCost: 200,
   },
   {
@@ -311,7 +266,7 @@ export const squares: Square[] = [
     name: "Bond Street",
     group: "green",
     price: 320,
-    rent: [28,150,450,1000,1200,1400],
+    rent: [28, 150, 450, 1000, 1200, 1400],
     houseCost: 200,
   },
   {
@@ -329,7 +284,7 @@ export const squares: Square[] = [
     name: "Park Lane",
     group: "dark-blue",
     price: 350,
-    rent: [35,175,500,1100,1300,1500],
+    rent: [35, 175, 500, 1100, 1300, 1500],
     houseCost: 200,
   },
   {
@@ -341,7 +296,7 @@ export const squares: Square[] = [
     name: "Mayfair",
     group: "dark-blue",
     price: 400,
-    rent: [50,200,600,1400,1700,2000],
+    rent: [50, 200, 600, 1400, 1700, 2000],
     houseCost: 200,
   },
 ];
@@ -358,3 +313,205 @@ export const propertyColors: Record<string, string> = {
   station: "bg-gray-400",
   utility: "bg-gray-400",
 };
+
+type BaseChance = {
+  description: string;
+  type: "go" | "pardon" | "jail";
+};
+
+type RepairsChance = {
+  description: string;
+  type: "repairs";
+  house: number;
+  hotel: number;
+};
+
+type Other = {
+  description: string;
+  type: "move" | "pay" | "collect" | "back" | "birthday";
+  value: number;
+};
+
+export type Chance = BaseChance | RepairsChance | Other;
+
+export const chanceCards: Chance[] = [
+  {
+    description: "Advance to Go",
+    type: "go",
+  },
+  {
+    description: "Advance to Pall Mall",
+    type: "move",
+    value: 11,
+  },
+  {
+    description: "Advance to Marylebone Station",
+    type: "move",
+    value: 15,
+  },
+  {
+    description: "Advance to Trafalgar Square",
+    type: "move",
+    value: 24,
+  },
+  {
+    description: "Advance to Mayfair",
+    type: "move",
+    value: 39,
+  },
+  {
+    description: "Go to Jail",
+    type: "jail",
+  },
+  {
+    description: "Pay poor tax of £15",
+    type: "pay",
+    value: 15,
+  },
+  {
+    description: "Take a trip to King's Cross Station",
+    type: "move",
+    value: 5,
+  },
+  {
+    description: "Take a walk on the Old Kent Road",
+    type: "move",
+    value: 1,
+  },
+  {
+    description: "You have been elected chairman of the board",
+    type: "collect",
+    value: 50,
+  },
+  {
+    description: "Your building loan matures",
+    type: "collect",
+    value: 150,
+  },
+  {
+    description: "You have won a crossword competition",
+    type: "collect",
+    value: 100,
+  },
+  {
+    description: "You inherit £100",
+    type: "collect",
+    value: 100,
+  },
+  {
+    description: "You are assessed for street repairs",
+    type: "repairs",
+    house: 40,
+    hotel: 115,
+  },
+  {
+    description: "You have won second prize in a beauty contest",
+    type: "collect",
+    value: 10,
+  },
+  {
+    description: "Bank pays you dividend of £50",
+    type: "collect",
+    value: 50,
+  },
+  {
+    description: "Get out of jail free",
+    type: "pardon",
+  },
+  {
+    description: "Go back 3 spaces",
+    type: "back",
+    value: 3,
+  },
+];
+
+export const communityChestCards: Chance[] = [
+  {
+    description: "Advance to Go",
+    type: "go",
+  },
+  {
+    description: "Bank error in your favour",
+    type: "collect",
+    value: 200,
+  },
+  {
+    description: "Doctor's fee",
+    type: "pay",
+    value: 50,
+  },
+  {
+    description: "From sale of stock you get £50",
+    type: "collect",
+    value: 50,
+  },
+  {
+    description: "Get out of jail free",
+    type: "pardon",
+  },
+  {
+    description: "Go to jail",
+    type: "jail",
+  },
+  {
+    description: "Grand opera night",
+    type: "collect",
+    value: 50,
+  },
+  {
+    description: "Holiday fund matures",
+    type: "collect",
+    value: 100,
+  },
+  {
+    description: "Income tax refund",
+    type: "collect",
+    value: 20,
+  },
+  {
+    description: "It's your birthday",
+    type: "birthday",
+    value: 10,
+  },
+  {
+    description: "Life insurance matures",
+    type: "collect",
+    value: 100,
+  },
+  {
+    description: "Pay hospital fees of £100",
+    type: "pay",
+    value: 100,
+  },
+  {
+    description: "Pay school fees of £50",
+    type: "pay",
+    value: 50,
+  },
+  {
+    description: "Receive £25 consultancy fee",
+    type: "collect",
+    value: 25,
+  },
+  {
+    description: "You are assessed for street repairs",
+    type: "repairs",
+    house: 40,
+    hotel: 115,
+  },
+  {
+    description: "You have won second prize in a beauty contest",
+    type: "collect",
+    value: 10,
+  },
+  {
+    description: "You inherit £100",
+    type: "collect",
+    value: 100,
+  },
+  {
+    description: "You win £10",
+    type: "collect",
+    value: 10,
+  },
+];
