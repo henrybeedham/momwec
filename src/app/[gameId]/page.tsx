@@ -512,22 +512,24 @@ export default function Home() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {players.map((player) => (
+                    {players
+                      .filter((player) => player.ownedProperties?.length)
+                      .map((player) => (
                       <TableRow key={player.id}>
                         <TableCell>
-                          <div
-                            className={`h-4 w-4 rounded-full ${player.colour}`}
-                          ></div>
+                        <div
+                          className={`h-4 w-4 rounded-full ${player.colour}`}
+                        ></div>
                         </TableCell>
                         <TableCell>
-                          {player.ownedProperties?.map((property) => (
-                            <div key={property}>
-                              {getSquare(property)?.name}
-                            </div>
-                          ))}
+                        {player.ownedProperties?.map((property) => (
+                          <div key={property}>
+                          {getSquare(property)?.name}
+                          </div>
+                        ))}
                         </TableCell>
                       </TableRow>
-                    ))}
+                      ))}
                   </TableBody>
                 </Table>
               </CardContent>
