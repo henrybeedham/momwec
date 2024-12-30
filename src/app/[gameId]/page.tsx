@@ -297,241 +297,241 @@ export default function Home() {
             onValueChange={(value: number[]) => setBoardSize(value[0] ?? 11)}
           />
         </div> */}
-        <div className="aspect-square w-full max-w-4xl">
-          <div
-            className={`m-4 grid gap-1`}
-            style={{
-              gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
-              gridTemplateRows: `repeat(${boardSize}, 1fr)`,
-            }}
-          >
-            {Array(boardSize * boardSize)
-              .fill(null)
-              .map((_, index) => {
-                const row = Math.floor(index / boardSize);
-                const col = index % boardSize;
-                const isEdge =
-                  row === 0 ||
-                  row === boardSize - 1 ||
-                  col === 0 ||
-                  col === boardSize - 1;
-                // Calculate the square index based on the position on the board edge
-                const squareIndex = isEdge
-                  ? row === boardSize - 1 // If Bottom Row
-                    ? boardSize - col - 1 // Then this
-                    : col === 0 // If Left column
-                      ? 2 * boardSize - 2 - row // Then this
-                      : row === 0 // If Top row
-                        ? 2 * boardSize - 2 + col // Then this
-                        : totalSquares - (boardSize - 1 - row) // Otherwise (Right column) this
-                  : null;
-                if (!isEdge) {
-                  if (row === 1 && col === 1) {
-                    return (
-                      <div
-                        key={index}
-                        className="flex items-center justify-center gap-2"
-                        style={{
-                          gridColumn: `span ${boardSize - 2}`,
-                          gridRow: `span ${boardSize - 2}`,
-                        }}
-                      >
-                        <div className="mt-4 flex flex-col justify-center gap-2">
-                          <Button
-                            onClick={addPlayer}
-                            disabled={players.length >= playerColors.length}
-                            className="rounded-full p-2"
-                          >
-                            <Plus className="h-6 w-6" />
-                          </Button>
-                          {players.map((player) => (
-                            <div
-                              key={player.id}
-                              className="flex items-center gap-1"
+        <div className="flex">
+          <div className="aspect-square w-full max-w-4xl">
+            <div
+              className={`m-4 grid gap-1`}
+              style={{
+                gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
+                gridTemplateRows: `repeat(${boardSize}, 1fr)`,
+              }}
+            >
+              {Array(boardSize * boardSize)
+                .fill(null)
+                .map((_, index) => {
+                  const row = Math.floor(index / boardSize);
+                  const col = index % boardSize;
+                  const isEdge =
+                    row === 0 ||
+                    row === boardSize - 1 ||
+                    col === 0 ||
+                    col === boardSize - 1;
+                  // Calculate the square index based on the position on the board edge
+                  const squareIndex = isEdge
+                    ? row === boardSize - 1 // If Bottom Row
+                      ? boardSize - col - 1 // Then this
+                      : col === 0 // If Left column
+                        ? 2 * boardSize - 2 - row // Then this
+                        : row === 0 // If Top row
+                          ? 2 * boardSize - 2 + col // Then this
+                          : totalSquares - (boardSize - 1 - row) // Otherwise (Right column) this
+                    : null;
+                  if (!isEdge) {
+                    if (row === 1 && col === 1) {
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-center justify-center gap-2"
+                          style={{
+                            gridColumn: `span ${boardSize - 2}`,
+                            gridRow: `span ${boardSize - 2}`,
+                          }}
+                        >
+                          <div className="mt-4 flex flex-col justify-center gap-2">
+                            <Button
+                              onClick={addPlayer}
+                              disabled={players.length >= playerColors.length}
+                              className="rounded-full p-2"
                             >
+                              <Plus className="h-6 w-6" />
+                            </Button>
+                            {players.map((player) => (
                               <div
-                                className={`mr-2 h-4 w-4 rounded-full ${player.colour}`}
-                              ></div>
-                              <p className="text-lg font-bold text-white">
-                                Player {player.id + 1} £{player.money}
-                              </p>
+                                key={player.id}
+                                className="flex items-center gap-1"
+                              >
+                                <div
+                                  className={`mr-2 h-4 w-4 rounded-full ${player.colour}`}
+                                ></div>
+                                <p className="text-lg font-bold text-white">
+                                  Player {player.id + 1} £{player.money}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    } else return;
+                  }
+                  if (squareIndex === null) return <div key={index}></div>;
+                  const square = getSquare(squareIndex) ?? "";
+                  const squareName = square.name;
+                  const propertyGroup =
+                    square.type === "property" ? square.group : "";
+                  const colourClass =
+                    propertyColors[propertyGroup] ?? "bg-gray-200";
+                  const isCorner =
+                    (row === 0 && col === 0) ||
+                    (row === 0 && col === boardSize - 1) ||
+                    (row === boardSize - 1 && col === 0) ||
+                    (row === boardSize - 1 && col === boardSize - 1);
+                  const edge: Edge = isCorner
+                    ? "corner"
+                    : isEdge
+                      ? row === boardSize - 1
+                        ? "bottom"
+                        : col === 0
+                          ? "left"
+                          : row === 0
+                            ? "top"
+                            : "right"
+                      : "";
+                  return (
+                    <HoverCard key={index}>
+                      <HoverCardTrigger>
+                        <div
+                          className={cn(
+                            `relative flex items-center justify-between overflow-hidden bg-white text-xs ${
+                              edge === "bottom"
+                                ? "flex-col rounded-t-lg"
+                                : edge === "top"
+                                  ? "flex-col-reverse rounded-b-lg"
+                                  : edge === "right"
+                                    ? "flex-row rounded-l-lg"
+                                    : edge === "left"
+                                      ? "flex-row-reverse rounded-r-lg"
+                                      : "rounded-lg"
+                            }`,
+                          )}
+                          style={{
+                            height: `${80 / boardSize}vh`,
+                          }}
+                        >
+                          <ColourTab
+                            colourClass={colourClass}
+                            edge={edge}
+                            square={square}
+                          />
+                          <div className="flex flex-col items-center justify-between overflow-hidden p-1 text-xs">
+                            <PlayerTokens
+                              players={players}
+                              squareIndex={squareIndex}
+                            />
+                            {renderSquareContent(squareName)}
+                          </div>
+                        </div>
+                      </HoverCardTrigger>
+                      <HoverCardContent>
+                        <h1 className="text-lg">{square.name}</h1>
+                        {square.type !== "other" && (
+                          <Badge className={cn(colourClass)}>
+                            {square.type === "property"
+                              ? square.group
+                              : square.type}
+                          </Badge>
+                        )}
+                        {square.type !== "other" && (
+                          <>
+                            <div className="font-semibold">
+                              Price: £{square.price}
+                            </div>
+                            <Separator className="my-2" />
+                          </>
+                        )}
+                        {square.type === "property" && (
+                          <>
+                            <div className="mb-1 font-semibold">Rent:</div>
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Houses</TableHead>
+                                  <TableHead>Rent</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {square.rent.map((rent, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell>
+                                      {index === 5 ? "Hotel" : index}
+                                    </TableCell>
+                                    <TableCell>£{rent}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                            <div className="mt-2">
+                              House Cost: £{square.houseCost}
+                            </div>
+                          </>
+                        )}
+                        {square.type === "station" && (
+                          <>
+                            <div className="mb-1 font-semibold">Rent:</div>
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Stations Owned</TableHead>
+                                  <TableHead>Rent</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {square.rent.map((rent, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell>£{rent}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </>
+                        )}
+                        {square.type === "utility" && (
+                          <div>
+                            Rent: 4x dice roll if one utility is owned, 10x dice
+                            roll if both utilities are owned.
+                          </div>
+                        )}
+                      </HoverCardContent>
+                    </HoverCard>
+                  );
+                })}
+            </div>
+          </div>
+          <div>
+            {/* Property ownership table */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Property Ownership</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Player</TableHead>
+                      <TableHead>Properties</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {players.map((player) => (
+                      <TableRow key={player.id}>
+                        <TableCell>
+                          <div
+                            className={`h-4 w-4 rounded-full ${player.colour}`}
+                          ></div>
+                        </TableCell>
+                        <TableCell>
+                          {player.ownedProperties?.map((property) => (
+                            <div key={property}>
+                              {getSquare(property)?.name}
                             </div>
                           ))}
-                        </div>
-                        <div>
-                          {/* Property ownership table */}
-                          <Card>
-                            <CardHeader>
-                              <CardTitle>Property Ownership</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                              <Table>
-                                <TableHeader>
-                                  <TableRow>
-                                    <TableHead>Player</TableHead>
-                                    <TableHead>Properties</TableHead>
-                                  </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                  {players.map((player) => (
-                                    <TableRow key={player.id}>
-                                      <TableCell>
-                                        <div
-                                          className={`h-4 w-4 rounded-full ${player.colour}`}
-                                        ></div>
-                                      </TableCell>
-                                      <TableCell>
-                                        {player.ownedProperties?.map(
-                                          (property) => (
-                                            <div key={property}>
-                                              {getSquare(property)?.name}
-                                            </div>
-                                          ),
-                                        )}
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </div>
-                    );
-                  } else return;
-                }
-                if (squareIndex === null) return <div key={index}></div>;
-                const square = getSquare(squareIndex) ?? "";
-                const squareName = square.name;
-                const propertyGroup =
-                  square.type === "property" ? square.group : "";
-                const colourClass =
-                  propertyColors[propertyGroup] ?? "bg-gray-200";
-                const isCorner =
-                  (row === 0 && col === 0) ||
-                  (row === 0 && col === boardSize - 1) ||
-                  (row === boardSize - 1 && col === 0) ||
-                  (row === boardSize - 1 && col === boardSize - 1);
-                const edge: Edge = isCorner
-                  ? "corner"
-                  : isEdge
-                    ? row === boardSize - 1
-                      ? "bottom"
-                      : col === 0
-                        ? "left"
-                        : row === 0
-                          ? "top"
-                          : "right"
-                    : "";
-                return (
-                  <HoverCard key={index}>
-                    <HoverCardTrigger>
-                      <div
-                        className={cn(
-                          `relative flex items-center justify-between overflow-hidden bg-white text-xs ${
-                            edge === "bottom"
-                              ? "flex-col rounded-t-lg"
-                              : edge === "top"
-                                ? "flex-col-reverse rounded-b-lg"
-                                : edge === "right"
-                                  ? "flex-row rounded-l-lg"
-                                  : edge === "left"
-                                    ? "flex-row-reverse rounded-r-lg"
-                                    : "rounded-lg"
-                          }`,
-                        )}
-                        style={{
-                          height: `${80 / boardSize}vh`,
-                        }}
-                      >
-                        <ColourTab
-                          colourClass={colourClass}
-                          edge={edge}
-                          square={square}
-                        />
-                        <div className="flex flex-col items-center justify-between overflow-hidden p-1 text-xs">
-                          <PlayerTokens
-                            players={players}
-                            squareIndex={squareIndex}
-                          />
-                          {renderSquareContent(squareName)}
-                        </div>
-                      </div>
-                    </HoverCardTrigger>
-                    <HoverCardContent>
-                      <h1 className="text-lg">{square.name}</h1>
-                      {square.type !== "other" && (
-                        <Badge className={cn(colourClass)}>
-                          {square.type === "property"
-                            ? square.group
-                            : square.type}
-                        </Badge>
-                      )}
-                      {square.type !== "other" && (
-                        <>
-                          <div className="font-semibold">
-                            Price: £{square.price}
-                          </div>
-                          <Separator className="my-2" />
-                        </>
-                      )}
-                      {square.type === "property" && (
-                        <>
-                          <div className="mb-1 font-semibold">Rent:</div>
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Houses</TableHead>
-                                <TableHead>Rent</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {square.rent.map((rent, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>
-                                    {index === 5 ? "Hotel" : index}
-                                  </TableCell>
-                                  <TableCell>£{rent}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                          <div className="mt-2">
-                            House Cost: £{square.houseCost}
-                          </div>
-                        </>
-                      )}
-                      {square.type === "station" && (
-                        <>
-                          <div className="mb-1 font-semibold">Rent:</div>
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead>Stations Owned</TableHead>
-                                <TableHead>Rent</TableHead>
-                              </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {square.rent.map((rent, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>{index + 1}</TableCell>
-                                  <TableCell>£{rent}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </>
-                      )}
-                      {square.type === "utility" && (
-                        <div>
-                          Rent: 4x dice roll if one utility is owned, 10x dice
-                          roll if both utilities are owned.
-                        </div>
-                      )}
-                    </HoverCardContent>
-                  </HoverCard>
-                );
-              })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
