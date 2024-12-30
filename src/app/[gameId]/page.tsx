@@ -233,24 +233,67 @@ export default function Home() {
 
   return (
     <main>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-tr from-zinc-950 to-zinc-900">
-        <h1 className="mb-4 text-2xl font-bold text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-blue-100">
+        <h1 className="mb-4 text-2xl font-bold">
           MOMWEC Game: {params.gameId}
         </h1>
-        {/* Player x's turn */}
-        <h1 className="text-lg text-white">
-          Player {currentPlayer + 1}&apos;s Turn
-        </h1>
-        {/* Dice using lucide icons */}
-        <div>
-          <div className="flex gap-4">
-            <div className="flex items-center gap-1 text-white">
-              {/* Roll dice button */}
-              <Button onClick={() => movePlayer(currentPlayer)}>
-                Roll Dice
-              </Button>
-              <div>{diceIcon[dice[0] as DiceIconType]}</div>
-              <div>{diceIcon[dice[1] as DiceIconType]}</div>
+        <div className="flex gap-4">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Backup</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Download or upload saved game state</DialogTitle>
+                {/* Download game data (downloads the state of all of the players to a json file) */}
+                <Button
+                  onClick={() => {
+                    const data = JSON.stringify(players, null, 2);
+                    const blob = new Blob([data], { type: "application/json" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "game-data.json";
+                    a.click();
+                  }}
+                >
+                  Export
+                </Button>
+                {/* Upload game data (allows you to upload a json file to set the state of all of the players) */}
+                <DialogDescription>
+                  Upload a JSON file to restore the game state
+                </DialogDescription>
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      const data = reader.result as string;
+                      const players = JSON.parse(data) as Player[];
+                      setPlayers(players);
+                    };
+                    reader.readAsText(file);
+                  }}
+                />
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+          {/* Player x's turn */}
+          <h1 className="text-lg">Player {currentPlayer + 1}&apos;s Turn</h1>
+          {/* Dice using lucide icons */}
+          <div>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-1">
+                {/* Roll dice button */}
+                <Button onClick={() => movePlayer(currentPlayer)}>
+                  Roll Dice
+                </Button>
+                <div>{diceIcon[dice[0] as DiceIconType]}</div>
+                <div>{diceIcon[dice[1] as DiceIconType]}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -353,7 +396,7 @@ export default function Home() {
                                 <div
                                   className={`mr-2 h-4 w-4 rounded-full ${player.colour}`}
                                 ></div>
-                                <p className="text-lg font-bold text-white">
+                                <p className="text-lg font-bold">
                                   Player {player.id + 1} £{player.money}
                                 </p>
                               </div>
@@ -515,20 +558,20 @@ export default function Home() {
                     {players
                       .filter((player) => player.ownedProperties?.length)
                       .map((player) => (
-                      <TableRow key={player.id}>
-                        <TableCell>
-                        <div
-                          className={`h-4 w-4 rounded-full ${player.colour}`}
-                        ></div>
-                        </TableCell>
-                        <TableCell>
-                        {player.ownedProperties?.map((property) => (
-                          <div key={property}>
-                          {getSquare(property)?.name}
-                          </div>
-                        ))}
-                        </TableCell>
-                      </TableRow>
+                        <TableRow key={player.id}>
+                          <TableCell>
+                            <div
+                              className={`h-4 w-4 rounded-full ${player.colour}`}
+                            ></div>
+                          </TableCell>
+                          <TableCell>
+                            {player.ownedProperties?.map((property) => (
+                              <div key={property}>
+                                {getSquare(property)?.name}
+                              </div>
+                            ))}
+                          </TableCell>
+                        </TableRow>
                       ))}
                   </TableBody>
                 </Table>
