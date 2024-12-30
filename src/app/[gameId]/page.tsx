@@ -102,7 +102,7 @@ export default function Home() {
     4: <Dice4 className={diceClasses} />,
     5: <Dice5 className={diceClasses} />,
     6: <Dice6 className={diceClasses} />,
- };
+  };
 
   const totalSquares = (boardSize - 1) * 4;
 
@@ -210,7 +210,7 @@ export default function Home() {
         player.id === playerId ? newPlayer : player,
       ),
     );
-    setCurrentPlayer((currentPlayer + 1) % players.length);
+    if (dice1 !== dice2) setCurrentPlayer((currentPlayer + 1) % players.length);
   }
 
   function buyProperty(playerId: number, propertyId: number) {
