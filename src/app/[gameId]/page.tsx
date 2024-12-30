@@ -2,7 +2,8 @@
 "use client";
 import Link from "next/link";
 
-import { propertyColors, PropertySquare, squares } from "~/utils/monopoly";
+import { propertyColors, squares } from "~/utils/monopoly";
+import type { PropertySquare } from "~/utils/monopoly";
 import {
   CreditCard,
   Zap,
@@ -93,14 +94,15 @@ export default function Home() {
   // dice
   const [dice, setDice] = useState([1, 1]);
   const diceClasses = "h-8 w-8";
-  const diceIcon: { [key: number]: JSX.Element } = {
+  type DiceIconType = 1 | 2 | 3 | 4 | 5 | 6;
+  const diceIcon: Record<DiceIconType, JSX.Element> = {
     1: <Dice1 className={diceClasses} />,
     2: <Dice2 className={diceClasses} />,
     3: <Dice3 className={diceClasses} />,
     4: <Dice4 className={diceClasses} />,
     5: <Dice5 className={diceClasses} />,
     6: <Dice6 className={diceClasses} />,
-  };
+ };
 
   const totalSquares = (boardSize - 1) * 4;
 
@@ -134,7 +136,7 @@ export default function Home() {
 
     const player = players.find((player) => player.id === playerId);
     if (!player) return;
-    let newPlayer = {
+    const newPlayer = {
       ...player,
       position: (player.position + total) % totalSquares,
       previousPosition: player.position,
@@ -237,7 +239,7 @@ export default function Home() {
         </h1>
         {/* Player x's turn */}
         <h1 className="text-lg text-white">
-          Player {currentPlayer + 1}'s Turn
+          Player {currentPlayer + 1}&apos;s Turn
         </h1>
         {/* Dice using lucide icons */}
         <div>
@@ -247,8 +249,8 @@ export default function Home() {
               <Button onClick={() => movePlayer(currentPlayer)}>
                 Roll Dice
               </Button>
-              <div>{diceIcon[dice[0] ?? 1]}</div>
-              <div>{diceIcon[dice[1] ?? 1]}</div>
+              <div>{diceIcon[dice[0] as DiceIconType]}</div>
+              <div>{diceIcon[dice[1] as DiceIconType]}</div>
             </div>
           </div>
         </div>
