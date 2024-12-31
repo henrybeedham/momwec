@@ -1,29 +1,44 @@
-# Create T3 App
+# MOMWEC (Multiplayer Online Monopoly with Extra Capitalism)
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+## Overview
+MOMWEC is a modern twist on the classic Monopoly game, designed for online multiplayer gameplay with an added layer of capitalism. Compete with friends or players worldwide to become the ultimate tycoon.
 
-## What's next? How do I make an app with this?
+## Features
+- **Online Multiplayer:** Play with friends or join random matches.
+- **Enhanced Capitalism:** New rules and mechanics to intensify the economic competition.
+- **Customizable Boards:** Choose from various themed boards and properties.
+- **Leaderboards:** Track your progress and compete for the top spot.
+- **In-Game Chat:** Communicate with other players in real-time.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Installation
+1. Clone the repository:
+  ```bash
+  git clone https://github.com/yourusername/momwec.git
+  ```
+2. Navigate to the project directory:
+  ```bash
+  cd momwec
+  ```
+3. Install dependencies:
+  ```bash
+  npm install
+  ```
+4. Start the game:
+  ```bash
+  npm start
+  ```
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## How to Play
+1. Create or join a game room.
+2. Roll the dice to move around the board.
+3. Buy, trade, and upgrade properties to increase your wealth.
+4. Use new capitalism mechanics to outsmart your opponents.
+5. The player with the most assets at the end wins!
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Features
 
-## Learn More
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Contact
+For any questions or feedback, please open an issue on GitHub or contact us at support@momwec.com.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+Enjoy playing MOMWEC!

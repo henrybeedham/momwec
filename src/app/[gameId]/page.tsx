@@ -63,7 +63,10 @@ type Player = {
   previousPosition?: number;
   colour: string;
   money: number;
-  ownedProperties?: number[];
+  ownedProperties?: {
+    id: number;
+    houses?: number;
+  }[];
   pardons?: number;
 };
 
@@ -90,6 +93,8 @@ export default function Home() {
   ]);
 
   const [chance, setChance] = useState<Chance | null>(null);
+
+  const [gameLocked, setGameLocked] = useState(false);
 
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
   const [currentPlayer, setCurrentPlayer] = useState(0);
@@ -130,8 +135,9 @@ export default function Home() {
     }
   }
 
-  function movePlayer(playerId: number) {
-    setCurrentPlayer(playerId);
+  function movePlayer() {
+    setGameLocked(true);
+    const playerId = currentPlayer;
     const dice1 = Math.floor(Math.random() * 6) + 1;
     const dice2 = Math.floor(Math.random() * 6) + 1;
     setDice([dice1, dice2]);
@@ -221,7 +227,10 @@ export default function Home() {
       if (
         players.some(
           (player) =>
-            player.ownedProperties?.includes(newPlayer.position) ?? false,
+            player.id !== playerId && // Exclude the specified player
+            player.ownedProperties?.some(
+              (property) => property.id === newPlayer.position,
+            ),
         )
       ) {
         let rentPrice = 0;
@@ -240,7 +249,9 @@ export default function Home() {
         newPlayer.money -= rentPrice;
         // pay rent to owner
         const owner = players.find((player) =>
-          player.ownedProperties?.includes(newPlayer.position),
+          player.ownedProperties?.some(
+            (property) => property.id === newPlayer.position,
+          ),
         );
       } else {
         // if not owned, sell
@@ -252,7 +263,6 @@ export default function Home() {
         player.id === playerId ? newPlayer : player,
       ),
     );
-    if (dice1 !== dice2) setCurrentPlayer((currentPlayer + 1) % players.length);
   }
 
   function buyProperty(playerId: number, propertyId: number) {
@@ -263,7 +273,7 @@ export default function Home() {
     const newPlayer = {
       ...player,
       money: player.money - property.price,
-      ownedProperties: [...(player.ownedProperties ?? []), propertyId],
+      ownedProperties: [...(player.ownedProperties ?? []), { id: propertyId }],
     };
     setPlayers((prevPlayers) =>
       prevPlayers.map((player) =>
@@ -330,7 +340,7 @@ export default function Home() {
             <div className="flex gap-4">
               <div className="flex items-center gap-1">
                 {/* Roll dice button */}
-                <Button onClick={() => movePlayer(currentPlayer)}>
+                <Button onClick={movePlayer} disabled={gameLocked}>
                   Roll Dice
                 </Button>
                 <div>{diceIcon[dice[0] as DiceIconType]}</div>
@@ -338,6 +348,15 @@ export default function Home() {
               </div>
             </div>
           </div>
+          {/* End turn button */}
+          <Button
+            onClick={() => {
+              setCurrentPlayer((currentPlayer + 1) % players.length);
+              setGameLocked(false);
+            }}
+          >
+            End Turn
+          </Button>
         </div>
         {/* Buy properties dialog box */}
         <Dialog open={!!selectedProperty}>
@@ -346,7 +365,9 @@ export default function Home() {
               <DialogTitle>Buy Properties</DialogTitle>
             </DialogHeader>
             <div className="flex flex-col gap-4">
-              <h1 className="text-lg">Do you want to buy this property?</h1>
+              <h1 className="text-lg">
+                Do you want to buy {getSquare(selectedProperty ?? 0)?.name}?
+              </h1>
               <div className="flex gap-4">
                 <Button
                   onClick={() => {
@@ -496,7 +517,7 @@ export default function Home() {
                       <HoverCardTrigger>
                         <div
                           className={cn(
-                            `relative flex items-center justify-between overflow-hidden bg-white text-xs ${
+                            `relative flex items-center overflow-hidden bg-white text-xs ${
                               edge === "bottom"
                                 ? "flex-col rounded-t-lg"
                                 : edge === "top"
@@ -517,11 +538,11 @@ export default function Home() {
                             edge={edge}
                             square={square}
                           />
-                          <div className="flex flex-col items-center justify-between overflow-hidden p-1 text-xs">
-                            <PlayerTokens
-                              players={players}
-                              squareIndex={squareIndex}
-                            />
+                          <PlayerTokens
+                            players={players}
+                            squareIndex={squareIndex}
+                          />
+                          <div className="flex flex-col items-center justify-center overflow-hidden p-1 text-xs w-full h-full">
                             {renderSquareContent(squareName)}
                           </div>
                         </div>
@@ -628,8 +649,51 @@ export default function Home() {
                           </TableCell>
                           <TableCell>
                             {player.ownedProperties?.map((property) => (
-                              <div key={property}>
-                                {getSquare(property)?.name}
+                              <div key={property.id}>
+                                {getSquare(property.id)?.name}
+                                {/* Buy house button */}
+                                {currentPlayer === player.id && (
+                                  <Button
+                                    className="ml-4"
+                                    onClick={() => {
+                                      const propertyLocal = getSquare(
+                                        property.id,
+                                      ) as PropertySquare;
+                                      if (
+                                        propertyLocal.houseCost > player.money
+                                      )
+                                        return;
+                                      const newPlayer = {
+                                        ...player,
+                                        money:
+                                          player.money -
+                                          propertyLocal.houseCost,
+                                        ownedProperties:
+                                          player.ownedProperties?.map(
+                                            (prop) => {
+                                              if (prop.id === property.id) {
+                                                return {
+                                                  ...prop,
+                                                  houses:
+                                                    (prop.houses ?? 0) + 1,
+                                                };
+                                              }
+                                              return prop;
+                                            },
+                                          ),
+                                      };
+                                      setPlayers((prevPlayers) =>
+                                        prevPlayers.map((player) =>
+                                          player.id === player.id
+                                            ? newPlayer
+                                            : player,
+                                        ),
+                                      );
+                                    }}
+                                  >
+                                    Buy house
+                                  </Button>
+                                )}
                               </div>
                             ))}
                           </TableCell>
@@ -683,7 +747,7 @@ function ColourTab({
     return (
       <div
         className={cn(
-          `flex items-center justify-center`,
+          `absolute flex items-center justify-center`,
           edge === "top" || edge === "bottom" ? "h-2 w-full" : "h-full w-2",
           colourClass,
         )}
@@ -776,7 +840,9 @@ function renderSquareContent(squareName: string) {
     default:
       return (
         <>
-          <p className="text-center">{squareName}</p>
+          <div className="flex items-center justify-center w-full h-full">
+            <p className="text-center">{squareName}</p>
+          </div>
         </>
       );
   }
