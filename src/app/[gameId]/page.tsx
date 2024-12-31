@@ -530,7 +530,7 @@ export default function Home() {
                             }`,
                           )}
                           style={{
-                            height: `${80 / boardSize}vh`,
+                            height: `${80 / boardSize}vmin`,
                           }}
                         >
                           <ColourTab
