@@ -22,6 +22,8 @@ import {
   Dice4,
   Dice5,
   Dice6,
+  House,
+  Hotel,
 } from "lucide-react";
 import { Slider } from "~/components/ui/slider";
 import React, { useState } from "react";
@@ -54,6 +56,7 @@ import {
 
 import { Badge } from "~/components/ui/badge";
 import { set } from "zod";
+import { toast, useToast } from "~/hooks/use-toast";
 
 type Edge = "corner" | "top" | "right" | "bottom" | "left" | "";
 
@@ -83,6 +86,8 @@ const playerColors = [
 ];
 
 export default function Home() {
+  const { toast } = useToast();
+
   // const [boardSize, setBoardSize] = useState(11);
   const params = useParams<{ gameId: string }>();
   const boardSize = 11;
@@ -235,10 +240,18 @@ export default function Home() {
       ) {
         let rentPrice = 0;
 
+        const owner = players.find((player) =>
+          player.ownedProperties?.some(
+            (property) => property.id === newPlayer.position,
+          ),
+        );
+
         if (newSquare.type === "property") {
           // check if property has houses
-          // TODO: check if property has hotel
-          rentPrice = newSquare.rent[0] ?? 0;
+          const property = owner?.ownedProperties?.find(
+            (property) => property.id === newPlayer.position,
+          );
+          rentPrice = newSquare.rent[property?.houses ?? 0] ?? 0;
         } else if (newSquare.type === "station") {
           // TODO: check how many stations are owned by the player
           rentPrice = newSquare.rent[0] ?? 0;
@@ -248,11 +261,12 @@ export default function Home() {
         }
         newPlayer.money -= rentPrice;
         // pay rent to owner
-        const owner = players.find((player) =>
-          player.ownedProperties?.some(
-            (property) => property.id === newPlayer.position,
-          ),
-        );
+        // TODO: implement paying owner
+
+        toast({
+          title: "Rent Paid",
+          description: `Player ${playerId + 1} paid £${rentPrice} to Player ${(owner?.id ?? 0) + 1} for staying at ${newSquare.name}`,
+        });
       } else {
         // if not owned, sell
         setSelectedProperty(newPlayer.position);
@@ -340,7 +354,10 @@ export default function Home() {
             <div className="flex gap-4">
               <div className="flex items-center gap-1">
                 {/* Roll dice button */}
-                <Button onClick={movePlayer} disabled={gameLocked}>
+                <Button
+                  onClick={movePlayer}
+                  disabled={dice[0] === dice[1] ? false : gameLocked}
+                >
                   Roll Dice
                 </Button>
                 <div>{diceIcon[dice[0] as DiceIconType]}</div>
@@ -350,6 +367,7 @@ export default function Home() {
           </div>
           {/* End turn button */}
           <Button
+            disabled={dice[0] === dice[1] || !gameLocked}
             onClick={() => {
               setCurrentPlayer((currentPlayer + 1) % players.length);
               setGameLocked(false);
@@ -542,7 +560,7 @@ export default function Home() {
                             players={players}
                             squareIndex={squareIndex}
                           />
-                          <div className="flex flex-col items-center justify-center overflow-hidden p-1 text-xs w-full h-full">
+                          <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden p-1 text-xs">
                             {renderSquareContent(squareName)}
                           </div>
                         </div>
@@ -647,53 +665,76 @@ export default function Home() {
                               className={`h-4 w-4 rounded-full ${player.colour}`}
                             ></div>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="flex flex-col gap-2">
                             {player.ownedProperties?.map((property) => (
-                              <div key={property.id}>
+                              <div
+                                key={property.id}
+                                className="flex items-center gap-2"
+                              >
                                 {getSquare(property.id)?.name}
-                                {/* Buy house button */}
-                                {currentPlayer === player.id && (
-                                  <Button
-                                    className="ml-4"
-                                    onClick={() => {
-                                      const propertyLocal = getSquare(
-                                        property.id,
-                                      ) as PropertySquare;
-                                      if (
-                                        propertyLocal.houseCost > player.money
-                                      )
-                                        return;
-                                      const newPlayer = {
-                                        ...player,
-                                        money:
-                                          player.money -
-                                          propertyLocal.houseCost,
-                                        ownedProperties:
-                                          player.ownedProperties?.map(
-                                            (prop) => {
-                                              if (prop.id === property.id) {
-                                                return {
-                                                  ...prop,
-                                                  houses:
-                                                    (prop.houses ?? 0) + 1,
-                                                };
-                                              }
-                                              return prop;
-                                            },
-                                          ),
-                                      };
-                                      setPlayers((prevPlayers) =>
-                                        prevPlayers.map((player) =>
-                                          player.id === player.id
-                                            ? newPlayer
-                                            : player,
-                                        ),
-                                      );
-                                    }}
-                                  >
-                                    Buy house
-                                  </Button>
+                                {/* Show houses icons for house and 5 houses  for a hotel */}
+                                {getSquare(property.id)?.type ===
+                                  "property" && (
+                                  <>
+                                    {(property.houses ?? 0) < 5 &&
+                                      Array(property.houses ?? 0)
+                                        .fill(null)
+                                        .map((_, index) => (
+                                          <House
+                                            key={index}
+                                            className="h-5 w-5 text-green-700"
+                                          />
+                                        ))}
+                                    {property.houses === 5 && (
+                                      <Hotel className="h-5 w-5 text-red-700" />
+                                    )}
+                                  </>
                                 )}
+                                {/* Buy house button */}
+                                {currentPlayer === player.id &&
+                                  getSquare(property.id)?.type === "property" &&
+                                  (property.houses ?? 0) < 5 && (
+                                    <Button
+                                      className="text-xs"
+                                      onClick={() => {
+                                        const propertyLocal = getSquare(
+                                          property.id,
+                                        ) as PropertySquare;
+                                        if (
+                                          propertyLocal.houseCost > player.money
+                                        )
+                                          return;
+                                        const newPlayer = {
+                                          ...player,
+                                          money:
+                                            player.money -
+                                            propertyLocal.houseCost,
+                                          ownedProperties:
+                                            player.ownedProperties?.map(
+                                              (prop) => {
+                                                if (prop.id === property.id) {
+                                                  return {
+                                                    ...prop,
+                                                    houses:
+                                                      (prop.houses ?? 0) + 1,
+                                                  };
+                                                }
+                                                return prop;
+                                              },
+                                            ),
+                                        };
+                                        setPlayers((prevPlayers) =>
+                                          prevPlayers.map((mapPlayer) =>
+                                            mapPlayer.id === player.id
+                                              ? newPlayer
+                                              : mapPlayer,
+                                          ),
+                                        );
+                                      }}
+                                    >
+                                      Buy house
+                                    </Button>
+                                  )}
                               </div>
                             ))}
                           </TableCell>
@@ -840,7 +881,7 @@ function renderSquareContent(squareName: string) {
     default:
       return (
         <>
-          <div className="flex items-center justify-center w-full h-full">
+          <div className="flex h-full w-full items-center justify-center">
             <p className="text-center">{squareName}</p>
           </div>
         </>
