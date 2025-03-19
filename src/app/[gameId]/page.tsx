@@ -88,7 +88,7 @@ const playerColors = [
   "bg-black",
 ];
 
-const SOCKET_SERVER_URL = 'http://130.162.184.249:3000';
+const SOCKET_SERVER_URL = 'https://socket.ilpa.co.uk';
 
 export default function Home() {
   const { gameId } = useParams();
@@ -102,6 +102,7 @@ export default function Home() {
     // Establish a Socket.IO connection
     socket = io(SOCKET_SERVER_URL, {
       query: { gameId },
+      withCredentials: true 
     });
 
     socket.on('connect', () => {
