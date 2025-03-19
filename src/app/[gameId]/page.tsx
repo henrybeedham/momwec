@@ -2,8 +2,8 @@
 "use client";
 import Link from "next/link";
 
-import { chanceCards, propertyColors, squares } from "~/utils/monopoly";
-import type { Chance, PropertySquare } from "~/utils/monopoly";
+import { chanceCards, getSquareFromIndex, propertyColors, squares } from "~/utils/monopoly";
+import type { Chance, PropertySquare } from "~/models/types";
 import {
   CreditCard,
   Zap,
@@ -88,45 +88,9 @@ const playerColors = [
   "bg-black",
 ];
 
-const SOCKET_SERVER_URL = 'https://socket.ilpa.co.uk';
-
 export default function Home() {
   const { gameId } = useParams();
   const { toast } = useToast();
-
-  const { isSignedIn, user, isLoaded } = useUser();
-
-  let socket: ReturnType<typeof io>;
-
-  useEffect(() => {
-    // Establish a Socket.IO connection
-    socket = io(SOCKET_SERVER_URL, {
-      query: { gameId },
-      withCredentials: true 
-    });
-
-    socket.on('connect', () => {
-      console.log('Connected to Socket.IO server with id:', socket.id);
-    });
-
-    // Listen for 'gameMove' events from the server
-    socket.on('gameMove', (data) => {
-      console.log('Received gameMove event:', data);
-      
-    });
-
-    // Cleanup on component unmount
-    return () => {
-      if (socket) socket.disconnect();
-    };
-  }, [gameId]);
-
-  const sendGameMove = () => {
-    if (socket) {
-      // Emit a the current time event to the server
-      socket.emit('gameMove', user?.fullName)
-    }
-  };
 
   // const [boardSize, setBoardSize] = useState(11);
   const params = useParams<{ gameId: string }>();
@@ -159,13 +123,6 @@ export default function Home() {
 
   const totalSquares = (boardSize - 1) * 4;
 
-  function getSquare(index: number): (typeof squares)[number] {
-    if (index < squares.length) {
-      return squares[index] ?? { name: "notFound", type: "other" };
-    }
-    return { name: "Empty", type: "other" };
-  }
-
   function addPlayer() {
     if (players.length < playerColors.length) {
       setPlayers([
@@ -196,7 +153,7 @@ export default function Home() {
       previousPosition: player.position,
     };
 
-    const newSquare = getSquare(newPlayer.position);
+    const newSquare = getSquareFromIndex(newPlayer.position);
     if (!newSquare) return;
 
     // if player lands on community chest
@@ -322,7 +279,7 @@ export default function Home() {
   function buyProperty(playerId: number, propertyId: number) {
     const player = players.find((player) => player.id === playerId);
     if (!player) return;
-    const property = getSquare(propertyId) as PropertySquare;
+    const property = getSquareFromIndex(propertyId) as PropertySquare;
     if (player.money < property.price) return;
     const newPlayer = {
       ...player,
@@ -343,7 +300,6 @@ export default function Home() {
         <h1 className="mb-4 text-2xl font-bold">
           MOMWEC Game: {params.gameId}
         </h1>
-        <Button onClick={sendGameMove}>Send Game Move</Button>
         <div className="flex gap-4">
           <Dialog>
             <DialogTrigger asChild>
@@ -425,7 +381,7 @@ export default function Home() {
             </DialogHeader>
             <div className="flex flex-col gap-4">
               <h1 className="text-lg">
-                Do you want to buy {getSquare(selectedProperty ?? 0)?.name}?
+                Do you want to buy {getSquareFromIndex(selectedProperty ?? 0)?.name}?
               </h1>
               <div className="flex gap-4">
                 <Button
@@ -549,7 +505,7 @@ export default function Home() {
                     } else return;
                   }
                   if (squareIndex === null) return <div key={index}></div>;
-                  const square = getSquare(squareIndex) ?? "";
+                  const square = getSquareFromIndex(squareIndex) ?? "";
                   const squareName = square.name;
                   const propertyGroup =
                     square.type === "property" ? square.group : "";
@@ -712,9 +668,9 @@ export default function Home() {
                                 key={property.id}
                                 className="flex items-center gap-2"
                               >
-                                {getSquare(property.id)?.name}
+                                {getSquareFromIndex(property.id)?.name}
                                 {/* Show houses icons for house and 5 houses  for a hotel */}
-                                {getSquare(property.id)?.type ===
+                                {getSquareFromIndex(property.id)?.type ===
                                   "property" && (
                                   <>
                                     {(property.houses ?? 0) < 5 &&
@@ -733,12 +689,12 @@ export default function Home() {
                                 )}
                                 {/* Buy house button */}
                                 {currentPlayer === player.id &&
-                                  getSquare(property.id)?.type === "property" &&
+                                  getSquareFromIndex(property.id)?.type === "property" &&
                                   (property.houses ?? 0) < 5 && (
                                     <Button
                                       className="text-xs"
                                       onClick={() => {
-                                        const propertyLocal = getSquare(
+                                        const propertyLocal = getSquareFromIndex(
                                           property.id,
                                         ) as PropertySquare;
                                         if (

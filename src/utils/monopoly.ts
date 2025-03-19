@@ -1,45 +1,5 @@
-type EntityType = "property" | "utility" | "station" | "other";
+import { Chance, Square } from "~/models/types";
 
-type Group =
-  | "brown"
-  | "light-blue"
-  | "pink"
-  | "orange"
-  | "red"
-  | "yellow"
-  | "green"
-  | "dark-blue";
-
-type BaseSquare = {
-  name: string;
-  type: EntityType;
-};
-
-type Buyable = BaseSquare & {
-  price: number;
-};
-
-export type PropertySquare = Buyable & {
-  type: "property";
-  group: Group;
-  rent: number[];
-  houseCost: number;
-};
-
-export type UtilitySquare = Buyable & {
-  type: "utility";
-};
-
-export type StationSquare = Buyable & {
-  type: "station";
-  rent: number[];
-};
-
-export type OtherSquare = BaseSquare & {
-  type: "other";
-};
-
-type Square = PropertySquare | UtilitySquare | StationSquare | OtherSquare;
 export const squares: Square[] = [
   {
     type: "other",
@@ -314,26 +274,6 @@ export const propertyColors: Record<string, string> = {
   utility: "bg-gray-400",
 };
 
-type BaseChance = {
-  description: string;
-  type: "go" | "pardon" | "jail";
-};
-
-type RepairsChance = {
-  description: string;
-  type: "repairs";
-  house: number;
-  hotel: number;
-};
-
-type Other = {
-  description: string;
-  type: "move" | "pay" | "collect" | "back" | "birthday";
-  value: number;
-};
-
-export type Chance = BaseChance | RepairsChance | Other;
-
 export const chanceCards: Chance[] = [
   {
     description: "Advance to Go",
@@ -515,3 +455,10 @@ export const communityChestCards: Chance[] = [
     value: 10,
   },
 ];
+
+export function getSquareFromIndex(index: number): (typeof squares)[number] {
+  if (index < squares.length) {
+    return squares[index] ?? { name: "notFound", type: "other" };
+  }
+  return { name: "Empty", type: "other" };
+}
