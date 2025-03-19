@@ -109,9 +109,6 @@ export default function Home() {
       console.log('Connected to Socket.IO server with id:', socket.id);
     });
 
-    // Join the game room
-    socket.emit('joinGame', gameId);
-
     // Listen for 'gameMove' events from the server
     socket.on('gameMove', (data) => {
       console.log('Received gameMove event:', data);
