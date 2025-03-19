@@ -2,7 +2,12 @@
 "use client";
 import Link from "next/link";
 
-import { chanceCards, getSquareFromIndex, propertyColors, squares } from "~/utils/monopoly";
+import {
+  chanceCards,
+  getSquareFromIndex,
+  propertyColors,
+  squares,
+} from "~/utils/monopoly";
 import type { Chance, PropertySquare } from "~/models/types";
 import {
   CreditCard,
@@ -57,9 +62,8 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { set } from "zod";
 import { toast, useToast } from "~/hooks/use-toast";
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 import { useUser } from "@clerk/nextjs";
-
 
 type Edge = "corner" | "top" | "right" | "bottom" | "left" | "";
 
@@ -88,9 +92,44 @@ const playerColors = [
   "bg-black",
 ];
 
+const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
+
 export default function Home() {
   const { gameId } = useParams();
   const { toast } = useToast();
+
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  let socket: ReturnType<typeof io>;
+
+  useEffect(() => {
+    // Establish a Socket.IO connection
+    socket = io(SOCKET_SERVER_URL, {
+      query: { gameId },
+      withCredentials: true,
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO server with id:", socket.id);
+    });
+
+    // Listen for 'gameMove' events from the server
+    socket.on("gameMove", (data) => {
+      console.log("Received gameMove event:", data);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, [gameId]);
+
+  const sendGameMove = () => {
+    if (socket) {
+      // Emit a the current time event to the server
+      socket.emit("gameMove", user?.fullName);
+    }
+  };
 
   // const [boardSize, setBoardSize] = useState(11);
   const params = useParams<{ gameId: string }>();
@@ -300,6 +339,7 @@ export default function Home() {
         <h1 className="mb-4 text-2xl font-bold">
           MOMWEC Game: {params.gameId}
         </h1>
+        <Button onClick={sendGameMove}>Send Game Move</Button>
         <div className="flex gap-4">
           <Dialog>
             <DialogTrigger asChild>
@@ -381,7 +421,8 @@ export default function Home() {
             </DialogHeader>
             <div className="flex flex-col gap-4">
               <h1 className="text-lg">
-                Do you want to buy {getSquareFromIndex(selectedProperty ?? 0)?.name}?
+                Do you want to buy{" "}
+                {getSquareFromIndex(selectedProperty ?? 0)?.name}?
               </h1>
               <div className="flex gap-4">
                 <Button
@@ -589,7 +630,7 @@ export default function Home() {
                                   <TableHead>Rent</TableHead>
                                 </TableRow>
                               </TableHeader>
-                              <TableBody> 
+                              <TableBody>
                                 {square.rent.map((rent, index) => (
                                   <TableRow key={index}>
                                     <TableCell>
@@ -689,14 +730,16 @@ export default function Home() {
                                 )}
                                 {/* Buy house button */}
                                 {currentPlayer === player.id &&
-                                  getSquareFromIndex(property.id)?.type === "property" &&
+                                  getSquareFromIndex(property.id)?.type ===
+                                    "property" &&
                                   (property.houses ?? 0) < 5 && (
                                     <Button
                                       className="text-xs"
                                       onClick={() => {
-                                        const propertyLocal = getSquareFromIndex(
-                                          property.id,
-                                        ) as PropertySquare;
+                                        const propertyLocal =
+                                          getSquareFromIndex(
+                                            property.id,
+                                          ) as PropertySquare;
                                         if (
                                           propertyLocal.houseCost > player.money
                                         )
