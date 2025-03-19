@@ -26,7 +26,7 @@ import {
   Hotel,
 } from "lucide-react";
 import { Slider } from "~/components/ui/slider";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import { useParams } from "next/navigation";
@@ -57,6 +57,9 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { set } from "zod";
 import { toast, useToast } from "~/hooks/use-toast";
+import { io } from 'socket.io-client';
+import { useUser } from "@clerk/nextjs";
+
 
 type Edge = "corner" | "top" | "right" | "bottom" | "left" | "";
 
@@ -85,12 +88,48 @@ const playerColors = [
   "bg-black",
 ];
 
+const SOCKET_SERVER_URL = 'http://130.162.184.249:3000';
+
 export default function Home() {
+  const { gameId } = useParams();
   const { toast } = useToast();
+
+  const { isSignedIn, user, isLoaded } = useUser();
+
+  let socket: ReturnType<typeof io>;
+
+  useEffect(() => {
+    // Establish a Socket.IO connection
+    socket = io(SOCKET_SERVER_URL, {
+      query: { gameId },
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to Socket.IO server with id:', socket.id);
+    });
+
+    // Listen for 'gameMove' events from the server
+    socket.on('gameMove', (data) => {
+      console.log('Received gameMove event:', data);
+      
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, []);
+
+  const sendGameMove = () => {
+    if (socket) {
+      // Emit a the current time event to the server
+      socket.emit('gameMove', user?.fullName)
+    }
+  };
 
   // const [boardSize, setBoardSize] = useState(11);
   const params = useParams<{ gameId: string }>();
-  const boardSize = 11;
+  const [boardSize, setBoardSize] = useState(11);
   const initialColour = playerColors[0];
 
   const [players, setPlayers] = useState<Player[]>([
@@ -303,6 +342,7 @@ export default function Home() {
         <h1 className="mb-4 text-2xl font-bold">
           MOMWEC Game: {params.gameId}
         </h1>
+        <Button onClick={sendGameMove}>Send Game Move</Button>
         <div className="flex gap-4">
           <Dialog>
             <DialogTrigger asChild>
@@ -425,7 +465,7 @@ export default function Home() {
             </div>
           </DialogContent>
         </Dialog>
-        {/* <div className="mb-4">
+        <div className="mb-4">
           <label
             htmlFor="board-size"
             className="mb-1 block text-sm font-medium text-gray-700"
@@ -440,7 +480,7 @@ export default function Home() {
             value={[boardSize]}
             onValueChange={(value: number[]) => setBoardSize(value[0] ?? 11)}
           />
-        </div> */}
+        </div>
         <div className="flex">
           <div className="aspect-square w-full max-w-4xl">
             <div
@@ -592,7 +632,7 @@ export default function Home() {
                                   <TableHead>Rent</TableHead>
                                 </TableRow>
                               </TableHeader>
-                              <TableBody>
+                              <TableBody> 
                                 {square.rent.map((rent, index) => (
                                   <TableRow key={index}>
                                     <TableCell>

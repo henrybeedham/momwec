@@ -16,6 +16,7 @@ import { Input } from "~/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useUser } from "@clerk/nextjs";
 
 const formSchema = z.object({
   gameId: z.string().min(4).max(4),
@@ -25,6 +26,8 @@ export default function Home() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [idInput, setIdInput] = useState("");
+
+  const { isSignedIn, user, isLoaded } = useUser();
 
   const startNewGame = () => {
     setIsLoading(true);
@@ -48,6 +51,9 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
       <div className="text-center">
         <h1 className="mb-8 text-6xl font-bold text-white">MOMWEC</h1>
+        <p className="my-4 text-xl text-white">
+          Hello {user?.firstName ?? user?.emailAddresses[0]?.emailAddress} welcome to MOMWEC. The start game button below will yk start a new game. From here, you can either 
+        </p>
         <Button
           onClick={startNewGame}
           disabled={isLoading}
@@ -66,7 +72,11 @@ export default function Home() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input className="bg-white" placeholder="Enter Game ID" {...field} />
+                    <Input
+                      className="bg-white"
+                      placeholder="Enter Game ID"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
