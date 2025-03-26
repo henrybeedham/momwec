@@ -1,13 +1,23 @@
 import { GameState } from "./GameState";
 import { Player } from "./Player";
 
+import type { Group } from "~/models/types";
+
+type SquareType =
+  | "property"
+  | "station"
+  | "utility"
+  | "tax"
+  | "corner"
+  | "card";
+
 // Base Square class
 export abstract class Square {
   readonly id: number;
   readonly name: string;
-  readonly type: string;
+  readonly type: SquareType;
 
-  constructor(id: number, name: string, type: string) {
+  constructor(id: number, name: string, type: SquareType) {
     this.id = id;
     this.name = name;
     this.type = type;
@@ -77,7 +87,7 @@ export class PropertySquare extends Square {
   readonly price: number;
   readonly rent: number[];
   readonly houseCost: number;
-  readonly group: string;
+  readonly group: Group;
 
   constructor(
     id: number,
@@ -85,13 +95,17 @@ export class PropertySquare extends Square {
     price: number,
     rent: number[],
     houseCost: number,
-    group: string,
+    group: Group,
   ) {
     super(id, name, "property");
     this.price = price;
     this.rent = rent;
     this.houseCost = houseCost;
     this.group = group;
+  }
+
+  getGroup(): Group {
+    return this.group;
   }
 
   handleLanding(
@@ -235,9 +249,7 @@ export class UtilitySquare extends Square {
 
       if (owner) {
         // Calculate rent based on how many utilities the owner has
-        const utilityCount = owner.getPropertyCount(
-          "utility",
-        );
+        const utilityCount = owner.getPropertyCount("utility");
         const multiplier = this.multipliers[Math.min(utilityCount - 1, 1)] ?? 1;
         const rentAmount = multiplier * diceRoll;
 
@@ -309,10 +321,11 @@ export class CardSquare extends Square {
     diceRoll: number,
     toastCallback: (message: { title: string; description: string }) => void,
   ): void {
-    const card = this.cardType === "community"
-      ? gameState.getBoard().drawCommunityChestCard()
-      : gameState.getBoard().drawChanceCard();
-      
+    const card =
+      this.cardType === "community"
+        ? gameState.getBoard().drawCommunityChestCard()
+        : gameState.getBoard().drawChanceCard();
+
     card.applyEffect(player, gameState, toastCallback);
   }
 

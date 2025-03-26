@@ -128,7 +128,7 @@ export class GameState {
   movePlayer(toastCallback: (message: { title: string; description: string }) => void): void {
     this.setGameLocked(true);
     const [dice1, dice2] = this.rollDice();
-    const total = dice1 + dice2;
+    const total = dice1 + dice2; 
 
     const currentPlayer = this.getCurrentPlayer();
     currentPlayer.moveForward(total);

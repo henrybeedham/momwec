@@ -36,9 +36,9 @@ export class Board {
     squares.push(new CardSquare(33, "Community Chest", "community"));
     
     // Light Blue properties
-    squares.push(new PropertySquare(6, "The Angel Islington", 100, [6, 30, 90, 270, 400, 550], 50, "lightblue"));
-    squares.push(new PropertySquare(8, "Euston Road", 100, [6, 30, 90, 270, 400, 550], 50, "lightblue"));
-    squares.push(new PropertySquare(9, "Pentonville Road", 120, [8, 40, 100, 300, 450, 600], 50, "lightblue"));
+    squares.push(new PropertySquare(6, "The Angel Islington", 100, [6, 30, 90, 270, 400, 550], 50, "light-blue"));
+    squares.push(new PropertySquare(8, "Euston Road", 100, [6, 30, 90, 270, 400, 550], 50, "light-blue"));
+    squares.push(new PropertySquare(9, "Pentonville Road", 120, [8, 40, 100, 300, 450, 600], 50, "light-blue"));
     
     // Chance
     squares.push(new CardSquare(7, "Chance", "chance"));
@@ -71,8 +71,8 @@ export class Board {
     squares.push(new PropertySquare(34, "Bond Street", 320, [28, 150, 450, 1000, 1200, 1400], 200, "green"));
     
     // Dark Blue properties
-    squares.push(new PropertySquare(37, "Park Lane", 350, [35, 175, 500, 1100, 1300, 1500], 200, "darkblue"));
-    squares.push(new PropertySquare(39, "Mayfair", 400, [50, 200, 600, 1400, 1700, 2000], 200, "darkblue"));
+    squares.push(new PropertySquare(37, "Park Lane", 350, [35, 175, 500, 1100, 1300, 1500], 200, "dark-blue"));
+    squares.push(new PropertySquare(39, "Mayfair", 400, [50, 200, 600, 1400, 1700, 2000], 200, "dark-blue"));
     
     // Stations
     squares.push(new StationSquare(5, "King's Cross Station", 200, [25, 50, 100, 200]));

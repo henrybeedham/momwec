@@ -27,7 +27,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [idInput, setIdInput] = useState("");
 
-  const { isSignedIn, user, isLoaded } = useUser();
+  // const { isSignedIn, user, isLoaded } = useUser();
 
   const startNewGame = () => {
     setIsLoading(true);
@@ -51,8 +51,13 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
       <div className="text-center">
         <h1 className="mb-8 text-6xl font-bold text-white">MOMWEC</h1>
-        <p className="my-4 text-xl text-white">
+        {/* <p className="my-4 text-xl text-white">
           Hello {user?.firstName ?? user?.emailAddresses[0]?.emailAddress} welcome to MOMWEC. The start game button below will yk start a new game. From here, you can either 
+        </p> */}
+        {/* TODO: FIX THIS */}
+        <p className="my-4 text-xl text-white">
+          Hello {"User"} welcome to MOMWEC. The start game button below will yk
+          start a new game. From here, you can either
         </p>
         <Button
           onClick={startNewGame}

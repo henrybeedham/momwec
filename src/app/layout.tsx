@@ -29,11 +29,12 @@ export default function RootLayout({
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>
           <TRPCReactProvider>
-            <SignedOut>
+            {/* <SignedOut>
               <SignInButton/>
               <SignUpButton/>
             </SignedOut>
-            <SignedIn>{children}</SignedIn>
+            <SignedIn>{children}</SignedIn> */}
+            {children}
             <Toaster />
           </TRPCReactProvider>
         </body>

@@ -17,7 +17,7 @@ export type Edge = "top" | "right" | "bottom" | "left" | "corner" | "";
 
 type SquareType = "property" | "utility" | "station" | "other";
 
-type Group =
+export type Group =
   | "brown"
   | "light-blue"
   | "pink"
