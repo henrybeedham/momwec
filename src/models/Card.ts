@@ -53,7 +53,7 @@ export class MoveCard extends Card {
 
     // Check if we're passing GO
     if (this.collectPassGo && this.destinationPosition < currentPosition) {
-      player.collectMoney(200);
+      player.addMoney(200);
       toastCallback({
         title: "Passing GO",
         description: "You collected £200 for passing GO!",
@@ -149,7 +149,7 @@ export class CollectCard extends Card {
     gameState: GameState,
     toastCallback: (message: { title: string; description: string }) => void,
   ): void {
-    player.collectMoney(this.amount);
+    player.addMoney(this.amount);
 
     toastCallback({
       title: this.title,
@@ -179,7 +179,7 @@ export class PayCard extends Card {
     gameState: GameState,
     toastCallback: (message: { title: string; description: string }) => void,
   ): void {
-    player.payMoney(this.amount);
+    player.removeMoney(this.amount);
 
     toastCallback({
       title: this.title,
@@ -270,7 +270,7 @@ export class PayPerBuildingCard extends Card {
       }
     });
 
-    player.payMoney(totalCost);
+    player.removeMoney(totalCost);
 
     toastCallback({
       title: this.title,
@@ -306,12 +306,12 @@ export class CollectFromPlayersCard extends Card {
 
     players.forEach((otherPlayer) => {
       if (otherPlayer.getId() !== player.getId()) {
-        otherPlayer.payMoney(this.amount);
+        otherPlayer.removeMoney(this.amount);
         totalCollected += this.amount;
       }
     });
 
-    player.collectMoney(totalCollected);
+    player.addMoney(totalCollected);
 
     toastCallback({
       title: this.title,

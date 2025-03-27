@@ -66,11 +66,11 @@ export class Player {
     this.position = this.board.getPositionAfterMove(this.position, steps);
   }
 
-  collectMoney(amount: number): void {
+  addMoney(amount: number): void {
     this.money += amount;
   }
 
-  payMoney(amount: number): boolean {
+  removeMoney(amount: number): boolean {
     if (this.money >= amount) {
       this.money -= amount;
       return true;

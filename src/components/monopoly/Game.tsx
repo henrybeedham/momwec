@@ -1,28 +1,27 @@
 "use client";
 import React, { useCallback, useEffect, useState } from "react";
-import MonopolyGame from "~/models/Game";
+import { GameState } from "~/models/GameState";
 import BoardComponent from "./Board";
 import PlayerControls from "./PlayerControls";
 import { useToast } from "~/hooks/use-toast";
 
-const GameComponent: React.FC = () => {
-  const [game, setGame] = useState<MonopolyGame | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-assignment
-  const [gameState, setGameState] = useState<any | null>(null);
+function GameComponent() {
+  const [game, setGame] = useState<GameState | null>(null);
+  const [uniqueGameKey, setUniqueGameKey] = useState("");
+
   const { toast } = useToast();
 
   const initializeGame = useCallback(() => {
-    const newGame = new MonopolyGame();
-    newGame.startGame();
+    const newGame = new GameState();
     setGame(newGame);
-    setGameState(newGame.exportGameState());
+    setUniqueGameKey(newGame.exportGameState());
   }, []);
 
   const updateGameState = useCallback(
     (action: () => void) => {
       if (game) {
         action();
-        setGameState(game.exportGameState());
+        setUniqueGameKey(game.exportGameState());
       }
     },
     [game],
@@ -30,7 +29,7 @@ const GameComponent: React.FC = () => {
 
   const playerMove = useCallback(() => {
     updateGameState(() => {
-      game?.playerMove((message) => {
+      game?.movePlayer((message) => {
         console.log(message.title, message.description);
         toast(message);
       });
@@ -48,24 +47,21 @@ const GameComponent: React.FC = () => {
     initializeGame();
   }, [initializeGame]);
 
-  if (!game || !gameState) {
+  if (!game || !uniqueGameKey) {
     return <div>Loading game...</div>;
   }
 
   return (
     <div className="monopoly-game">
-      <BoardComponent
-        game={game}
-        key={JSON.stringify(gameState)}
-      />
       <PlayerControls
         game={game}
         onRollDice={playerMove}
         onEndTurn={endTurn}
-        key={JSON.stringify(gameState)}
+        key={`Controls-${uniqueGameKey}`}
       />
+      <BoardComponent game={game} key={`Board-${uniqueGameKey}`} />
     </div>
   );
-};
+}
 
 export default GameComponent;

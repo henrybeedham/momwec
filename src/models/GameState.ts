@@ -133,11 +133,24 @@ export class GameState {
     const currentPlayer = this.getCurrentPlayer();
     currentPlayer.moveForward(total);
 
+    if (currentPlayer.passedGo()) {
+      currentPlayer.addMoney(200)
+    }
+
     const newSquare = this.board.getSquareFromIndex(currentPlayer.getPosition());
     if (!newSquare) return;
 
     newSquare.handleLanding(currentPlayer, this, total, toastCallback)
   }
 
+
+  exportGameState(): string {
+    return JSON.stringify({
+      currentPlayerIndex: this.getCurrentPlayerId(),
+      playerPositions: this.getPlayers().map((p) => p.getPosition()),
+      playerMoney: this.getPlayers().map((p) => p.getMoney()),
+      timestamp: Date.now(), // Ensures a unique key each time
+    });
+  }
 
 }

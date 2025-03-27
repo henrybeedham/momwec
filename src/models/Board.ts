@@ -21,7 +21,7 @@ export class Board {
     
     // Create the default Monopoly board
     // Corners
-    squares.push(new CornerSquare(0, "GO"));
+    squares.push(new CornerSquare(0, "Go"));
     squares.push(new CornerSquare(10, "Jail"));
     squares.push(new CornerSquare(20, "Free Parking"));
     squares.push(new CornerSquare(30, "Go To Jail", "jail"));

@@ -132,8 +132,8 @@ export class PropertySquare extends Square {
           .find((p) => p.id === position);
         const rentAmount = this.rent[property?.houses ?? 0] ?? 0;
 
-        player.payMoney(rentAmount);
-        owner.collectMoney(rentAmount);
+        player.removeMoney(rentAmount);
+        owner.addMoney(rentAmount);
         toastCallback({
           title: "Rent Paid",
           description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
@@ -194,8 +194,8 @@ export class StationSquare extends Square {
         const stationCount = owner.getPropertyCount("station");
         const rentAmount = this.rent[Math.min(stationCount - 1, 3)] ?? 0;
 
-        player.payMoney(rentAmount);
-        owner.collectMoney(rentAmount);
+        player.removeMoney(rentAmount);
+        owner.addMoney(rentAmount);
 
         toastCallback({
           title: "Rent Paid",
@@ -253,8 +253,8 @@ export class UtilitySquare extends Square {
         const multiplier = this.multipliers[Math.min(utilityCount - 1, 1)] ?? 1;
         const rentAmount = multiplier * diceRoll;
 
-        player.payMoney(rentAmount);
-        owner.collectMoney(rentAmount);
+        player.removeMoney(rentAmount);
+        owner.addMoney(rentAmount);
 
         toastCallback({
           title: "Rent Paid",
@@ -291,7 +291,7 @@ export class TaxSquare extends Square {
     diceRoll: number,
     toastCallback: (message: { title: string; description: string }) => void,
   ): void {
-    player.payMoney(this.amount);
+    player.removeMoney(this.amount);
     toastCallback({
       title: "Tax Paid",
       description: `Player ${player.getId() + 1} paid £${this.amount} in ${this.name}`,

@@ -1,5 +1,4 @@
 import React from "react";
-import MonopolyGame from "~/models/Game";
 import {
   HoverCard,
   HoverCardContent,
@@ -11,17 +10,17 @@ import { propertyColors } from "~/utils/monopoly";
 import { Player } from "~/models/Player";
 import renderSquareContent from "./SquareContent";
 import SquareHoverCard from "./SquareHoverCard";
+import { GameState } from "~/models/GameState";
 
 interface BoardProps {
-  game: MonopolyGame;
+  game: GameState;
 }
 
 type Edge = "corner" | "top" | "right" | "bottom" | "left" | "";
 
 function BoardComponent({ game }: BoardProps) {
   const board = game.getBoard();
-  const gameState = game.getGameState();
-  const players = gameState.getPlayers();
+  const players = game.getPlayers();
   const boardSize = board.getSize();
   const totalSquares = board.getTotalSquares();
 
