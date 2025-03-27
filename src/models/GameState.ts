@@ -135,6 +135,10 @@ export class GameState {
 
     if (currentPlayer.passedGo()) {
       currentPlayer.addMoney(200)
+      toastCallback({
+        title: "Passing GO",
+        description: "You collected £200 for passing GO!",
+      });
     }
 
     const newSquare = this.board.getSquareFromIndex(currentPlayer.getPosition());
