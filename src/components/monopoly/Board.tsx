@@ -9,7 +9,7 @@ import { PropertySquare, Square, StationSquare, UtilitySquare } from "~/models/S
 import { propertyColors } from "~/utils/monopoly";
 import { Player } from "~/models/Player";
 import renderSquareContent from "./SquareContent";
-import SquareHoverCard from "./SquareHoverCard";
+import SquareHoverCard from "./SquareCard";
 import { GameState } from "~/models/GameState";
 
 interface BoardProps {
@@ -115,7 +115,6 @@ function BoardComponent({ game }: BoardProps) {
                         ? "top"
                         : "right"
                   : "";
-              // TODO: FIX THIS get the actual colour class
               const colourClass = square instanceof PropertySquare ? propertyColors[square.group] ?? "bg-gray-200" : "bg-gray-200";
               return (
                 <HoverCard key={index}>

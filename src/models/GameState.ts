@@ -1,7 +1,6 @@
-
-import { Player } from './Player';
-import { Board } from './Board';
-import { PropertySquare } from './Square';
+import { Player } from "./Player";
+import { Board } from "./Board";
+import { PropertySquare, StationSquare, UtilitySquare } from "./Square";
 
 const playerColors = [
   "bg-red-500",
@@ -25,13 +24,15 @@ export class GameState {
 
   constructor(boardSize = 11) {
     this.board = new Board(boardSize);
-    this.players = [new Player(0, playerColors[0] ?? "bg-black", this.board, 1500)];
+    this.players = [
+      new Player(0, playerColors[0] ?? "bg-black", this.board, 1500),
+      new Player(1, playerColors[1] ?? "bg-black", this.board, 1500),
+    ];
     this.currentPlayerIndex = 0;
     this.dice = [1, 1];
     this.gameLocked = false;
     this.selectedProperty = null;
-}
-
+  }
 
   // Getters
   getPlayers(): Player[] {
@@ -56,7 +57,7 @@ export class GameState {
 
   getBoard(): Board {
     return this.board;
-  }  
+  }
 
   isGameLocked(): boolean {
     return this.gameLocked;
@@ -95,7 +96,7 @@ export class GameState {
         newPlayerId,
         playerColors[newPlayerId] ?? "bg-black-500",
         this.board,
-        1500
+        1500,
       );
       this.players.push(newPlayer);
     }
@@ -109,44 +110,72 @@ export class GameState {
   }
 
   endTurn(): void {
-    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    this.currentPlayerIndex =
+      (this.currentPlayerIndex + 1) % this.players.length;
     this.gameLocked = false;
   }
 
   buyHouse(propertyId: number): boolean {
     const currentPlayer = this.getCurrentPlayer();
-    const propertySquare = this.board.getSquareFromIndex(propertyId) as PropertySquare;
-    
+    const propertySquare = this.board.getSquareFromIndex(
+      propertyId,
+    ) as PropertySquare;
+
     if (!propertySquare || !(propertySquare instanceof PropertySquare)) {
       throw new Error("Invalid property square");
     }
-  
+
     return currentPlayer.buyHouse(propertySquare);
   }
-  
 
-  movePlayer(toastCallback: (message: { title: string; description: string }) => void): void {
+  buyProperty(): boolean {
+    const currentPlayer = this.getCurrentPlayer();
+    const square = this.board.getSquareFromIndex(this.selectedProperty ?? -1);
+    if (
+      !(
+        square instanceof PropertySquare ||
+        square instanceof StationSquare ||
+        square instanceof UtilitySquare
+      )
+    ) {
+      throw new Error("Invalid square");
+    }
+
+    const buyingSuccess = currentPlayer.buyProperty(square);
+
+    if (buyingSuccess) {
+      this.setSelectedProperty(null);
+      return true;
+    }
+    // else
+    return false;
+  }
+
+  movePlayer(
+    toastCallback: (message: { title: string; description: string }) => void,
+  ): void {
     this.setGameLocked(true);
     const [dice1, dice2] = this.rollDice();
-    const total = dice1 + dice2; 
+    const total = dice1 + dice2;
 
     const currentPlayer = this.getCurrentPlayer();
     currentPlayer.moveForward(total);
 
     if (currentPlayer.passedGo()) {
-      currentPlayer.addMoney(200)
+      currentPlayer.addMoney(200);
       toastCallback({
         title: "Passing GO",
         description: "You collected £200 for passing GO!",
       });
     }
 
-    const newSquare = this.board.getSquareFromIndex(currentPlayer.getPosition());
+    const newSquare = this.board.getSquareFromIndex(
+      currentPlayer.getPosition(),
+    );
     if (!newSquare) return;
 
-    newSquare.handleLanding(currentPlayer, this, total, toastCallback)
+    newSquare.handleLanding(currentPlayer, this, total, toastCallback);
   }
-
 
   exportGameState(): string {
     return JSON.stringify({
@@ -156,5 +185,4 @@ export class GameState {
       timestamp: Date.now(), // Ensures a unique key each time
     });
   }
-
 }

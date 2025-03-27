@@ -4,11 +4,11 @@ import { GameState } from "~/models/GameState";
 import BoardComponent from "./Board";
 import PlayerControls from "./PlayerControls";
 import { useToast } from "~/hooks/use-toast";
+import Popups from "./Popups";
 
 function GameComponent() {
   const [game, setGame] = useState<GameState | null>(null);
   const [uniqueGameKey, setUniqueGameKey] = useState("");
-
   const { toast } = useToast();
 
   const initializeGame = useCallback(() => {
@@ -42,6 +42,18 @@ function GameComponent() {
     });
   }, [updateGameState, game]);
 
+  const buyProperty = useCallback(() => {
+    updateGameState(() => {
+      game?.buyProperty();
+    });
+  }, [updateGameState, game]);
+
+  const passProperty = useCallback(() => {
+    updateGameState(() => {
+      game?.setSelectedProperty(null);
+    });
+  }, [updateGameState, game]);
+
   // Initialize game on component mount
   React.useEffect(() => {
     initializeGame();
@@ -53,6 +65,12 @@ function GameComponent() {
 
   return (
     <div className="monopoly-game">
+      <Popups
+        game={game}
+        buyProperty={buyProperty}
+        passProperty={passProperty}
+        key={`Popups-${uniqueGameKey}`}
+      />
       <PlayerControls
         game={game}
         onRollDice={playerMove}

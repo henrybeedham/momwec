@@ -16,7 +16,7 @@ import { Badge } from "~/components/ui/badge";
 import { cn } from "~/lib/utils";
 import { Separator } from "~/components/ui/separator";
 
-export default function SquareHoverCard({
+export default function SquareCard({
   square,
   colourClass,
 }: {
@@ -26,7 +26,6 @@ export default function SquareHoverCard({
   if (square instanceof PropertySquare) {
     return (
       <>
-        <HasPrice square={square} colourClass={colourClass} />
         <div className="mb-1 font-semibold">Rent:</div>
         <Table>
           <TableHeader>
@@ -45,6 +44,7 @@ export default function SquareHoverCard({
           </TableBody>
         </Table>
         <div className="mt-2">House Cost: £{square.houseCost}</div>
+        <HasPrice square={square} colourClass={colourClass} />
       </>
     );
   }
@@ -52,7 +52,6 @@ export default function SquareHoverCard({
   if (square instanceof StationSquare) {
     return (
       <>
-        <HasPrice square={square} colourClass={colourClass} />
         <div className="mb-1 font-semibold">Rent:</div>
         <Table>
           <TableHeader>
@@ -70,6 +69,7 @@ export default function SquareHoverCard({
             ))}
           </TableBody>
         </Table>
+        <HasPrice square={square} colourClass={colourClass} />
       </>
     );
   }
@@ -77,11 +77,11 @@ export default function SquareHoverCard({
   if (square instanceof UtilitySquare) {
     return (
       <>
-        <HasPrice square={square} colourClass={colourClass} />
         <div>
           Rent: 4x dice roll if one utility is owned, 10x dice roll if both
           utilities are owned.
         </div>
+        <HasPrice square={square} colourClass={colourClass} />
       </>
     );
   }
@@ -96,11 +96,11 @@ function HasPrice({
 }) {
   return (
     <>
-      <Badge className={cn(colourClass)}>
+      <Separator className="my-2" />
+      <Badge className={cn(colourClass, "hover:bg-current")}>
         {square instanceof PropertySquare ? square.group : square.type}
       </Badge>
       <div className="font-semibold">Price: £{square.price}</div>
-      <Separator className="my-2" />
     </>
   );
 }
