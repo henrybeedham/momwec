@@ -120,10 +120,10 @@ export class PropertySquare extends Square {
     const ownerIndex = gameState
       .getPlayers()
       .findIndex(
-        (p) => p.getId() !== player.getId() && p.ownsProperty(position),
+        (p) => p.ownsProperty(position),
       );
 
-    if (ownerIndex >= 0) {
+    if (ownerIndex >= 0 && ownerIndex !== player.getId()) {
       // Property is owned by another player
       const owner = gameState.getPlayers()[ownerIndex];
       if (owner) {
@@ -139,7 +139,7 @@ export class PropertySquare extends Square {
           description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
         });
       }
-    } else {
+    } else if (ownerIndex === -1) {
       // Property is not owned, offer to buy
       gameState.setSelectedProperty(position);
     }

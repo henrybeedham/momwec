@@ -48,6 +48,15 @@ function GameComponent() {
     });
   }, [updateGameState, game]);
 
+  const buyHouse = useCallback(
+    (propertyId: number) => {
+      updateGameState(() => {
+        game?.buyHouse(propertyId);
+      });
+    },
+    [updateGameState, game],
+  );
+
   const passProperty = useCallback(() => {
     updateGameState(() => {
       game?.setSelectedProperty(null);
@@ -64,7 +73,7 @@ function GameComponent() {
   }
 
   return (
-    <div className="monopoly-game">
+    <div className="monopoly-game flex ">
       <Popups
         game={game}
         buyProperty={buyProperty}
@@ -75,6 +84,7 @@ function GameComponent() {
         game={game}
         onRollDice={playerMove}
         onEndTurn={endTurn}
+        onBuyHouse={buyHouse}
         key={`Controls-${uniqueGameKey}`}
       />
       <BoardComponent game={game} key={`Board-${uniqueGameKey}`} />

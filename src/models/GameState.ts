@@ -1,18 +1,7 @@
 import { Player } from "./Player";
 import { Board } from "./Board";
 import { PropertySquare, StationSquare, UtilitySquare } from "./Square";
-
-const playerColors = [
-  "bg-red-500",
-  "bg-orange-500",
-  "bg-yellow-500",
-  "bg-green-500",
-  "bg-blue-500",
-  "bg-purple-500",
-  "bg-pink-500",
-  "bg-gray-500",
-  "bg-black",
-];
+import { playerColors } from "~/utils/monopoly";
 
 export class GameState {
   private players: Player[];
@@ -28,6 +17,24 @@ export class GameState {
       new Player(0, playerColors[0] ?? "bg-black", this.board, 1500),
       new Player(1, playerColors[1] ?? "bg-black", this.board, 1500),
     ];
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(1) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(3) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(6) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(8) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(9) as PropertySquare,
+    );
+    this.players[0]?.addPardon();
+
+
     this.currentPlayerIndex = 0;
     this.dice = [1, 1];
     this.gameLocked = false;
@@ -46,6 +53,18 @@ export class GameState {
     }
     return player;
   }
+
+  // getPropertyOwner(propertyId: number): Player | null {
+  //   const owner =
+  //     this.getPlayers()[
+  //       this.getPlayers().findIndex((p) => p.ownsProperty(propertyId))
+  //     ];
+  //   if (!owner) {
+  //     return null;
+  //   } else {
+  //     return owner;
+  //   }
+  // }
 
   getCurrentPlayerId(): number {
     return this.currentPlayerIndex;
