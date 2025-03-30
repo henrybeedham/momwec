@@ -7,7 +7,6 @@ import { useToast } from "~/hooks/use-toast";
 import Popups from "./Popups";
 import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
-import { Button } from "../ui/button";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -35,9 +34,12 @@ function GameComponent() {
 
     // Listen for 'gameMove' events from the server
     socketRef.current.on("gameMove", (data) => {
-      console.log("Received gameMove event:", data);
+      console.log("Received gameMove event:", JSON.parse(data as string));
+      const newGame = new GameState();      
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      game?.importFromJSON(data);
+      newGame.importFromJSON(data);
+      setGame(newGame);
+      setUniqueGameKey(newGame?.exportGameState() ?? "");
     });
 
     // Cleanup on component unmount
@@ -48,7 +50,6 @@ function GameComponent() {
 
   const sendGameMove = () => {
     const data = game?.toJSON();
-    console.log(socketRef.current);
 
     if (socketRef.current) {
       socketRef.current.emit("gameMove", data);

@@ -4,12 +4,12 @@ import { PropertySquare, StationSquare, UtilitySquare, Square } from "./Square";
 import { playerColors } from "~/utils/monopoly";
 
 type GameStateJSON = {
-  players: ReturnType<Player['toJSON']>[];
+  players: ReturnType<Player["toJSON"]>[];
   currentPlayerIndex: number;
   dice: [number, number];
   gameLocked: boolean;
   selectedProperty: number | null;
-  board: ReturnType<Board['toJSON']>;
+  board: ReturnType<Board["toJSON"]>;
 };
 
 export class GameState {
@@ -42,7 +42,6 @@ export class GameState {
       this.board.getSquareFromIndex(9) as PropertySquare,
     );
     this.players[0]?.addPardon();
-
 
     this.currentPlayerIndex = 0;
     this.dice = [1, 1];
@@ -216,7 +215,7 @@ export class GameState {
 
   toJSON(): string {
     const gameState: GameStateJSON = {
-      players: this.players.map(player => player.toJSON()),
+      players: this.players.map((player) => player.toJSON()),
       currentPlayerIndex: this.currentPlayerIndex,
       dice: this.dice,
       gameLocked: this.gameLocked,
@@ -228,25 +227,34 @@ export class GameState {
   }
 
   importFromJSON(jsonString: string): void {
-    const gameState = JSON.parse(jsonString) as GameStateJSON;
-    this.currentPlayerIndex = gameState.currentPlayerIndex;
-    this.dice = gameState.dice;
-    this.gameLocked = gameState.gameLocked;
-    this.selectedProperty = gameState.selectedProperty;
+    try {
+      console.log("Importing game state from JSON");
+      const gameState = JSON.parse(jsonString) as GameStateJSON;
+      this.currentPlayerIndex = gameState.currentPlayerIndex;
+      this.dice = gameState.dice;
+      this.gameLocked = gameState.gameLocked;
+      this.selectedProperty = gameState.selectedProperty;
 
-    // Import players
-    this.players = gameState.players.map((playerData: ReturnType<Player['toJSON']>) => {
-      const player = new Player(
-        playerData.id,
-        playerData.colour,
-        this.board,
-        playerData.money,
+      this.board.importFromJSON(gameState.board);
+      // Import players
+      this.players = gameState.players.map(
+        (playerData: ReturnType<Player["toJSON"]>) => {
+          const player = new Player(
+            playerData.id,
+            playerData.colour,
+            this.board,
+            playerData.money,
+          );
+          player.setPosition(playerData.position);
+          player.setOwnedProperties(playerData.ownedProperties);
+          player.setPardons(playerData.pardons);
+          player.setPreviousPosition(playerData.previousPosition);
+          return player;
+        },
       );
-      player.setPosition(playerData.position);
-      return player;
-    });
-
-    // Import board state
-    this.board.importFromJSON(gameState.board);
+    } catch (error) {
+      console.error("Error importing game state:", error);
+      throw new Error("Invalid game state JSON");
+    }
   }
 }

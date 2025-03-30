@@ -56,6 +56,18 @@ export class Player {
     this.position = position;
   }
 
+  setOwnedProperties(properties: Array<{ id: number; houses?: number }>): void {
+    this.ownedProperties = properties;
+  }
+
+  setPreviousPosition(position: number | undefined): void {
+    this.previousPosition = position;
+  }
+
+  setPardons(pardons: number): void {
+    this.pardons = pardons;
+  }
+
   setMoney(money: number): void {
     this.money = money;
   }
@@ -142,6 +154,7 @@ export class Player {
       money: this.money,
       ownedProperties: this.ownedProperties,
       pardons: this.pardons,
+      previousPosition: this.previousPosition,
     };
   }
 }
