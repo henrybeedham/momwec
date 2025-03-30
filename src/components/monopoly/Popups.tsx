@@ -24,7 +24,7 @@ function Popups({ game, buyProperty, passProperty }: PopupProps) {
     .getBoard()
     .getSquareFromIndex(game.getSelectedProperty() ?? -1) as PropertySquare;
   return (
-    <Dialog open={!!property}>
+    <Dialog open={!!property} >
       {property && (
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

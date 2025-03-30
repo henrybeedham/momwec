@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { GameState } from "~/models/GameState";
 import BoardComponent from "./Board";
 import PlayerControls from "./PlayerControls";
@@ -7,6 +7,7 @@ import { useToast } from "~/hooks/use-toast";
 import Popups from "./Popups";
 import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
+import { Button } from "../ui/button";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -16,21 +17,24 @@ function GameComponent() {
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
 
-  let socket: ReturnType<typeof io>;
+  const socketRef = useRef<ReturnType<typeof io> | null>(null);
 
   useEffect(() => {
     // Establish a Socket.IO connection
-    socket = io(SOCKET_SERVER_URL, {
+    socketRef.current = io(SOCKET_SERVER_URL, {
       query: { gameId },
       withCredentials: true,
     });
 
-    socket.on("connect", () => {
-      console.log("Connected to Socket.IO server with id:", socket.id);
+    socketRef.current.on("connect", () => {
+      console.log(
+        "Connected to Socket.IO server with id:",
+        socketRef.current?.id,
+      );
     });
 
     // Listen for 'gameMove' events from the server
-    socket.on("gameMove", (data) => {
+    socketRef.current.on("gameMove", (data) => {
       console.log("Received gameMove event:", data);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       game?.importFromJSON(data);
@@ -38,14 +42,17 @@ function GameComponent() {
 
     // Cleanup on component unmount
     return () => {
-      if (socket) socket.disconnect();
+      socketRef.current?.disconnect();
     };
   }, [gameId]);
 
   const sendGameMove = () => {
-    if (socket) {
-      // Emit a the current time event to the server
-      socket.emit("gameMove", game?.toJSON());
+    const data = game?.toJSON();
+    console.log(socketRef.current);
+
+    if (socketRef.current) {
+      socketRef.current.emit("gameMove", data);
+      console.log("Sent gameMove event:", data);
     }
   };
 
@@ -57,10 +64,11 @@ function GameComponent() {
 
   const updateGameState = useCallback(
     (action: () => void) => {
+      console.log("Updating game state...");
       if (game) {
         action();
-        setUniqueGameKey(game.exportGameState());
         sendGameMove();
+        setUniqueGameKey(game.exportGameState());
       }
     },
     [game],
