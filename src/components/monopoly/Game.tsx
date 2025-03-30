@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
 function GameComponent() {
-  const [game, setGame] = useState<GameState | null>(null);
+  const gameRef = useRef<GameState | null>(null);
   const [uniqueGameKey, setUniqueGameKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
@@ -34,10 +34,14 @@ function GameComponent() {
       socketRef.current?.emit("getGameData", gameId);
     });
 
-    socketRef.current.on("getGameData", (data) => {
+    socketRef.current.on("getGameData", () => {
       // Send the new player the game data
       console.log("Received request for game data. Sending data...");
-      sendGameMove();
+      if (gameRef.current) {
+        sendGameMove();
+      } else {
+        console.error("Game state is null. Cannot send game data.");
+      }
     });
 
     // Listen for 'gameMove' events from the server
@@ -46,7 +50,7 @@ function GameComponent() {
       const newGame = new GameState();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       newGame.importFromJSON(data);
-      setGame(newGame);
+      gameRef.current = newGame;
       setUniqueGameKey(newGame?.exportGameState() ?? "");
     });
 
@@ -57,7 +61,7 @@ function GameComponent() {
   }, [gameId]);
 
   const sendGameMove = () => {
-    const data = game?.toJSON();
+    const data = gameRef.current?.toJSON();
 
     if (socketRef.current) {
       socketRef.current.emit("gameMove", data);
@@ -69,83 +73,83 @@ function GameComponent() {
 
   const initialiseGame = useCallback(() => {
     const newGame = new GameState();
-    setGame(newGame);
+    gameRef.current = newGame; // Store in ref for immediate access
     setUniqueGameKey(newGame.exportGameState());
   }, []);
 
   const updateGameState = useCallback(
     (action: () => void) => {
       console.log("Updating game state...");
-      if (game) {
+      if (gameRef.current) {
         action();
         sendGameMove();
-        setUniqueGameKey(game.exportGameState());
+        setUniqueGameKey(gameRef.current.exportGameState());
       }
     },
-    [game],
+    [gameRef.current],
   );
 
   const playerMove = useCallback(() => {
     updateGameState(() => {
-      game?.movePlayer((message) => {
+      gameRef.current?.movePlayer((message) => {
         console.log(message.title, message.description);
         toast(message);
       });
     });
-  }, [updateGameState, game]);
+  }, [updateGameState, gameRef.current]);
 
   const endTurn = useCallback(() => {
     updateGameState(() => {
-      game?.endTurn();
+      gameRef.current?.endTurn();
     });
-  }, [updateGameState, game]);
+  }, [updateGameState, gameRef.current]);
 
   const buyProperty = useCallback(() => {
     updateGameState(() => {
-      game?.buyProperty();
+      gameRef.current?.buyProperty();
     });
-  }, [updateGameState, game]);
+  }, [updateGameState, gameRef.current]);
 
   const buyHouse = useCallback(
     (propertyId: number) => {
       updateGameState(() => {
-        game?.buyHouse(propertyId);
+        gameRef.current?.buyHouse(propertyId);
       });
     },
-    [updateGameState, game],
+    [updateGameState, gameRef.current],
   );
 
   const passProperty = useCallback(() => {
     updateGameState(() => {
-      game?.setSelectedProperty(null);
+      gameRef.current?.setSelectedProperty(null);
     });
-  }, [updateGameState, game]);
+  }, [updateGameState, gameRef.current]);
 
   // Initialize game on component mount
   React.useEffect(() => {
     initialiseGame();
   }, [initialiseGame]);
 
-  if (!game || !uniqueGameKey) {
+  if (!gameRef.current || !uniqueGameKey) {
     return <div>Loading game...</div>;
   }
 
   return (
     <div className="monopoly-game flex">
       <Popups
-        game={game}
+        game={gameRef.current}
         buyProperty={buyProperty}
         passProperty={passProperty}
         key={`Popups-${uniqueGameKey}`}
       />
       <PlayerControls
-        game={game}
+        game={gameRef.current}
         onRollDice={playerMove}
         onEndTurn={endTurn}
         onBuyHouse={buyHouse}
         key={`Controls-${uniqueGameKey}`}
       />
-      <BoardComponent game={game} key={`Board-${uniqueGameKey}`} />
+      <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
     </div>
   );
 }
