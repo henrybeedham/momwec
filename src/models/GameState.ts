@@ -30,9 +30,6 @@ export class GameState {
       this.board.getSquareFromIndex(1) as PropertySquare,
     );
     this.players[0]?.buyProperty(
-      this.board.getSquareFromIndex(3) as PropertySquare,
-    );
-    this.players[0]?.buyProperty(
       this.board.getSquareFromIndex(6) as PropertySquare,
     );
     this.players[0]?.buyProperty(

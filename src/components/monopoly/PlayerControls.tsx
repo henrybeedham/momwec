@@ -122,7 +122,7 @@ function PlayerControls({
                 const isProperty = p instanceof PropertySquare;
                 return (
                   <TableRow key={property.id}>
-                    <TableCell className="flex flex-col gap-2">
+                    <TableCell className="flex flex-col gap-2"> 
                       <div className="flex items-center gap-2">
                         {isProperty && (
                           <div
@@ -131,34 +131,35 @@ function PlayerControls({
                         )}
                         {p?.name}
                         {/* Show houses icons for house and 5 houses  for a hotel */}
-                        {isProperty &&
-                          currentPlayer.ownsPropertyGroup(p.group) && (
-                            <>
-                              {(property.houses ?? 0) < 5 &&
-                                Array(property.houses ?? 0)
-                                  .fill(null)
-                                  .map((_, index) => (
-                                    <House
-                                      key={index}
-                                      className="h-5 w-5 text-green-700"
-                                    />
-                                  ))}
-                              {property.houses === 5 && (
-                                <Hotel className="h-5 w-5 text-red-700" />
-                              )}
-                            </>
-                          )}
+                        {isProperty && (
+                          <>
+                            {(property.houses ?? 0) < 5 &&
+                              Array(property.houses ?? 0)
+                                .fill(null)
+                                .map((_, index) => (
+                                  <House
+                                    key={index}
+                                    className="h-5 w-5 text-green-700"
+                                  />
+                                ))}
+                            {property.houses === 5 && (
+                              <Hotel className="h-5 w-5 text-red-700" />
+                            )}
+                          </>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
-                      {isProperty && (property.houses ?? 0) < 5 && (
-                        <Button
-                          className="text-xs"
-                          onClick={() => onBuyHouse(property.id)}
-                        >
-                          Buy house
-                        </Button>
-                      )}
+                      {isProperty &&
+                        (property.houses ?? 0) < 5 &&
+                        currentPlayer.ownsPropertyGroup(p.group) && (
+                          <Button
+                            className="text-xs"
+                            onClick={() => onBuyHouse(property.id)}
+                          >
+                            Buy house
+                          </Button>
+                        )}
                     </TableCell>
                   </TableRow>
                 );
@@ -167,26 +168,6 @@ function PlayerControls({
           </Table>
         </Card>
       )}
-      {/* <div className="owned-properties">
-        <h3>Your Properties</h3>
-        <div className="properties-list">
-          {currentPlayer.getOwnedProperties().map((property) => {
-            const square = game.getBoard().getSquareFromIndex(property.id);
-            return (
-              <div key={property.id} className="property-item">
-                <span>{square?.name}</span>
-                {square?.type === "property" && (
-                  <button
-                  // onClick={() => handleBuyHouse(property.id)}
-                  >
-                    Buy House
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div> */}
     </div>
   );
 }
