@@ -30,12 +30,18 @@ function GameComponent() {
         "Connected to Socket.IO server with id:",
         socketRef.current?.id,
       );
+      socketRef.current?.emit("getGameData", gameId);
+    });
+
+    socketRef.current.on("getGameData", (data) => {
+      // Send the new player the game data
+      sendGameMove();
     });
 
     // Listen for 'gameMove' events from the server
     socketRef.current.on("gameMove", (data) => {
       console.log("Received gameMove event:", JSON.parse(data as string));
-      const newGame = new GameState();      
+      const newGame = new GameState();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       newGame.importFromJSON(data);
       setGame(newGame);
@@ -57,7 +63,7 @@ function GameComponent() {
     }
   };
 
-  const initializeGame = useCallback(() => {
+  const initialiseGame = useCallback(() => {
     const newGame = new GameState();
     setGame(newGame);
     setUniqueGameKey(newGame.exportGameState());
@@ -113,8 +119,8 @@ function GameComponent() {
 
   // Initialize game on component mount
   React.useEffect(() => {
-    initializeGame();
-  }, [initializeGame]);
+    initialiseGame();
+  }, [initialiseGame]);
 
   if (!game || !uniqueGameKey) {
     return <div>Loading game...</div>;
