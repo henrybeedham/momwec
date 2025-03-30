@@ -2,7 +2,7 @@ import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "./GameState";
 import { Player } from "./Player";
 
-import type { Group } from "~/models/types";
+import type { Group, ToastCallback } from "~/models/types";
 
 type SquareType =
   | "property"
@@ -28,7 +28,7 @@ export abstract class Square {
     player: Player,
     gameState: GameState,
     diceRoll: number,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void;
 
   toJSON() {
@@ -53,7 +53,7 @@ export class CornerSquare extends Square {
     player: Player,
     gameState: GameState,
     diceRoll: number,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     switch (this.name) {
       case "Go To Jail":
@@ -109,7 +109,7 @@ export class PropertySquare extends Square {
     player: Player,
     gameState: GameState,
     diceRoll: number,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     const position = player.getPosition();
 
@@ -127,12 +127,19 @@ export class PropertySquare extends Square {
           .find((p) => p.id === position);
         const rentAmount = this.rent[property?.houses ?? 0] ?? 0;
 
-        player.removeMoney(rentAmount);
-        owner.addMoney(rentAmount);
-        toastCallback({
-          title: "Rent Paid",
-          description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
-        });
+        if (player.removeMoney(rentAmount)) {
+          owner.addMoney(rentAmount);
+          toastCallback({
+            title: "Rent Paid",
+            description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
+          });
+        } else {
+          toastCallback({
+            title: "Insufficient Funds",
+            description: `Player ${player.getId() + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.getId() + 1}`,
+            variant: "destructive",
+          });
+        }
       }
     } else if (ownerIndex === -1) {
       // Property is not owned, offer to buy
@@ -174,7 +181,7 @@ export class StationSquare extends Square {
     player: Player,
     gameState: GameState,
     diceRoll: number,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     const position = player.getPosition();
 
@@ -193,13 +200,19 @@ export class StationSquare extends Square {
         const stationCount = owner.getPropertyCount("station");
         const rentAmount = this.rent[Math.min(stationCount - 1, 3)] ?? 0;
 
-        player.removeMoney(rentAmount);
-        owner.addMoney(rentAmount);
-
-        toastCallback({
-          title: "Rent Paid",
-          description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
-        });
+        if (player.removeMoney(rentAmount)) {
+          owner.addMoney(rentAmount);
+          toastCallback({
+            title: "Rent Paid",
+            description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
+          });
+        } else {
+          toastCallback({
+            title: "Insufficient Funds",
+            description: `Player ${player.getId() + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.getId() + 1}`,
+            variant: "destructive",
+          });
+        }
       }
     } else {
       // Station is not owned, offer to buy
@@ -231,7 +244,7 @@ export class UtilitySquare extends Square {
     player: Player,
     gameState: GameState,
     diceRoll: number,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     const position = player.getPosition();
 
@@ -252,13 +265,19 @@ export class UtilitySquare extends Square {
         const multiplier = this.multipliers[Math.min(utilityCount - 1, 1)] ?? 1;
         const rentAmount = multiplier * diceRoll;
 
-        player.removeMoney(rentAmount);
-        owner.addMoney(rentAmount);
-
-        toastCallback({
-          title: "Rent Paid",
-          description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
-        });
+        if (player.removeMoney(rentAmount)) {
+          owner.addMoney(rentAmount);
+          toastCallback({
+            title: "Rent Paid",
+            description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
+          });
+        } else {
+          toastCallback({
+            title: "Insufficient Funds",
+            description: `Player ${player.getId() + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.getId() + 1}`,
+            variant: "destructive"
+          });
+        }
       }
     } else {
       // Utility is not owned, offer to buy
@@ -288,7 +307,7 @@ export class TaxSquare extends Square {
     player: Player,
     gameState: GameState,
     diceRoll: number,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     player.removeMoney(this.amount);
     toastCallback({
@@ -318,7 +337,7 @@ export class CardSquare extends Square {
     player: Player,
     gameState: GameState,
     diceRoll: number,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     const card =
       this.cardType === "community"

@@ -2,6 +2,7 @@ import { Player } from "./Player";
 import { Board } from "./Board";
 import { PropertySquare, StationSquare, UtilitySquare, Square } from "./Square";
 import { playerColors } from "~/utils/monopoly";
+import { ToastCallback } from "./types";
 
 type GameStateJSON = {
   players: ReturnType<Player["toJSON"]>[];
@@ -24,8 +25,24 @@ export class GameState {
     this.board = new Board(boardSize);
     this.players = [
       new Player(0, playerColors[0] ?? "bg-black", this.board, 1500),
-      new Player(1, playerColors[1] ?? "bg-black", this.board, 1500),
+      new Player(1, playerColors[1] ?? "bg-black", this.board, 0),
     ];
+
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(1) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(3) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(6) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(8) as PropertySquare,
+    );
+    this.players[0]?.buyProperty(
+      this.board.getSquareFromIndex(9) as PropertySquare,
+    );
 
     this.currentPlayerIndex = 0;
     this.dice = [1, 1];
@@ -163,7 +180,7 @@ export class GameState {
   }
 
   movePlayer(
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     this.setGameLocked(true);
     const [dice1, dice2] = this.rollDice();

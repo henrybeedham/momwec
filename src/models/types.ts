@@ -1,21 +1,23 @@
-export interface Property {
-  id: number;
-  houses?: number;
-}
+// export interface Property {
+//   id: number;
+//   houses?: number;
+// }
 
-export interface Player {
-  id: number;
-  position: number;
-  previousPosition?: number;
-  colour: string;
-  money: number;
-  ownedProperties?: Property[];
-  pardons?: number;
-}
+import { ToastCallbackType } from "~/hooks/use-toast";
+
+// export interface Player {
+//   id: number;
+//   position: number;
+//   previousPosition?: number;
+//   colour: string;
+//   money: number;
+//   ownedProperties?: Property[];
+//   pardons?: number;
+// }
 
 export type Edge = "top" | "right" | "bottom" | "left" | "corner" | "";
 
-type SquareType = "property" | "utility" | "station" | "other";
+export type ToastCallback = (message : ToastCallbackType) => void ;
 
 export type Group =
   | "brown"
@@ -27,53 +29,55 @@ export type Group =
   | "green"
   | "dark-blue";
 
-type BaseSquare = {
-  name: string;
-  type: SquareType;
-};
+// type SquareType = "property" | "utility" | "station" | "other";
 
-type Buyable = BaseSquare & {
-  price: number;
-};
+// type BaseSquare = {
+//   name: string;
+//   type: SquareType;
+// };
 
-export type PropertySquare = Buyable & {
-  type: "property";
-  group: Group;
-  rent: number[];
-  houseCost: number;
-};
+// type Buyable = BaseSquare & {
+//   price: number;
+// };
 
-export type UtilitySquare = Buyable & {
-  type: "utility";
-};
+// export type PropertySquare = Buyable & {
+//   type: "property";
+//   group: Group;
+//   rent: number[];
+//   houseCost: number;
+// };
 
-export type StationSquare = Buyable & {
-  type: "station";
-  rent: number[];
-};
+// export type UtilitySquare = Buyable & {
+//   type: "utility";
+// };
 
-export type OtherSquare = BaseSquare & {
-  type: "other";
-};
+// export type StationSquare = Buyable & {
+//   type: "station";
+//   rent: number[];
+// };
 
-export type Square = PropertySquare | UtilitySquare | StationSquare | OtherSquare;
+// export type OtherSquare = BaseSquare & {
+//   type: "other";
+// };
 
-type BaseChance = {
-  description: string;
-  type: "go" | "pardon" | "jail";
-};
+// export type Square = PropertySquare | UtilitySquare | StationSquare | OtherSquare;
 
-type RepairsChance = {
-  description: string;
-  type: "repairs";
-  house: number;
-  hotel: number;
-};
+// type BaseChance = {
+//   description: string;
+//   type: "go" | "pardon" | "jail";
+// };
 
-type OtherChance = {
-  description: string;
-  type: "move" | "pay" | "collect" | "back" | "birthday";
-  value: number;
-};
+// type RepairsChance = {
+//   description: string;
+//   type: "repairs";
+//   house: number;
+//   hotel: number;
+// };
 
-export type Chance = BaseChance | RepairsChance | OtherChance;
+// type OtherChance = {
+//   description: string;
+//   type: "move" | "pay" | "collect" | "back" | "birthday";
+//   value: number;
+// };
+
+// export type Chance = BaseChance | RepairsChance | OtherChance;

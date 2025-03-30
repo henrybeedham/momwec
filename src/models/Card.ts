@@ -1,5 +1,6 @@
 import { Player } from "./Player";
 import { GameState } from "./GameState";
+import { ToastCallback } from "./types";
 
 // Base Card class
 export abstract class Card {
@@ -16,7 +17,7 @@ export abstract class Card {
   abstract applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void;
 
   toJSON(): object {
@@ -47,7 +48,7 @@ export class MoveCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     const currentPosition = player.getPosition();
 
@@ -99,7 +100,7 @@ export class MoveRelativeCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     const currentPosition = player.getPosition();
     const board = gameState.getBoard();
@@ -147,7 +148,7 @@ export class CollectCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     player.addMoney(this.amount);
 
@@ -177,7 +178,7 @@ export class PayCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     player.removeMoney(this.amount);
 
@@ -204,7 +205,7 @@ export class JailCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     player.setPosition(10); // Jail position
 
@@ -224,7 +225,7 @@ export class GetOutOfJailCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     player.addPardon();
 
@@ -254,7 +255,7 @@ export class PayPerBuildingCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     let totalCost = 0;
     let houses = 0;
@@ -299,7 +300,7 @@ export class CollectFromPlayersCard extends Card {
   applyEffect(
     player: Player,
     gameState: GameState,
-    toastCallback: (message: { title: string; description: string }) => void,
+    toastCallback: ToastCallback,
   ): void {
     const players = gameState.getPlayers();
     let totalCollected = 0;
