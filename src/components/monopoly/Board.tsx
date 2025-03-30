@@ -74,13 +74,6 @@ function BoardComponent({ game }: BoardProps) {
                       }}
                     >
                       <div className="mt-4 flex flex-col justify-center gap-2">
-                        {/* <Button
-                              onClick={addPlayer}
-                              disabled={players.length >= playerColors.length}
-                              className="rounded-full p-2"
-                            >
-                              <Plus className="h-6 w-6" />
-                            </Button> */}
                         {players.map((player) => (
                           <div
                             key={player.id}

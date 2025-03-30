@@ -1,7 +1,7 @@
 import { Player } from "./Player";
 import { Board } from "./Board";
 import { PropertySquare, StationSquare, UtilitySquare, Square } from "./Square";
-import { playerColors } from "~/utils/monopoly";
+import { playerColours } from "~/utils/monopoly";
 import { ToastCallback } from "./types";
 
 type GameStateJSON = {
@@ -24,8 +24,8 @@ export class GameState {
   constructor(boardSize = 11) {
     this.board = new Board(boardSize);
     this.players = [
-      new Player(0, playerColors[0] ?? "bg-black", this.board, 1500),
-      new Player(1, playerColors[1] ?? "bg-black", this.board, 1500),
+      new Player(0, playerColours[0] ?? "bg-black", this.board, 1500),
+      new Player(1, playerColours[1] ?? "bg-black", this.board, 1500),
     ];
 
     // this.players[0]?.buyProperty(
@@ -118,11 +118,11 @@ export class GameState {
 
   // Game logic methods
   addPlayer(): void {
-    if (this.players.length < playerColors.length) {
+    if (this.players.length < playerColours.length) {
       const newPlayerId = this.players.length;
       const newPlayer = new Player(
         newPlayerId,
-        playerColors[newPlayerId] ?? "bg-black-500",
+        playerColours[newPlayerId] ?? "bg-black-500",
         this.board,
         1500,
       );
