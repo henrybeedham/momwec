@@ -30,11 +30,13 @@ function GameComponent() {
         "Connected to Socket.IO server with id:",
         socketRef.current?.id,
       );
+      console.log("Asking for game data...");
       socketRef.current?.emit("getGameData", gameId);
     });
 
     socketRef.current.on("getGameData", (data) => {
       // Send the new player the game data
+      console.log("Received request for game data. Sending data...");
       sendGameMove();
     });
 
@@ -60,6 +62,8 @@ function GameComponent() {
     if (socketRef.current) {
       socketRef.current.emit("gameMove", data);
       console.log("Sent gameMove event:", data);
+    } else {
+      console.error("Socket connection is not established. (sendGameMove)");
     }
   };
 
