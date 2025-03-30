@@ -26,19 +26,6 @@ export class GameState {
       new Player(0, playerColors[0] ?? "bg-black", this.board, 1500),
       new Player(1, playerColors[1] ?? "bg-black", this.board, 1500),
     ];
-    this.players[0]?.buyProperty(
-      this.board.getSquareFromIndex(1) as PropertySquare,
-    );
-    this.players[0]?.buyProperty(
-      this.board.getSquareFromIndex(6) as PropertySquare,
-    );
-    this.players[0]?.buyProperty(
-      this.board.getSquareFromIndex(8) as PropertySquare,
-    );
-    this.players[0]?.buyProperty(
-      this.board.getSquareFromIndex(9) as PropertySquare,
-    );
-    this.players[0]?.addPardon();
 
     this.currentPlayerIndex = 0;
     this.dice = [1, 1];
