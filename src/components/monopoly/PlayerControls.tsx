@@ -63,6 +63,7 @@ function PlayerControls({
   const selectedProperty = game.getSelectedProperty();
   const dice = game.getDice();
   const params = useParams<{ gameId: string }>();
+  const properties = currentPlayer.getOwnedProperties();
 
   return (
     <div className="player-controls flex flex-col gap-4 *:relative">
@@ -106,57 +107,66 @@ function PlayerControls({
       </div>
 
       {/* Properties list */}
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Properties</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {currentPlayer.getOwnedProperties().map((property) => (
-              <TableRow key={property.id}>
-                <TableCell className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    {game.getBoard().getSquareFromIndex(property.id)?.name}
-                    {/* Show houses icons for house and 5 houses  for a hotel */}
-                    {game.getBoard().getSquareFromIndex(property.id)?.type ===
-                      "property" && (
-                      <>
-                        {(property.houses ?? 0) < 5 &&
-                          Array(property.houses ?? 0)
-                            .fill(null)
-                            .map((_, index) => (
-                              <House
-                                key={index}
-                                className="h-5 w-5 text-green-700"
-                              />
-                            ))}
-                        {property.houses === 5 && (
-                          <Hotel className="h-5 w-5 text-red-700" />
-                        )}
-                      </>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {game.getBoard().getSquareFromIndex(property.id) instanceof
-                    PropertySquare &&
-                    (property.houses ?? 0) < 5 && (
-                      <Button
-                        className="text-xs"
-                        onClick={() => onBuyHouse(property.id)}
-                      >
-                        Buy house
-                      </Button>
-                    )}
-                </TableCell>
+      {properties.length >= 1 && (
+        <Card>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Properties</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+            </TableHeader>
+            <TableBody>
+              {properties.map((property) => {
+                const p = game.getBoard().getSquareFromIndex(property.id);
+                const isProperty = p instanceof PropertySquare;
+                return (
+                  <TableRow key={property.id}>
+                    <TableCell className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        {isProperty && (
+                          <div
+                            className={`mr-2 h-4 w-4 rounded-full ${p.getPropertyColour()}`}
+                          />
+                        )}
+                        {p?.name}
+                        {/* Show houses icons for house and 5 houses  for a hotel */}
+                        {isProperty &&
+                          currentPlayer.ownsPropertyGroup(p.group) && (
+                            <>
+                              {(property.houses ?? 0) < 5 &&
+                                Array(property.houses ?? 0)
+                                  .fill(null)
+                                  .map((_, index) => (
+                                    <House
+                                      key={index}
+                                      className="h-5 w-5 text-green-700"
+                                    />
+                                  ))}
+                              {property.houses === 5 && (
+                                <Hotel className="h-5 w-5 text-red-700" />
+                              )}
+                            </>
+                          )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {isProperty && (property.houses ?? 0) < 5 && (
+                        <Button
+                          className="text-xs"
+                          onClick={() => onBuyHouse(property.id)}
+                        >
+                          Buy house
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
       {/* <div className="owned-properties">
         <h3>Your Properties</h3>
         <div className="properties-list">

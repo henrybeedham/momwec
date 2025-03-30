@@ -1,3 +1,4 @@
+import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "./GameState";
 import { Player } from "./Player";
 
@@ -104,10 +105,6 @@ export class PropertySquare extends Square {
     this.group = group;
   }
 
-  getGroup(): Group {
-    return this.group;
-  }
-
   handleLanding(
     player: Player,
     gameState: GameState,
@@ -145,6 +142,10 @@ export class PropertySquare extends Square {
 
   calculateRent(houses: number): number {
     return this.rent[houses] ?? 0;
+  }
+
+  getPropertyColour(): string {
+    return propertyColors[this.group] ?? "bg-gray-500";
   }
 
   toJSON() {

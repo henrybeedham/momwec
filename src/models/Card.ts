@@ -376,16 +376,6 @@ export class CardDeck {
         "Advance to Pall Mall. If you pass GO, collect £200.",
         11,
       ),
-      new MoveCard(
-        "Advance to nearest Station",
-        "Advance to the nearest Station. If you pass GO, collect £200.",
-        -1,
-      ), // Special handling needed
-      new MoveCard(
-        "Advance to nearest Utility",
-        "Advance to the nearest Utility. If you pass GO, collect £200.",
-        -1,
-      ), // Special handling needed
       new MoveRelativeCard("Go Back 3 Spaces", "Go back 3 spaces.", -3),
       new JailCard(
         "Go to Jail",

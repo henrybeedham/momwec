@@ -1,5 +1,6 @@
 import { Board } from "./Board";
 import { PropertySquare, StationSquare, UtilitySquare } from "./Square";
+import { Group } from "./types";
 
 export class Player {
   readonly id: number;
@@ -96,6 +97,12 @@ export class Player {
 
   ownsProperty(propertyId: number): boolean {
     return this.ownedProperties.some((property) => property.id === propertyId);
+  }
+
+  ownsPropertyGroup(group: Group): boolean {
+    return !this.board
+      .getPropertiesByGroup(group)
+      .some((property) => !this.ownsProperty(property.id));
   }
 
   buyProperty(square: PropertySquare | StationSquare | UtilitySquare): boolean {
