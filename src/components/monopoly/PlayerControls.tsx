@@ -65,7 +65,7 @@ function PlayerControls({
   const params = useParams<{ gameId: string }>();
 
   return (
-    <div className="player-controls flex flex-col justify-center gap-4 *:relative">
+    <div className="player-controls flex flex-col gap-4 *:relative">
       <h1 className="text-2xl font-bold">MOMWEC Game: {params.gameId}</h1>
       <div className="flex items-center gap-1">
         <div

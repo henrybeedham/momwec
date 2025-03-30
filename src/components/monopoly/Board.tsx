@@ -5,7 +5,12 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { cn } from "~/lib/utils";
-import { PropertySquare, Square, StationSquare, UtilitySquare } from "~/models/Square";
+import {
+  PropertySquare,
+  Square,
+  StationSquare,
+  UtilitySquare,
+} from "~/models/Square";
 import { propertyColors } from "~/utils/monopoly";
 import { Player } from "~/models/Player";
 import renderSquareContent from "./SquareContent";
@@ -115,7 +120,10 @@ function BoardComponent({ game }: BoardProps) {
                         ? "top"
                         : "right"
                   : "";
-              const colourClass = square instanceof PropertySquare ? propertyColors[square.group] ?? "bg-gray-200" : "bg-gray-200";
+              const colourClass =
+                square instanceof PropertySquare
+                  ? (propertyColors[square.group] ?? "bg-gray-200")
+                  : "bg-gray-200";
               return (
                 <HoverCard key={index}>
                   <HoverCardTrigger>
@@ -167,7 +175,7 @@ function BoardComponent({ game }: BoardProps) {
   };
 
   return <div className="monopoly-board">{renderBoard()}</div>;
-};
+}
 
 function ColourTab({
   colourClass,

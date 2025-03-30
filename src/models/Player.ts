@@ -1,5 +1,5 @@
-import { Board } from './Board';
-import { PropertySquare, StationSquare, UtilitySquare } from './Square';
+import { Board } from "./Board";
+import { PropertySquare, StationSquare, UtilitySquare } from "./Square";
 
 export class Player {
   readonly id: number;
@@ -7,7 +7,7 @@ export class Player {
   private previousPosition?: number;
   private colour: string;
   private money: number;
-  private ownedProperties: Array<{id: number, houses?: number}>;
+  private ownedProperties: Array<{ id: number; houses?: number }>;
   private pardons: number;
   private board: Board;
 
@@ -42,7 +42,7 @@ export class Player {
     return this.money;
   }
 
-  getOwnedProperties(): Array<{id: number, houses?: number}> {
+  getOwnedProperties(): Array<{ id: number; houses?: number }> {
     return this.ownedProperties;
   }
 
@@ -83,7 +83,7 @@ export class Player {
   }
 
   ownsProperty(propertyId: number): boolean {
-    return this.ownedProperties.some(property => property.id === propertyId);
+    return this.ownedProperties.some((property) => property.id === propertyId);
   }
 
   buyProperty(square: PropertySquare | StationSquare | UtilitySquare): boolean {
@@ -96,20 +96,22 @@ export class Player {
   }
 
   buyHouse(property: PropertySquare): boolean {
-    const ownedProperty = this.ownedProperties.find(prop => prop.id === property.id);
-    
+    const ownedProperty = this.ownedProperties.find(
+      (prop) => prop.id === property.id,
+    );
+
     if (!ownedProperty) return false;
     if (this.money < property.houseCost) return false;
     if ((ownedProperty.houses ?? 0) >= 5) return false;
-    
+
     this.money -= property.houseCost;
     ownedProperty.houses = (ownedProperty.houses ?? 0) + 1;
-    
+
     return true;
   }
 
   getPropertyCount(propertyType: string): number {
-    return this.ownedProperties.filter(property => {
+    return this.ownedProperties.filter((property) => {
       const square = this.board.getSquareFromIndex(property.id);
       return square && square.type === propertyType;
     }).length;
@@ -129,7 +131,17 @@ export class Player {
 
   passedGo(): boolean {
     if (this.previousPosition === undefined) return false;
-    return this.previousPosition > this.position && 
-           this.position !== 10; // Not if sent to jail
+    return this.previousPosition > this.position && this.position !== 10; // Not if sent to jail
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      position: this.position,
+      colour: this.colour,
+      money: this.money,
+      ownedProperties: this.ownedProperties,
+      pardons: this.pardons,
+    };
   }
 }

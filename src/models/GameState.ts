@@ -1,7 +1,16 @@
 import { Player } from "./Player";
 import { Board } from "./Board";
-import { PropertySquare, StationSquare, UtilitySquare } from "./Square";
+import { PropertySquare, StationSquare, UtilitySquare, Square } from "./Square";
 import { playerColors } from "~/utils/monopoly";
+
+type GameStateJSON = {
+  players: ReturnType<Player['toJSON']>[];
+  currentPlayerIndex: number;
+  dice: [number, number];
+  gameLocked: boolean;
+  selectedProperty: number | null;
+  board: ReturnType<Board['toJSON']>;
+};
 
 export class GameState {
   private players: Player[];
@@ -203,5 +212,41 @@ export class GameState {
       playerMoney: this.getPlayers().map((p) => p.getMoney()),
       timestamp: Date.now(), // Ensures a unique key each time
     });
+  }
+
+  toJSON(): string {
+    const gameState: GameStateJSON = {
+      players: this.players.map(player => player.toJSON()),
+      currentPlayerIndex: this.currentPlayerIndex,
+      dice: this.dice,
+      gameLocked: this.gameLocked,
+      selectedProperty: this.selectedProperty,
+      board: this.board.toJSON(),
+    };
+
+    return JSON.stringify(gameState);
+  }
+
+  importFromJSON(jsonString: string): void {
+    const gameState = JSON.parse(jsonString) as GameStateJSON;
+    this.currentPlayerIndex = gameState.currentPlayerIndex;
+    this.dice = gameState.dice;
+    this.gameLocked = gameState.gameLocked;
+    this.selectedProperty = gameState.selectedProperty;
+
+    // Import players
+    this.players = gameState.players.map((playerData: ReturnType<Player['toJSON']>) => {
+      const player = new Player(
+        playerData.id,
+        playerData.colour,
+        this.board,
+        playerData.money,
+      );
+      player.setPosition(playerData.position);
+      return player;
+    });
+
+    // Import board state
+    this.board.importFromJSON(gameState.board);
   }
 }

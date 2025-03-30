@@ -5,11 +5,49 @@ import BoardComponent from "./Board";
 import PlayerControls from "./PlayerControls";
 import { useToast } from "~/hooks/use-toast";
 import Popups from "./Popups";
+import { io } from "socket.io-client";
+import { useParams } from "next/navigation";
+
+const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
 function GameComponent() {
   const [game, setGame] = useState<GameState | null>(null);
   const [uniqueGameKey, setUniqueGameKey] = useState("");
   const { toast } = useToast();
+  const { gameId } = useParams<{ gameId: string }>();
+
+  let socket: ReturnType<typeof io>;
+
+  useEffect(() => {
+    // Establish a Socket.IO connection
+    socket = io(SOCKET_SERVER_URL, {
+      query: { gameId },
+      withCredentials: true,
+    });
+
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO server with id:", socket.id);
+    });
+
+    // Listen for 'gameMove' events from the server
+    socket.on("gameMove", (data) => {
+      console.log("Received gameMove event:", data);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      game?.importFromJSON(data);
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      if (socket) socket.disconnect();
+    };
+  }, [gameId]);
+
+  const sendGameMove = () => {
+    if (socket) {
+      // Emit a the current time event to the server
+      socket.emit("gameMove", game?.toJSON());
+    }
+  };
 
   const initializeGame = useCallback(() => {
     const newGame = new GameState();
@@ -22,6 +60,7 @@ function GameComponent() {
       if (game) {
         action();
         setUniqueGameKey(game.exportGameState());
+        sendGameMove();
       }
     },
     [game],
@@ -73,7 +112,7 @@ function GameComponent() {
   }
 
   return (
-    <div className="monopoly-game flex ">
+    <div className="monopoly-game flex">
       <Popups
         game={game}
         buyProperty={buyProperty}

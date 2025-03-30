@@ -30,7 +30,7 @@ export abstract class Square {
     toastCallback: (message: { title: string; description: string }) => void,
   ): void;
 
-  toJSON(): object {
+  toJSON() {
     return {
       id: this.id,
       name: this.name,
@@ -74,7 +74,7 @@ export class CornerSquare extends Square {
     }
   }
 
-  toJSON(): object {
+  toJSON() {
     return {
       ...super.toJSON(),
       action: this.action,
@@ -119,9 +119,7 @@ export class PropertySquare extends Square {
     // Find if the property is owned by another player
     const ownerIndex = gameState
       .getPlayers()
-      .findIndex(
-        (p) => p.ownsProperty(position),
-      );
+      .findIndex((p) => p.ownsProperty(position));
 
     if (ownerIndex >= 0 && ownerIndex !== player.getId()) {
       // Property is owned by another player
@@ -149,7 +147,7 @@ export class PropertySquare extends Square {
     return this.rent[houses] ?? 0;
   }
 
-  toJSON(): object {
+  toJSON() {
     return {
       ...super.toJSON(),
       price: this.price,
@@ -208,7 +206,7 @@ export class StationSquare extends Square {
     }
   }
 
-  toJSON(): object {
+  toJSON() {
     return {
       ...super.toJSON(),
       price: this.price,
@@ -267,7 +265,7 @@ export class UtilitySquare extends Square {
     }
   }
 
-  toJSON(): object {
+  toJSON() {
     return {
       ...super.toJSON(),
       price: this.price,
@@ -298,7 +296,7 @@ export class TaxSquare extends Square {
     });
   }
 
-  toJSON(): object {
+  toJSON() {
     return {
       ...super.toJSON(),
       amount: this.amount,
@@ -329,10 +327,19 @@ export class CardSquare extends Square {
     card.applyEffect(player, gameState, toastCallback);
   }
 
-  toJSON(): object {
+  toJSON() {
     return {
       ...super.toJSON(),
       cardType: this.cardType,
     };
   }
 }
+
+export type AllSquares =
+  | Square
+  | CornerSquare
+  | PropertySquare
+  | StationSquare
+  | UtilitySquare
+  | TaxSquare
+  | CardSquare;
