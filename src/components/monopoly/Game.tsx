@@ -22,13 +22,16 @@ function GameComponent() {
   const { gameId } = useParams<{ gameId: string }>();
   const { isLoaded, user } = useUser();
 
-  // Define sendGameMove with useCallback
-  const sendGameMove = useCallback(() => {
-    if (gameRef.current && socketRef.current) {
-      const gameData = gameRef.current.exportGameState();
-      socketRef.current.emit("gameMove", gameData);
+  const sendGameMove = () => {
+    const data = gameRef.current?.toJSON();
+
+    if (socketRef.current) {
+      socketRef.current.emit("gameMove", data);
+      console.log("Sent gameMove event:", data);
+    } else {
+      console.error("Socket connection is not established. (sendGameMove)");
     }
-  }, []);
+  };
 
   // Your useEffect hook with proper dependencies
   useEffect(() => {
