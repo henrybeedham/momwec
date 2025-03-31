@@ -65,6 +65,14 @@ export class Player {
     return this.pardons;
   }
 
+  isPropertyMortgaged(propertyId: number): boolean {
+    const property = this.ownedProperties.find(
+      (prop) => prop.id === propertyId,
+    );
+    if (!property) return false;
+    return property ? (property.mortgaged ?? false) : false;
+  }
+
   // Setters
   setPosition(position: number): void {
     this.previousPosition = this.position;

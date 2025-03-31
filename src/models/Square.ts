@@ -125,7 +125,7 @@ export class PropertySquare extends Square {
         .find((p) => p.id === position);
       const rentAmount = this.rent[property?.houses ?? 0] ?? 0;
 
-      payRent(player, owner, rentAmount, toastCallback, this.name);
+      payRent(player, owner, rentAmount, toastCallback, this);
     } else if (!owner) {
       // Property is not owned, offer to buy
       gameState.setSelectedProperty(position);
@@ -182,7 +182,7 @@ export class StationSquare extends Square {
       const stationCount = owner.getPropertyCount("station");
       const rentAmount = this.rent[Math.min(stationCount - 1, 3)] ?? 0;
 
-      payRent(player, owner, rentAmount, toastCallback, this.name);
+      payRent(player, owner, rentAmount, toastCallback, this);
     } else if (!owner) {
       // Station is not owned, offer to buy
       gameState.setSelectedProperty(position);
@@ -230,7 +230,7 @@ export class UtilitySquare extends Square {
       const multiplier = this.multipliers[Math.min(utilityCount - 1, 1)] ?? 1;
       const rentAmount = multiplier * diceRoll;
 
-      payRent(player, owner, rentAmount, toastCallback, this.name);
+      payRent(player, owner, rentAmount, toastCallback, this);
     } else if (!owner) {
       // Utility is not owned, offer to buy
       gameState.setSelectedProperty(position);
@@ -323,12 +323,18 @@ function payRent(
   owner: Player,
   rentAmount: number,
   toastCallback: ToastCallback,
-  sqName: string,
+  square: BuyableSquare,
 ) {
-  if (player.removeMoney(rentAmount)) {
+  // if morgaged, skip rent
+  if (owner.isPropertyMortgaged(square.id)) {
+    toastCallback({
+      title: "Property Mortgaged",
+      description: `${owner.name} has mortgaged ${square.name}, so rent is not due.`,
+    });
+  } else if (player.removeMoney(rentAmount)) {
     toastCallback({
       title: "Rent Paid",
-      description: `${player.name} paid £${rentAmount} to Player ${owner.name} for staying at ${sqName}`,
+      description: `${player.name} paid £${rentAmount} to Player ${owner.name} for staying at ${square.name}`,
     });
   } else {
     toastCallback({

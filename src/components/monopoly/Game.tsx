@@ -21,6 +21,7 @@ function GameComponent() {
   const gameRef = useRef<GameState | null>(null);
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
   const [uniqueGameKey, setUniqueGameKey] = useState("");
+  const [uniqueMessagesKey, setUniqueMessagesKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
   const { user } = useUser();
@@ -87,6 +88,7 @@ function GameComponent() {
       }
 
       setUniqueGameKey(newGame?.exportGameState() ?? "");
+      setUniqueMessagesKey(newGame?.exportMessagesKey() ?? "");
     });
 
     // Cleanup on component unmount
@@ -106,6 +108,7 @@ function GameComponent() {
     newGame.addPlayer(user.id, userName);
     gameRef.current = newGame; // Store in ref for immediate access
     setUniqueGameKey(newGame.exportGameState());
+    setUniqueMessagesKey(newGame?.exportMessagesKey() ?? "");
   }, [user]);
 
   const updateGameState = useCallback(
@@ -115,6 +118,7 @@ function GameComponent() {
         action();
         sendGameMove();
         setUniqueGameKey(gameRef.current.exportGameState());
+        setUniqueMessagesKey(gameRef.current?.exportMessagesKey() ?? "");
       }
     },
     [gameRef.current],
@@ -185,7 +189,7 @@ function GameComponent() {
           user: g.getCurrentPlayer().id,
           type: "system",
           title: "Property Mortgaged",
-          description: `You have mortgaged ${g.getBoard().getSquareFromIndex(propertyId)?.name} for £${(g.getBoard().getSquareFromIndex(propertyId) as PropertySquare).price / 2 }`,
+          description: `You have mortgaged ${g.getBoard().getSquareFromIndex(propertyId)?.name} for £${(g.getBoard().getSquareFromIndex(propertyId) as PropertySquare).price / 2}`,
         });
         g.mortgage(propertyId);
       });
@@ -249,7 +253,7 @@ function GameComponent() {
         <Chat
           game={gameRef.current}
           onSendMessage={sendMessage}
-          key={`Chat-${uniqueGameKey}`}
+          key={`Chat-${uniqueMessagesKey}`}
         />
       </div>
     </div>

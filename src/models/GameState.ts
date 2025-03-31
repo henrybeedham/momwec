@@ -232,6 +232,12 @@ export class GameState {
     newSquare.handleLanding(currentPlayer, this, total, toastCallback);
   }
 
+  exportMessagesKey(): string {
+    return JSON.stringify({
+      messages: this.messages,
+    });
+  }
+
   exportGameState(): string {
     return JSON.stringify({
       currentPlayerIndex: this.getCurrentPlayerId(),
@@ -259,8 +265,8 @@ export class GameState {
     try {
       console.log("Importing game state from JSON");
       const gameState = JSON.parse(jsonString) as GameStateJSON;
-      this.currentPlayerIndex = gameState.currentPlayerIndex;
       this.messages = gameState.messages;
+      this.currentPlayerIndex = gameState.currentPlayerIndex;
       this.dice = gameState.dice;
       this.gameLocked = gameState.gameLocked;
       this.selectedProperty = gameState.selectedProperty;
