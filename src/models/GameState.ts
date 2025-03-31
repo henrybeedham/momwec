@@ -12,6 +12,7 @@ import { Message, ToastCallback } from "./types";
 
 type GameStateJSON = {
   players: ReturnType<Player["toJSON"]>[];
+  messages: Message[];
   currentPlayerIndex: number;
   dice: [number, number];
   gameLocked: boolean;
@@ -243,6 +244,7 @@ export class GameState {
   toJSON(): string {
     const gameState: GameStateJSON = {
       players: this.players.map((player) => player.toJSON()),
+      messages: this.messages,
       currentPlayerIndex: this.currentPlayerIndex,
       dice: this.dice,
       gameLocked: this.gameLocked,
@@ -258,6 +260,7 @@ export class GameState {
       console.log("Importing game state from JSON");
       const gameState = JSON.parse(jsonString) as GameStateJSON;
       this.currentPlayerIndex = gameState.currentPlayerIndex;
+      this.messages = gameState.messages;
       this.dice = gameState.dice;
       this.gameLocked = gameState.gameLocked;
       this.selectedProperty = gameState.selectedProperty;
