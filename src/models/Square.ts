@@ -60,7 +60,7 @@ export class CornerSquare extends Square {
         player.setPosition(10); // Move to jail
         toastCallback({
           title: "Go to Jail",
-          description: `Player ${player.id + 1} has been sent to jail!`,
+          description: `${player.name} has been sent to jail!`,
         });
         break;
       case "Free Parking":
@@ -126,19 +126,7 @@ export class PropertySquare extends Square {
           .find((p) => p.id === position);
         const rentAmount = this.rent[property?.houses ?? 0] ?? 0;
 
-        if (player.removeMoney(rentAmount)) {
-          owner.addMoney(rentAmount);
-          toastCallback({
-            title: "Rent Paid",
-            description: `Player ${player.id + 1} paid £${rentAmount} to Player ${owner.id + 1} for staying at ${this.name}`,
-          });
-        } else {
-          toastCallback({
-            title: "Insufficient Funds",
-            description: `Player ${player.id + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.id + 1}`,
-            variant: "destructive",
-          });
-        }
+        payRent(player, owner, rentAmount, toastCallback, this.name);
       }
     } else if (!owner) {
       // Property is not owned, offer to buy
@@ -197,19 +185,7 @@ export class StationSquare extends Square {
         const stationCount = owner.getPropertyCount("station");
         const rentAmount = this.rent[Math.min(stationCount - 1, 3)] ?? 0;
 
-        if (player.removeMoney(rentAmount)) {
-          owner.addMoney(rentAmount);
-          toastCallback({
-            title: "Rent Paid",
-            description: `Player ${player.id + 1} paid £${rentAmount} to Player ${owner.id + 1} for staying at ${this.name}`,
-          });
-        } else {
-          toastCallback({
-            title: "Insufficient Funds",
-            description: `Player ${player.id + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.id + 1}`,
-            variant: "destructive",
-          });
-        }
+        payRent(player, owner, rentAmount, toastCallback, this.name);
       }
     } else {
       // Station is not owned, offer to buy
@@ -260,19 +236,7 @@ export class UtilitySquare extends Square {
         const multiplier = this.multipliers[Math.min(utilityCount - 1, 1)] ?? 1;
         const rentAmount = multiplier * diceRoll;
 
-        if (player.removeMoney(rentAmount)) {
-          owner.addMoney(rentAmount);
-          toastCallback({
-            title: "Rent Paid",
-            description: `Player ${player.id + 1} paid £${rentAmount} to Player ${owner.id + 1} for staying at ${this.name}`,
-          });
-        } else {
-          toastCallback({
-            title: "Insufficient Funds",
-            description: `Player ${player.id + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.id + 1}`,
-            variant: "destructive",
-          });
-        }
+        payRent(player, owner, rentAmount, toastCallback, this.name);
       }
     } else {
       // Utility is not owned, offer to buy
@@ -307,7 +271,7 @@ export class TaxSquare extends Square {
     player.removeMoney(this.amount);
     toastCallback({
       title: "Tax Paid",
-      description: `Player ${player.id + 1} paid £${this.amount} in ${this.name}`,
+      description: `${player.name} paid £${this.amount} in ${this.name}`,
     });
   }
 
@@ -358,3 +322,28 @@ export type AllSquares =
   | UtilitySquare
   | TaxSquare
   | CardSquare;
+
+export type BuyableSquare = PropertySquare | StationSquare | UtilitySquare;
+
+function payRent(
+  player: Player,
+  owner: Player,
+  rentAmount: number,
+  toastCallback: ToastCallback,
+  sqName: string,
+) {
+  if (player.removeMoney(rentAmount)) {
+    toastCallback({
+      title: "Rent Paid",
+      description: `${player.name} paid £${rentAmount} to Player ${owner.name} for staying at ${sqName}`,
+    });
+  } else {
+    toastCallback({
+      title: "Insufficient Funds",
+      description: `${player.name} cannot afford to pay rent of £${rentAmount} to ${owner.name}`,
+      variant: "destructive",
+    });
+    player.forceRemoveMoney(rentAmount);
+  }
+  owner.addMoney(rentAmount);
+}

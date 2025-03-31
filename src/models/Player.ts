@@ -1,5 +1,10 @@
 import { Board } from "./Board";
-import { PropertySquare, StationSquare, UtilitySquare } from "./Square";
+import {
+  BuyableSquare,
+  PropertySquare,
+  StationSquare,
+  UtilitySquare,
+} from "./Square";
 import { Group } from "./types";
 
 export class Player {
@@ -9,7 +14,11 @@ export class Player {
   private previousPosition?: number;
   private colour: string;
   private money: number;
-  private ownedProperties: Array<{ id: number; houses?: number }>;
+  private ownedProperties: Array<{
+    id: number;
+    houses?: number;
+    mortgaged?: boolean;
+  }>;
   private pardons: number;
   private board: Board;
 
@@ -48,7 +57,7 @@ export class Player {
     return this.money;
   }
 
-  getOwnedProperties(): Array<{ id: number; houses?: number }> {
+  getOwnedProperties() {
     return this.ownedProperties;
   }
 
@@ -62,7 +71,9 @@ export class Player {
     this.position = position;
   }
 
-  setOwnedProperties(properties: Array<{ id: number; houses?: number }>): void {
+  setOwnedProperties(
+    properties: Array<{ id: number; houses?: number; mortgaged?: boolean }>,
+  ): void {
     this.ownedProperties = properties;
   }
 
@@ -94,6 +105,10 @@ export class Player {
       return true;
     }
     return false;
+  }
+
+  forceRemoveMoney(amount: number): void {
+    this.money -= amount;
   }
 
   addProperty(propertyId: number): void {
@@ -130,6 +145,28 @@ export class Player {
 
     this.money -= property.houseCost;
     ownedProperty.houses = (ownedProperty.houses ?? 0) + 1;
+
+    return true;
+  }
+
+  mortgage(square: BuyableSquare): boolean {
+    const ownedProperty = this.ownedProperties.find(
+      (prop) => prop.id === square.id,
+    );
+
+    if (!ownedProperty) return false;
+    if (ownedProperty.mortgaged) {
+      // unmortgage
+      if (this.money < square.price / 2) return false;
+      this.money -= square.price / 2;
+      ownedProperty.mortgaged = false;
+    } else {
+      // mortgage
+      const mortgageValue = square.price / 2;
+
+      this.money += mortgageValue;
+      ownedProperty.mortgaged = true;
+    }
 
     return true;
   }

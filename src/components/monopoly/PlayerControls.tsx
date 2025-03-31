@@ -34,12 +34,14 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useUser } from "@clerk/nextjs";
+import { cn } from "~/lib/utils";
 
 interface PlayerControlsProps {
   game: GameState;
   onRollDice: () => void;
   onEndTurn: () => void;
   onBuyHouse: (propertyId: number) => void;
+  onMortgage: (propertyId: number) => void;
 }
 
 const diceClasses = "h-8 w-8";
@@ -58,6 +60,7 @@ function PlayerControls({
   onRollDice,
   onEndTurn,
   onBuyHouse,
+  onMortgage,
 }: PlayerControlsProps) {
   const currentPlayer = game.getCurrentPlayer();
   const isGameLocked = game.isGameLocked();
@@ -106,7 +109,11 @@ function PlayerControls({
         <div>{diceIcon[dice[1] as DiceIconType]}</div>
         {myTurn && (
           <Button
-            disabled={dice[0] === dice[1] || !isGameLocked}
+            disabled={
+              dice[0] === dice[1] ||
+              !isGameLocked ||
+              currentPlayer.getMoney() < 0
+            }
             onClick={onEndTurn}
           >
             End Turn
@@ -129,7 +136,10 @@ function PlayerControls({
                 const p = game.getBoard().getSquareFromIndex(property.id);
                 const isProperty = p instanceof PropertySquare;
                 return (
-                  <TableRow key={property.id}>
+                  <TableRow
+                    key={property.id}
+                    className={cn(property.mortgaged && "bg-red-100")}
+                  >
                     <TableCell className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
                         {isProperty && (
@@ -157,8 +167,16 @@ function PlayerControls({
                         )}
                       </div>
                     </TableCell>
-                    {myTurn && (
+                    {myTurn && !property.mortgaged && (
                       <TableCell>
+                        <Button
+                          className="text-xs"
+                          onClick={() => {
+                            onMortgage(property.id);
+                          }}
+                        >
+                          Mortgage
+                        </Button>
                         {isProperty &&
                           (property.houses ?? 0) < 5 &&
                           currentPlayer.ownsPropertyGroup(p.group) && (
@@ -169,6 +187,18 @@ function PlayerControls({
                               Buy house
                             </Button>
                           )}
+                      </TableCell>
+                    )}
+                    {myTurn && property.mortgaged && (
+                      <TableCell>
+                        <Button
+                          className="text-xs"
+                          onClick={() => {
+                            onMortgage(property.id);
+                          }}
+                        >
+                          Unmortgage
+                        </Button>
                       </TableCell>
                     )}
                   </TableRow>

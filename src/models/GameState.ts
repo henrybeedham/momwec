@@ -1,6 +1,12 @@
 import { Player } from "./Player";
 import { Board } from "./Board";
-import { PropertySquare, StationSquare, UtilitySquare, Square } from "./Square";
+import {
+  PropertySquare,
+  StationSquare,
+  UtilitySquare,
+  Square,
+  BuyableSquare,
+} from "./Square";
 import { playerColours } from "~/utils/monopoly";
 import { ToastCallback } from "./types";
 
@@ -151,6 +157,17 @@ export class GameState {
     }
 
     return currentPlayer.buyHouse(propertySquare);
+  }
+
+  mortgage(propertyId: number): boolean {
+    const currentPlayer = this.getCurrentPlayer();
+    const square = this.board.getSquareFromIndex(propertyId) as BuyableSquare;
+
+    if (!square) {
+      throw new Error("Invalid square");
+    }
+
+    return currentPlayer.mortgage(square);
   }
 
   buyProperty(): boolean {

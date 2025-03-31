@@ -146,6 +146,15 @@ function GameComponent() {
     [updateGameState, gameRef.current],
   );
 
+  const mortgage = useCallback(
+    (propertyId: number) => {
+      updateGameState(() => {
+        gameRef.current?.mortgage(propertyId);
+      });
+    },
+    [updateGameState, gameRef.current],
+  );
+
   const passProperty = useCallback(() => {
     updateGameState(() => {
       gameRef.current?.setSelectedProperty(null);
@@ -186,6 +195,7 @@ function GameComponent() {
           onRollDice={playerMove}
           onEndTurn={endTurn}
           onBuyHouse={buyHouse}
+          onMortgage={mortgage}
           key={`Controls-${uniqueGameKey}`}
         />
         <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
