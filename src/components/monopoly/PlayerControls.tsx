@@ -173,25 +173,27 @@ function PlayerControls({
                       </div>
                     </TableCell>
                     {myTurn && (
-                      <TableCell>
-                        <Button
-                          className="text-xs"
-                          onClick={() => {
-                            onMortgage(property.id);
-                          }}
-                        >
-                          {property.mortgaged ? "Unmortgage" : "Mortgage"}
-                        </Button>
-                        {isProperty &&
-                          (property.houses ?? 0) < 5 &&
-                          currentPlayer.ownsPropertyGroup(p.group) && (
-                            <Button
-                              className="text-xs"
-                              onClick={() => onBuyHouse(property.id)}
-                            >
-                              Buy house
-                            </Button>
-                          )}
+                      <TableCell >
+                        <div className="flex flex-col gap-2">
+                          <Button
+                            className="text-xs"
+                            onClick={() => {
+                              onMortgage(property.id);
+                            }}
+                          >
+                            {property.mortgaged ? "Unmortgage" : "Mortgage"}
+                          </Button>
+                          {isProperty &&
+                            (property.houses ?? 0) < 5 &&
+                            currentPlayer.ownsPropertyGroup(p.group) && (
+                              <Button
+                                className="text-xs"
+                                onClick={() => onBuyHouse(property.id)}
+                              >
+                                Buy house
+                              </Button>
+                            )}
+                        </div>
                       </TableCell>
                     )}
                   </TableRow>

@@ -38,7 +38,7 @@ function BoardComponent({ game }: BoardProps) {
     return (
       <div className="aspect-square w-full max-w-4xl">
         <div
-          className={`m-4 grid gap-1`}
+          className={`m-4 grid gap-1 `}
           style={{
             gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
             gridTemplateRows: `repeat(${boardSize}, 1fr)`,
