@@ -253,7 +253,7 @@ function GameComponent() {
         <Chat
           game={gameRef.current}
           onSendMessage={sendMessage}
-          key={`Chat-${uniqueMessagesKey}`}
+          mKey={`Chat-${uniqueMessagesKey}`}
         />
       </div>
     </div>
