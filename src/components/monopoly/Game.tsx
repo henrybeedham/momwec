@@ -52,6 +52,7 @@ function GameComponent() {
         socketRef.current?.id,
       );
       console.log("Asking for game data/Checking if game exists...");
+      socketRef.current?.emit("getGameData", gameId);
     });
 
     socketRef.current.on("getGameData", () => {
