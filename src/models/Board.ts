@@ -295,7 +295,7 @@ export class Board {
     squares.push(
       new StationSquare(
         35,
-        "Liverpool Street Station",
+        "Liverpool St. Station",
         200,
         [25, 50, 100, 200],
       ),

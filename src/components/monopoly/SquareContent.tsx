@@ -67,10 +67,10 @@ export default function renderSquareContent(squareName: string) {
           <p className={cn(sm, "text-center")}>{squareName}</p>
         </>
       );
-    case "Kings Cross Station":
+    case "King's Cross Station":
     case "Marylebone Station":
-    case "Fenchurch Street Station":
-    case "Liverpool Street Station":
+    case "Fenchurch St. Station":
+    case "Liverpool St. Station":
       return (
         <>
           <Train className="h-8 w-8" />
