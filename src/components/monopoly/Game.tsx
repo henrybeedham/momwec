@@ -9,27 +9,31 @@ import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { playerColoursLight } from "~/utils/monopoly";
 import { useUser } from "@clerk/nextjs";
+import { User } from "@clerk/nextjs/server";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
 function GameComponent() {
+  // Move ALL hooks to the top, before any conditional logic
   const gameRef = useRef<GameState | null>(null);
+  const socketRef = useRef<ReturnType<typeof io> | null>(null);
   const [uniqueGameKey, setUniqueGameKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
-  const { user } = useUser();
+  const { isLoaded, user } = useUser();
 
-  if (!user) throw new Error("No user");
+  // Define sendGameMove with useCallback
+  const sendGameMove = useCallback(() => {
+    if (gameRef.current && socketRef.current) {
+      const gameData = gameRef.current.exportGameState();
+      socketRef.current.emit("gameMove", gameData);
+    }
+  }, []);
 
-  const userName =
-    user.fullName ??
-    user.emailAddresses[0]?.emailAddress ??
-    user.username ??
-    user.id;
-
-  const socketRef = useRef<ReturnType<typeof io> | null>(null);
-
+  // Your useEffect hook with proper dependencies
   useEffect(() => {
+    if (!user) return; // Early return if no user
+
     // Establish a Socket.IO connection
     socketRef.current = io(SOCKET_SERVER_URL, {
       query: { gameId },
@@ -62,14 +66,19 @@ function GameComponent() {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       newGame.importFromJSON(data);
       gameRef.current = newGame;
+
       // check if I am a player
       const isUserAPlayer = newGame
         .getPlayers()
         .some((player) => player.id === user.id);
+
+      const userName = getUserName(user);
+
       if (!isUserAPlayer) {
         newGame.addPlayer(user.id, userName);
         sendGameMove();
       }
+
       setUniqueGameKey(newGame?.exportGameState() ?? "");
     });
 
@@ -77,25 +86,20 @@ function GameComponent() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [gameId]);
-
-  const sendGameMove = () => {
-    const data = gameRef.current?.toJSON();
-
-    if (socketRef.current) {
-      socketRef.current.emit("gameMove", data);
-      console.log("Sent gameMove event:", data);
-    } else {
-      console.error("Socket connection is not established. (sendGameMove)");
-    }
-  };
+  }, [gameId, user, sendGameMove]); // Include user and sendGameMove in dependencies
 
   const initialiseGame = useCallback(() => {
     const newGame = new GameState();
+    if (!user) return;
+    const userName =
+      user.fullName ??
+      user.emailAddresses[0]?.emailAddress ??
+      user.username ??
+      user.id;
     newGame.addPlayer(user.id, userName);
     gameRef.current = newGame; // Store in ref for immediate access
     setUniqueGameKey(newGame.exportGameState());
-  }, []);
+  }, [user]);
 
   const updateGameState = useCallback(
     (action: () => void) => {
@@ -150,6 +154,15 @@ function GameComponent() {
     initialiseGame();
   }, [initialiseGame]);
 
+  // Now you can add your conditional return
+  if (!user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-red-500 p-4">
+        <p>You must be signed in to play the game.</p>
+      </div>
+    );
+  }
+
   if (!gameRef.current || !uniqueGameKey) {
     return <div>Loading game...</div>;
   }
@@ -179,3 +192,13 @@ function GameComponent() {
 }
 
 export default GameComponent;
+
+function getUserName(user: ReturnType<typeof useUser>["user"]): string {
+  if (!user) throw new Error("Blud why you giving the getUserName no userrrr");
+  return (
+    user.fullName ??
+    user.emailAddresses[0]?.emailAddress ??
+    user.username ??
+    user.id
+  );
+}
