@@ -120,14 +120,12 @@ export class PropertySquare extends Square {
 
     if (owner && owner.id !== player.id) {
       // Property is owned by another player
-      if (owner) {
-        const property = owner
-          .getOwnedProperties()
-          .find((p) => p.id === position);
-        const rentAmount = this.rent[property?.houses ?? 0] ?? 0;
+      const property = owner
+        .getOwnedProperties()
+        .find((p) => p.id === position);
+      const rentAmount = this.rent[property?.houses ?? 0] ?? 0;
 
-        payRent(player, owner, rentAmount, toastCallback, this.name);
-      }
+      payRent(player, owner, rentAmount, toastCallback, this.name);
     } else if (!owner) {
       // Property is not owned, offer to buy
       gameState.setSelectedProperty(position);
@@ -173,21 +171,19 @@ export class StationSquare extends Square {
     const position = player.getPosition();
 
     // Find if the station is owned by another player
-    const ownerIndex = gameState
+    const owner = gameState
       .getPlayers()
-      .findIndex((p) => p.id !== player.id && p.ownsProperty(position));
+      .filter((p) => p.ownsProperty(position))[0];
 
-    if (ownerIndex >= 0) {
+    if (owner && owner.id !== player.id) {
       // Station is owned by another player
-      const owner = gameState.getPlayers()[ownerIndex];
-      if (owner) {
-        // Calculate rent based on how many stations the owner has
-        const stationCount = owner.getPropertyCount("station");
-        const rentAmount = this.rent[Math.min(stationCount - 1, 3)] ?? 0;
 
-        payRent(player, owner, rentAmount, toastCallback, this.name);
-      }
-    } else {
+      // Calculate rent based on how many stations the owner has
+      const stationCount = owner.getPropertyCount("station");
+      const rentAmount = this.rent[Math.min(stationCount - 1, 3)] ?? 0;
+
+      payRent(player, owner, rentAmount, toastCallback, this.name);
+    } else if (!owner) {
       // Station is not owned, offer to buy
       gameState.setSelectedProperty(position);
     }
@@ -222,23 +218,20 @@ export class UtilitySquare extends Square {
     const position = player.getPosition();
 
     // Find if the utility is owned by another player
-    const ownerIndex = gameState
+    const owner = gameState
       .getPlayers()
-      .findIndex((p) => p.id !== player.id && p.ownsProperty(position));
+      .filter((p) => p.ownsProperty(position))[0];
 
-    if (ownerIndex >= 0) {
+    if (owner && owner.id !== player.id) {
       // Utility is owned by another player
-      const owner = gameState.getPlayers()[ownerIndex];
 
-      if (owner) {
-        // Calculate rent based on how many utilities the owner has
-        const utilityCount = owner.getPropertyCount("utility");
-        const multiplier = this.multipliers[Math.min(utilityCount - 1, 1)] ?? 1;
-        const rentAmount = multiplier * diceRoll;
+      // Calculate rent based on how many utilities the owner has
+      const utilityCount = owner.getPropertyCount("utility");
+      const multiplier = this.multipliers[Math.min(utilityCount - 1, 1)] ?? 1;
+      const rentAmount = multiplier * diceRoll;
 
-        payRent(player, owner, rentAmount, toastCallback, this.name);
-      }
-    } else {
+      payRent(player, owner, rentAmount, toastCallback, this.name);
+    } else if (!owner) {
       // Utility is not owned, offer to buy
       gameState.setSelectedProperty(position);
     }
