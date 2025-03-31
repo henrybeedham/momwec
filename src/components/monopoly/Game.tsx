@@ -20,7 +20,7 @@ function GameComponent() {
   const [uniqueGameKey, setUniqueGameKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
-  const { isLoaded, user } = useUser();
+  const { user } = useUser();
 
   const sendGameMove = () => {
     const data = gameRef.current?.toJSON();
@@ -48,7 +48,7 @@ function GameComponent() {
         "Connected to Socket.IO server with id:",
         socketRef.current?.id,
       );
-      console.log("Asking for game data...");
+      console.log("Asking for game data/Checking if game exists...");
       socketRef.current?.emit("getGameData", gameId);
     });
 
@@ -70,17 +70,17 @@ function GameComponent() {
       newGame.importFromJSON(data);
       gameRef.current = newGame;
 
-      // // check if I am a player
-      // const isUserAPlayer = newGame
-      //   .getPlayers()
-      //   .some((player) => player.id === user.id);
+      // check if I am a player
+      const isUserAPlayer = newGame
+        .getPlayers()
+        .some((player) => player.id === user.id);
 
-      // const userName = getUserName(user);
+      const userName = getUserName(user);
 
-      // if (!isUserAPlayer) {
-      //   newGame.addPlayer(user.id, userName);
-      //   sendGameMove();
-      // }
+      if (!isUserAPlayer) {
+        newGame.addPlayer(user.id, userName);
+        sendGameMove();
+      }
 
       setUniqueGameKey(newGame?.exportGameState() ?? "");
     });
@@ -89,7 +89,7 @@ function GameComponent() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [gameId, user, sendGameMove]); // Include user and sendGameMove in dependencies
+  }, [gameId, user]); // Include user and sendGameMove in dependencies
 
   const initialiseGame = useCallback(() => {
     const newGame = new GameState();
