@@ -8,6 +8,7 @@ import { Toaster } from "~/components/ui/toaster";
 
 import {
   ClerkProvider,
+  SignIn,
   SignInButton,
   SignUpButton,
   SignedIn,
@@ -29,12 +30,12 @@ export default function RootLayout({
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>
           <TRPCReactProvider>
-            {/* <SignedOut>
-              <SignInButton/>
-              <SignUpButton/>
+            <SignedOut>
+              <div className="flex min-h-screen items-center justify-center bg-red-500 p-4">
+                <SignIn withSignUp />
+              </div>
             </SignedOut>
-            <SignedIn>{children}</SignedIn> */}
-            {children}
+            <SignedIn>{children}</SignedIn>
             <Toaster />
           </TRPCReactProvider>
         </body>

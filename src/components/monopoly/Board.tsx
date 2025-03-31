@@ -16,6 +16,8 @@ import { Player } from "~/models/Player";
 import renderSquareContent from "./SquareContent";
 import SquareHoverCard from "./SquareCard";
 import { GameState } from "~/models/GameState";
+import { UserButton } from "@clerk/nextjs";
+import { Card, CardContent } from "../ui/card";
 
 interface BoardProps {
   game: GameState;
@@ -74,7 +76,7 @@ function BoardComponent({ game }: BoardProps) {
                       }}
                     >
                       <div className="mt-4 flex flex-col justify-center gap-2">
-                        {players.map((player) => (
+                        {/* {players.map((player) => (
                           <div
                             key={player.id}
                             className="flex items-center gap-1"
@@ -86,7 +88,8 @@ function BoardComponent({ game }: BoardProps) {
                               Player {player.id + 1} £{player.getMoney()}
                             </p>
                           </div>
-                        ))}
+                        ))} */}
+                        <UserButton showName />
                       </div>
                     </div>
                   );

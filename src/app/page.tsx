@@ -48,7 +48,7 @@ export default function Home() {
   });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-red-500 to-orange-600">
       <div className="text-center">
         <h1 className="mb-8 text-6xl font-bold text-white">MOMWEC</h1>
         {/* <p className="my-4 text-xl text-white">

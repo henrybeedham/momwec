@@ -1,5 +1,5 @@
 // In your PlayerControls.tsx
-import React from "react";
+import React, { JSX } from "react";
 import { useToast } from "~/hooks/use-toast";
 import { GameState } from "~/models/GameState";
 import {

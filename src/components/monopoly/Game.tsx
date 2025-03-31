@@ -9,6 +9,7 @@ import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { cn } from "~/lib/utils";
 import { playerColoursLight } from "~/utils/monopoly";
+import { UserButton } from "@clerk/nextjs";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -138,9 +139,9 @@ function GameComponent() {
 
   return (
     <div
-      className={`${playerColoursLight[gameRef.current?.getCurrentPlayer().getColour()]} flex min-h-screen items-center justify-center `}
+      className={`${playerColoursLight[gameRef.current?.getCurrentPlayer().getColour()]} flex min-h-screen items-center justify-center`}
     >
-      <div className={cn(`flex`)}>
+      <div className="flex flex-col p-4 md:flex-row">
         <Popups
           game={gameRef.current}
           buyProperty={buyProperty}
