@@ -306,7 +306,7 @@ export class CollectFromPlayersCard extends Card {
     let totalCollected = 0;
 
     players.forEach((otherPlayer) => {
-      if (otherPlayer.getId() !== player.getId()) {
+      if (otherPlayer.id !== player.id) {
         otherPlayer.removeMoney(this.amount);
         totalCollected += this.amount;
       }

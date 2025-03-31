@@ -67,17 +67,17 @@ function GameComponent() {
       newGame.importFromJSON(data);
       gameRef.current = newGame;
 
-      // check if I am a player
-      const isUserAPlayer = newGame
-        .getPlayers()
-        .some((player) => player.id === user.id);
+      // // check if I am a player
+      // const isUserAPlayer = newGame
+      //   .getPlayers()
+      //   .some((player) => player.id === user.id);
 
-      const userName = getUserName(user);
+      // const userName = getUserName(user);
 
-      if (!isUserAPlayer) {
-        newGame.addPlayer(user.id, userName);
-        sendGameMove();
-      }
+      // if (!isUserAPlayer) {
+      //   newGame.addPlayer(user.id, userName);
+      //   sendGameMove();
+      // }
 
       setUniqueGameKey(newGame?.exportGameState() ?? "");
     });

@@ -60,7 +60,7 @@ export class CornerSquare extends Square {
         player.setPosition(10); // Move to jail
         toastCallback({
           title: "Go to Jail",
-          description: `Player ${player.getId() + 1} has been sent to jail!`,
+          description: `Player ${player.id + 1} has been sent to jail!`,
         });
         break;
       case "Free Parking":
@@ -114,13 +114,12 @@ export class PropertySquare extends Square {
     const position = player.getPosition();
 
     // Find if the property is owned by another player
-    const ownerIndex = gameState
+    const owner = gameState
       .getPlayers()
-      .findIndex((p) => p.ownsProperty(position));
+      .filter((p) => p.ownsProperty(position))[0];
 
-    if (ownerIndex >= 0 && ownerIndex !== player.getId()) {
+    if (owner && owner.id !== player.id) {
       // Property is owned by another player
-      const owner = gameState.getPlayers()[ownerIndex];
       if (owner) {
         const property = owner
           .getOwnedProperties()
@@ -131,17 +130,17 @@ export class PropertySquare extends Square {
           owner.addMoney(rentAmount);
           toastCallback({
             title: "Rent Paid",
-            description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
+            description: `Player ${player.id + 1} paid £${rentAmount} to Player ${owner.id + 1} for staying at ${this.name}`,
           });
         } else {
           toastCallback({
             title: "Insufficient Funds",
-            description: `Player ${player.getId() + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.getId() + 1}`,
+            description: `Player ${player.id + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.id + 1}`,
             variant: "destructive",
           });
         }
       }
-    } else if (ownerIndex === -1) {
+    } else if (!owner) {
       // Property is not owned, offer to buy
       gameState.setSelectedProperty(position);
     }
@@ -188,9 +187,7 @@ export class StationSquare extends Square {
     // Find if the station is owned by another player
     const ownerIndex = gameState
       .getPlayers()
-      .findIndex(
-        (p) => p.getId() !== player.getId() && p.ownsProperty(position),
-      );
+      .findIndex((p) => p.id !== player.id && p.ownsProperty(position));
 
     if (ownerIndex >= 0) {
       // Station is owned by another player
@@ -204,12 +201,12 @@ export class StationSquare extends Square {
           owner.addMoney(rentAmount);
           toastCallback({
             title: "Rent Paid",
-            description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
+            description: `Player ${player.id + 1} paid £${rentAmount} to Player ${owner.id + 1} for staying at ${this.name}`,
           });
         } else {
           toastCallback({
             title: "Insufficient Funds",
-            description: `Player ${player.getId() + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.getId() + 1}`,
+            description: `Player ${player.id + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.id + 1}`,
             variant: "destructive",
           });
         }
@@ -251,9 +248,7 @@ export class UtilitySquare extends Square {
     // Find if the utility is owned by another player
     const ownerIndex = gameState
       .getPlayers()
-      .findIndex(
-        (p) => p.getId() !== player.getId() && p.ownsProperty(position),
-      );
+      .findIndex((p) => p.id !== player.id && p.ownsProperty(position));
 
     if (ownerIndex >= 0) {
       // Utility is owned by another player
@@ -269,13 +264,13 @@ export class UtilitySquare extends Square {
           owner.addMoney(rentAmount);
           toastCallback({
             title: "Rent Paid",
-            description: `Player ${player.getId() + 1} paid £${rentAmount} to Player ${owner.getId() + 1} for staying at ${this.name}`,
+            description: `Player ${player.id + 1} paid £${rentAmount} to Player ${owner.id + 1} for staying at ${this.name}`,
           });
         } else {
           toastCallback({
             title: "Insufficient Funds",
-            description: `Player ${player.getId() + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.getId() + 1}`,
-            variant: "destructive"
+            description: `Player ${player.id + 1} cannot afford to pay rent of £${rentAmount} to Player ${owner.id + 1}`,
+            variant: "destructive",
           });
         }
       }
@@ -312,7 +307,7 @@ export class TaxSquare extends Square {
     player.removeMoney(this.amount);
     toastCallback({
       title: "Tax Paid",
-      description: `Player ${player.getId() + 1} paid £${this.amount} in ${this.name}`,
+      description: `Player ${player.id + 1} paid £${this.amount} in ${this.name}`,
     });
   }
 
