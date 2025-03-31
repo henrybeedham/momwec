@@ -23,10 +23,7 @@ export class GameState {
 
   constructor(boardSize = 11) {
     this.board = new Board(boardSize);
-    this.players = [
-      new Player(0, playerColours[0] ?? "bg-black", this.board, 1500),
-      new Player(1, playerColours[1] ?? "bg-black", this.board, 1500),
-    ];
+    this.players = [];
 
     // this.players[0]?.buyProperty(
     //   this.board.getSquareFromIndex(1) as PropertySquare,
@@ -117,12 +114,12 @@ export class GameState {
   }
 
   // Game logic methods
-  addPlayer(): void {
+  addPlayer(id: string, name: string): void {
     if (this.players.length < playerColours.length) {
-      const newPlayerId = this.players.length;
       const newPlayer = new Player(
-        newPlayerId,
-        playerColours[newPlayerId] ?? "bg-black-500",
+        id,
+        name,
+        playerColours[this.players.length] ?? "bg-black-500",
         this.board,
         1500,
       );
@@ -179,9 +176,7 @@ export class GameState {
     return false;
   }
 
-  movePlayer(
-    toastCallback: ToastCallback,
-  ): void {
+  movePlayer(toastCallback: ToastCallback): void {
     this.setGameLocked(true);
     const [dice1, dice2] = this.rollDice();
     const total = dice1 + dice2;
@@ -242,6 +237,7 @@ export class GameState {
         (playerData: ReturnType<Player["toJSON"]>) => {
           const player = new Player(
             playerData.id,
+            playerData.name,
             playerData.colour,
             this.board,
             playerData.money,

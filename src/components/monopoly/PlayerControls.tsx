@@ -33,6 +33,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { useUser } from "@clerk/nextjs";
 
 interface PlayerControlsProps {
   game: GameState;
@@ -64,6 +65,9 @@ function PlayerControls({
   const dice = game.getDice();
   const params = useParams<{ gameId: string }>();
   const properties = currentPlayer.getOwnedProperties();
+  const { user } = useUser();
+  if (!user) throw new Error("No user");
+  const myTurn = user.id === currentPlayer.id;
 
   return (
     <div className="player-controls flex flex-col gap-4 *:relative">
@@ -73,7 +77,7 @@ function PlayerControls({
           className={`mr-2 h-4 w-4 rounded-full ${currentPlayer.getColour()}`}
         ></div>
         <p className="text-lg font-bold">
-          Player {currentPlayer.id + 1} £{currentPlayer.getMoney()}
+          {currentPlayer.name} £{currentPlayer.getMoney()}
         </p>
         {/* Show get out of jail card if you have one */}
         {!!currentPlayer.getPardons() && (
@@ -90,20 +94,24 @@ function PlayerControls({
 
       <div className="flex items-center gap-1">
         {/* Roll dice button */}
-        <Button
-          onClick={onRollDice}
-          disabled={dice[0] === dice[1] ? false : isGameLocked}
-        >
-          Roll Dice
-        </Button>
+        {myTurn && (
+          <Button
+            onClick={onRollDice}
+            disabled={dice[0] === dice[1] ? false : isGameLocked}
+          >
+            Roll Dice
+          </Button>
+        )}
         <div>{diceIcon[dice[0] as DiceIconType]}</div>
         <div>{diceIcon[dice[1] as DiceIconType]}</div>
-        <Button
-          disabled={dice[0] === dice[1] || !isGameLocked}
-          onClick={onEndTurn}
-        >
-          End Turn
-        </Button>
+        {myTurn && (
+          <Button
+            disabled={dice[0] === dice[1] || !isGameLocked}
+            onClick={onEndTurn}
+          >
+            End Turn
+          </Button>
+        )}
       </div>
 
       {/* Properties list */}
@@ -113,7 +121,7 @@ function PlayerControls({
             <TableHeader>
               <TableRow>
                 <TableHead>Properties</TableHead>
-                <TableHead>Actions</TableHead>
+                {myTurn && <TableHead>Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -122,7 +130,7 @@ function PlayerControls({
                 const isProperty = p instanceof PropertySquare;
                 return (
                   <TableRow key={property.id}>
-                    <TableCell className="flex flex-col gap-2"> 
+                    <TableCell className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
                         {isProperty && (
                           <div
@@ -149,18 +157,20 @@ function PlayerControls({
                         )}
                       </div>
                     </TableCell>
-                    <TableCell>
-                      {isProperty &&
-                        (property.houses ?? 0) < 5 &&
-                        currentPlayer.ownsPropertyGroup(p.group) && (
-                          <Button
-                            className="text-xs"
-                            onClick={() => onBuyHouse(property.id)}
-                          >
-                            Buy house
-                          </Button>
-                        )}
-                    </TableCell>
+                    {myTurn && (
+                      <TableCell>
+                        {isProperty &&
+                          (property.houses ?? 0) < 5 &&
+                          currentPlayer.ownsPropertyGroup(p.group) && (
+                            <Button
+                              className="text-xs"
+                              onClick={() => onBuyHouse(property.id)}
+                            >
+                              Buy house
+                            </Button>
+                          )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}

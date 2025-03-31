@@ -8,6 +8,7 @@ import Popups from "./Popups";
 import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { playerColoursLight } from "~/utils/monopoly";
+import { useUser } from "@clerk/nextjs";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -16,6 +17,15 @@ function GameComponent() {
   const [uniqueGameKey, setUniqueGameKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
+  const { user } = useUser();
+
+  if (!user) throw new Error("No user");
+
+  const userName =
+    user.fullName ??
+    user.emailAddresses[0]?.emailAddress ??
+    user.username ??
+    user.id;
 
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
 
@@ -52,6 +62,14 @@ function GameComponent() {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       newGame.importFromJSON(data);
       gameRef.current = newGame;
+      // check if I am a player
+      const isUserAPlayer = newGame
+        .getPlayers()
+        .some((player) => player.id === user.id);
+      if (!isUserAPlayer) {
+        newGame.addPlayer(user.id, userName);
+        sendGameMove();
+      }
       setUniqueGameKey(newGame?.exportGameState() ?? "");
     });
 
@@ -74,6 +92,7 @@ function GameComponent() {
 
   const initialiseGame = useCallback(() => {
     const newGame = new GameState();
+    newGame.addPlayer(user.id, userName);
     gameRef.current = newGame; // Store in ref for immediate access
     setUniqueGameKey(newGame.exportGameState());
   }, []);

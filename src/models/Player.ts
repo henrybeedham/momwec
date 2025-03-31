@@ -3,7 +3,8 @@ import { PropertySquare, StationSquare, UtilitySquare } from "./Square";
 import { Group } from "./types";
 
 export class Player {
-  readonly id: number;
+  readonly id: string;
+  readonly name: string;
   private position: number;
   private previousPosition?: number;
   private colour: string;
@@ -12,8 +13,15 @@ export class Player {
   private pardons: number;
   private board: Board;
 
-  constructor(id: number, colour: string, board: Board, initialMoney = 1500) {
+  constructor(
+    id: string,
+    name: string,
+    colour: string,
+    board: Board,
+    initialMoney = 1500,
+  ) {
     this.id = id;
+    this.name = name;
     this.position = 0;
     this.colour = colour;
     this.money = initialMoney;
@@ -23,9 +31,6 @@ export class Player {
   }
 
   // Getters
-  getId(): number {
-    return this.id;
-  }
 
   getPosition(): number {
     return this.position;
@@ -156,6 +161,7 @@ export class Player {
   toJSON() {
     return {
       id: this.id,
+      name: this.name,
       position: this.position,
       colour: this.colour,
       money: this.money,

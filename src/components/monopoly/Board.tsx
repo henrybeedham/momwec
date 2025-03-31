@@ -75,20 +75,22 @@ function BoardComponent({ game }: BoardProps) {
                         gridRow: `span ${boardSize - 2}`,
                       }}
                     >
-                      <div className="mt-4 flex flex-col justify-center gap-2">
-                        {/* {players.map((player) => (
-                          <div
-                            key={player.id}
-                            className="flex items-center gap-1"
-                          >
+                      <div className="mt-4 flex flex-col items-center justify-center gap-2">
+                        <div>
+                          {players.map((player) => (
                             <div
-                              className={`mr-2 h-4 w-4 rounded-full ${player.getColour()}`}
-                            ></div>
-                            <p className="text-lg font-bold">
-                              Player {player.id + 1} £{player.getMoney()}
-                            </p>
-                          </div>
-                        ))} */}
+                              key={player.id}
+                              className="flex items-center gap-1"
+                            >
+                              <div
+                                className={`mr-2 h-4 w-4 rounded-full ${player.getColour()}`}
+                              ></div>
+                              <p className="text-lg font-bold">
+                                {player.name} £{player.getMoney()}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                         <UserButton showName />
                       </div>
                     </div>
