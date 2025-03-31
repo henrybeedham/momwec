@@ -95,30 +95,35 @@ function PlayerControls({
         )}
       </div>
 
-      <div className="flex items-center gap-1">
-        {/* Roll dice button */}
-        {myTurn && (
-          <Button
-            onClick={onRollDice}
-            disabled={dice[0] === dice[1] ? false : isGameLocked}
-          >
-            Roll Dice
-          </Button>
-        )}
-        <div>{diceIcon[dice[0] as DiceIconType]}</div>
-        <div>{diceIcon[dice[1] as DiceIconType]}</div>
-        {myTurn && (
-          <Button
-            disabled={
-              dice[0] === dice[1] ||
-              !isGameLocked ||
-              currentPlayer.getMoney() < 0
-            }
-            onClick={onEndTurn}
-          >
-            End Turn
-          </Button>
-        )}
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-1">
+          {/* Roll dice button */}
+          {myTurn && (
+            <Button
+              onClick={onRollDice}
+              disabled={dice[0] === dice[1] ? false : isGameLocked}
+            >
+              Roll Dice
+            </Button>
+          )}
+          <div>{diceIcon[dice[0] as DiceIconType]}</div>
+          <div>{diceIcon[dice[1] as DiceIconType]}</div>
+          {myTurn && (
+            <Button
+              disabled={
+                dice[0] === dice[1] ||
+                !isGameLocked ||
+                currentPlayer.getMoney() < 0
+              }
+              onClick={onEndTurn}
+            >
+              End Turn
+            </Button>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          {/* {myTurn && <Button>Give money</Button>} */}
+        </div>
       </div>
 
       {/* Properties list */}

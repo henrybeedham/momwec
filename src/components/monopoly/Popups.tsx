@@ -1,14 +1,15 @@
 import { BuyableSquare, PropertySquare } from "~/models/Square";
 import { Button } from "../ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { useState } from "react";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
 import SquareCard from "./SquareCard";
 import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "~/models/GameState";
@@ -30,12 +31,12 @@ function Popups({ game, buyProperty, passProperty }: PopupProps) {
   const myTurn = user.id === game.getCurrentPlayer().id;
   const shouldBeOpen = !!property && myTurn;
   return (
-    <Dialog open={shouldBeOpen}>
+    <AlertDialog open={shouldBeOpen}>
       {!!property && (
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>You landed on {property.name}</DialogTitle>
-          </DialogHeader>
+        <AlertDialogContent className="sm:max-w-[425px]">
+          <AlertDialogHeader>
+            <AlertDialogTitle>You landed on {property.name}</AlertDialogTitle>
+          </AlertDialogHeader>
 
           <SquareCard
             square={property}
@@ -46,17 +47,13 @@ function Popups({ game, buyProperty, passProperty }: PopupProps) {
             }
           />
 
-          <DialogFooter>
-            <div className="flex gap-1">
-              <Button variant="ghost" onClick={passProperty}>
-                Pass
-              </Button>
-              <Button onClick={buyProperty}>Buy</Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={passProperty}>Pass</AlertDialogCancel>
+            <AlertDialogAction onClick={buyProperty}>Buy</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
       )}
-    </Dialog>
+    </AlertDialog>
   );
 }
 
