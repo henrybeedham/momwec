@@ -172,7 +172,7 @@ function PlayerControls({
                         )}
                       </div>
                     </TableCell>
-                    {myTurn && !property.mortgaged && (
+                    {myTurn && (
                       <TableCell>
                         <Button
                           className="text-xs"
@@ -180,7 +180,7 @@ function PlayerControls({
                             onMortgage(property.id);
                           }}
                         >
-                          Mortgage
+                          {property.mortgaged ? "Unmortgage" : "Mortgage"}
                         </Button>
                         {isProperty &&
                           (property.houses ?? 0) < 5 &&
@@ -192,18 +192,6 @@ function PlayerControls({
                               Buy house
                             </Button>
                           )}
-                      </TableCell>
-                    )}
-                    {myTurn && property.mortgaged && (
-                      <TableCell>
-                        <Button
-                          className="text-xs"
-                          onClick={() => {
-                            onMortgage(property.id);
-                          }}
-                        >
-                          Unmortgage
-                        </Button>
                       </TableCell>
                     )}
                   </TableRow>
