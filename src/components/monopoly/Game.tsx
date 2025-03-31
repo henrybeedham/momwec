@@ -7,9 +7,7 @@ import { useToast } from "~/hooks/use-toast";
 import Popups from "./Popups";
 import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
-import { cn } from "~/lib/utils";
 import { playerColoursLight } from "~/utils/monopoly";
-import { UserButton } from "@clerk/nextjs";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
