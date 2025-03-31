@@ -35,6 +35,7 @@ import {
 } from "~/components/ui/tooltip";
 import { useUser } from "@clerk/nextjs";
 import { cn } from "~/lib/utils";
+import PlayerTab from "./PlayerTab";
 
 interface PlayerControlsProps {
   game: GameState;
@@ -76,9 +77,7 @@ function PlayerControls({
     <div className="player-controls flex flex-col gap-4 *:relative">
       <h1 className="text-2xl font-bold">MOMWEC Game: {params.gameId}</h1>
       <div className="flex items-center gap-1">
-        <div
-          className={`mr-2 h-4 w-4 rounded-full ${currentPlayer.getColour()}`}
-        ></div>
+        <PlayerTab className="mr-2" colour={currentPlayer.getColour()} />
         <p className="text-lg font-bold">
           {currentPlayer.name} £{currentPlayer.getMoney()}
         </p>
@@ -148,8 +147,9 @@ function PlayerControls({
                     <TableCell className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
                         {isProperty && (
-                          <div
-                            className={`mr-2 h-4 w-4 rounded-full ${p.getPropertyColour()}`}
+                          <PlayerTab
+                            className="mr-2"
+                            colour={p.getPropertyColour()}
                           />
                         )}
                         {p?.name}
@@ -173,7 +173,7 @@ function PlayerControls({
                       </div>
                     </TableCell>
                     {myTurn && (
-                      <TableCell >
+                      <TableCell>
                         <div className="flex flex-col gap-2">
                           <Button
                             className="text-xs"

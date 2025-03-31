@@ -18,6 +18,7 @@ import SquareHoverCard from "./SquareCard";
 import { GameState } from "~/models/GameState";
 import { UserButton } from "@clerk/nextjs";
 import { Card, CardContent } from "../ui/card";
+import PlayerTab from "./PlayerTab";
 
 interface BoardProps {
   game: GameState;
@@ -38,7 +39,7 @@ function BoardComponent({ game }: BoardProps) {
     return (
       <div className="aspect-square w-full max-w-4xl">
         <div
-          className={`m-4 grid gap-1 `}
+          className={`m-4 grid gap-1`}
           style={{
             gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
             gridTemplateRows: `repeat(${boardSize}, 1fr)`,
@@ -82,9 +83,10 @@ function BoardComponent({ game }: BoardProps) {
                               key={player.id}
                               className="flex items-center gap-1"
                             >
-                              <div
-                                className={`mr-2 h-4 w-4 rounded-full ${player.getColour()}`}
-                              ></div>
+                              <PlayerTab
+                                className="mr-2"
+                                colour={player.getColour()}
+                              />
                               <p className="text-lg font-bold">
                                 {player.name} £{player.getMoney()}
                               </p>

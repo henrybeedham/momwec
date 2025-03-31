@@ -8,7 +8,7 @@ import {
   BuyableSquare,
 } from "./Square";
 import { playerColours } from "~/utils/monopoly";
-import { ToastCallback } from "./types";
+import { Message, ToastCallback } from "./types";
 
 type GameStateJSON = {
   players: ReturnType<Player["toJSON"]>[];
@@ -26,10 +26,12 @@ export class GameState {
   private gameLocked: boolean;
   private selectedProperty: number | null;
   private board: Board;
+  private messages: Message[];
 
   constructor(boardSize = 11) {
     this.board = new Board(boardSize);
     this.players = [];
+    this.messages = [];
 
     // this.players[0]?.buyProperty(
     //   this.board.getSquareFromIndex(1) as PropertySquare,
@@ -82,6 +84,10 @@ export class GameState {
     return this.currentPlayerIndex;
   }
 
+  getPlayerById(id: string): Player | undefined {
+    return this.players.find((player) => player.id === id);
+  }
+
   getDice(): [number, number] {
     return this.dice;
   }
@@ -96,6 +102,10 @@ export class GameState {
 
   getSelectedProperty(): number | null {
     return this.selectedProperty;
+  }
+
+  getMessages(): Message[] {
+    return this.messages;
   }
 
   // Setters
@@ -131,6 +141,10 @@ export class GameState {
       );
       this.players.push(newPlayer);
     }
+  }
+
+  sendMessage(message: Message): void {
+    this.messages.push(message);
   }
 
   rollDice(): [number, number] {

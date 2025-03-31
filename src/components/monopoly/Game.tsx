@@ -10,6 +10,9 @@ import { useParams } from "next/navigation";
 import { playerColoursLight } from "~/utils/monopoly";
 import { useUser } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/server";
+import Chat from "./Chat";
+import { Message } from "~/models/types";
+import { PropertySquare } from "~/models/Square";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -49,7 +52,6 @@ function GameComponent() {
         socketRef.current?.id,
       );
       console.log("Asking for game data/Checking if game exists...");
-      socketRef.current?.emit("getGameData", gameId);
     });
 
     socketRef.current.on("getGameData", () => {
@@ -65,6 +67,7 @@ function GameComponent() {
     // Listen for 'gameMove' events from the server
     socketRef.current.on("gameMove", (data) => {
       console.log("Received gameMove event:", JSON.parse(data as string));
+
       const newGame = new GameState();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       newGame.importFromJSON(data);
@@ -120,6 +123,12 @@ function GameComponent() {
     updateGameState(() => {
       gameRef.current?.movePlayer((message) => {
         console.log(message.title, message.description);
+        gameRef.current?.sendMessage({
+          user: gameRef.current.getCurrentPlayer().id,
+          type: "system",
+          title: message.title,
+          description: message.description,
+        });
         toast(message);
       });
     });
@@ -133,14 +142,34 @@ function GameComponent() {
 
   const buyProperty = useCallback(() => {
     updateGameState(() => {
-      gameRef.current?.buyProperty();
+      const g = gameRef.current;
+      if (!g) throw new Error("Game is not initialized");
+      const p = g.getSelectedProperty();
+      if (!p) throw new Error("No property selected");
+      g.sendMessage({
+        user: g.getCurrentPlayer().id,
+        type: "system",
+        title: "Property Purchased",
+        description: `You have purchased ${g.getBoard().getSquareFromIndex(p)?.name}`,
+      });
+      g.buyProperty();
     });
   }, [updateGameState, gameRef.current]);
 
   const buyHouse = useCallback(
     (propertyId: number) => {
       updateGameState(() => {
-        gameRef.current?.buyHouse(propertyId);
+        const g = gameRef.current;
+        if (!g) throw new Error("Game is not initialized");
+        const p = g.getSelectedProperty();
+        if (!p) throw new Error("No property selected");
+        g.sendMessage({
+          user: g.getCurrentPlayer().id,
+          type: "system",
+          title: "House Purchased",
+          description: `You have purchased a house on ${g.getBoard().getSquareFromIndex(propertyId)?.name}`,
+        });
+        g.buyHouse(propertyId);
       });
     },
     [updateGameState, gameRef.current],
@@ -149,7 +178,24 @@ function GameComponent() {
   const mortgage = useCallback(
     (propertyId: number) => {
       updateGameState(() => {
-        gameRef.current?.mortgage(propertyId);
+        const g = gameRef.current;
+        if (!g) throw new Error("Game is not initialized");
+        g.sendMessage({
+          user: g.getCurrentPlayer().id,
+          type: "system",
+          title: "Property Mortgaged",
+          description: `You have mortgaged ${g.getBoard().getSquareFromIndex(propertyId)?.name} for £${(g.getBoard().getSquareFromIndex(propertyId) as PropertySquare).price / 2 }`,
+        });
+        g.mortgage(propertyId);
+      });
+    },
+    [updateGameState, gameRef.current],
+  );
+
+  const sendMessage = useCallback(
+    (message: Message) => {
+      updateGameState(() => {
+        gameRef.current?.sendMessage(message);
       });
     },
     [updateGameState, gameRef.current],
@@ -199,6 +245,11 @@ function GameComponent() {
           key={`Controls-${uniqueGameKey}`}
         />
         <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
+        <Chat
+          game={gameRef.current}
+          onSendMessage={sendMessage}
+          key={`Chat-${uniqueGameKey}`}
+        />
       </div>
     </div>
   );
