@@ -133,13 +133,14 @@ export class GameState {
   // Game logic methods
   addPlayer(id: string, name: string): void {
     if (this.players.length < playerColours.length) {
-      const newPlayer = new Player(
-        id,
-        name,
-        playerColours[this.players.length] ?? "bg-black-500",
-        this.board,
-        1500,
+      const availableColours = playerColours.filter(
+        (colour) =>
+          !this.players.some((player) => player.getColour() === colour),
       );
+      const randomColour =
+        availableColours[Math.floor(Math.random() * availableColours.length)] ??
+        "bg-black-500";
+      const newPlayer = new Player(id, name, randomColour, this.board, 1500);
       this.players.push(newPlayer);
     }
   }

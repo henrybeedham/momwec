@@ -236,7 +236,7 @@ function GameComponent() {
   if (gameRef.current.getPlayers().length === 1) {
     const gameLink = `https://ilpa.co.uk/${gameId}`;
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-orange-600 to-yellow-500 text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-orange-600 to-yellow-500 text-center text-white p-4">
         <h1 className="text-6xl font-bold">Game: {gameId}</h1>
         <h1 className="text-6xl font-bold">Waiting for opponents to join...</h1>
         <p className="text-xl">Share you game code or send link:</p>
@@ -250,8 +250,8 @@ function GameComponent() {
             onClick={() => {
               navigator.clipboard.writeText(gameLink);
               toast({
-                description: "Link successfully copied"
-              })
+                description: "Link successfully copied",
+              });
             }}
           >
             Copy link
