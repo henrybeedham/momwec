@@ -236,7 +236,7 @@ function GameComponent() {
   if (gameRef.current.getPlayers().length === 1) {
     const gameLink = `https://ilpa.co.uk/${gameId}`;
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-orange-600 to-yellow-500 text-center text-white p-4">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-orange-600 to-yellow-500 p-4 text-center text-white">
         <h1 className="text-6xl font-bold">Game: {gameId}</h1>
         <h1 className="text-6xl font-bold">Waiting for opponents to join...</h1>
         <p className="text-xl">Share you game code or send link:</p>
@@ -280,13 +280,13 @@ function GameComponent() {
           onEndTurn={endTurn}
           onBuyHouse={buyHouse}
           onMortgage={mortgage}
-          key={`Controls-${uniqueGameKey}`}
+          keyPassthrough={`Controls-${uniqueGameKey}`}
         />
         <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
         <Chat
           game={gameRef.current}
           onSendMessage={sendMessage}
-          mKey={`Chat-${uniqueMessagesKey}`}
+          keyPassthrough={`Chat-${uniqueMessagesKey}`}
         />
       </div>
     </div>

@@ -10,10 +10,10 @@ import { useState, useRef, useEffect } from "react";
 interface ChatProps {
   game: GameState;
   onSendMessage: (message: Message) => void;
-  mKey: string;
+  keyPassthrough: string;
 }
 
-function Chat({ game, onSendMessage, mKey }: ChatProps) {
+function Chat({ game, onSendMessage, keyPassthrough }: ChatProps) {
   const messages = [...game.getMessages()].reverse();
   const { user } = useUser();
   const [message, setMessage] = useState("");
@@ -57,7 +57,7 @@ function Chat({ game, onSendMessage, mKey }: ChatProps) {
           }}
         />
         <Card
-          key={mKey}
+          key={keyPassthrough}
           className="relative flex pr-2"
           style={{
             height: "calc(100vh - 200px)",

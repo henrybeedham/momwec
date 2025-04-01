@@ -57,6 +57,18 @@ export class Player {
     return this.money;
   }
 
+  getNetWorth(): number {
+    return (
+      this.getMoney() +
+      this.getOwnedProperties().reduce(
+        (total, property) =>
+          total +
+          (this.board.getSquareFromIndex(property.id) as BuyableSquare).price,
+        0,
+      )
+    );
+  }
+
   getOwnedProperties() {
     return this.ownedProperties;
   }

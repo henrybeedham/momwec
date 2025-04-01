@@ -38,7 +38,9 @@ type Edge = "corner" | "top" | "right" | "bottom" | "left" | "";
 
 function BoardComponent({ game }: BoardProps) {
   const board = game.getBoard();
-  const players = game.getPlayers();
+  const players = game
+    .getPlayers()
+    .sort((a, b) => b.getNetWorth() - a.getNetWorth());
   const boardSize = board.getSize();
   const totalSquares = board.getTotalSquares();
 
@@ -93,6 +95,7 @@ function BoardComponent({ game }: BoardProps) {
                               <TableCaption>Player Leaderboard</TableCaption>
                               <TableHeader>
                                 <TableRow>
+                                  <TableHead>#</TableHead>
                                   <TableHead>Colour</TableHead>
                                   <TableHead>Name</TableHead>
                                   <TableHead>Cash</TableHead>
@@ -100,23 +103,10 @@ function BoardComponent({ game }: BoardProps) {
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
-                                {players.map((player) => {
-                                  const playerNetWorth =
-                                    player.getMoney() +
-                                    player
-                                      .getOwnedProperties()
-                                      .reduce(
-                                        (total, property) =>
-                                          total +
-                                          (
-                                            board.getSquareFromIndex(
-                                              property.id,
-                                            ) as BuyableSquare
-                                          ).price,
-                                        0,
-                                      );
+                                {players.map((player, i) => {
                                   return (
-                                    <TableRow key={player.id}>
+                                    <TableRow key={player.id} className={i === 0 ? "bg-yellow-100" : ""}>
+                                      <TableCell>#{i + 1}</TableCell>
                                       <TableCell>
                                         <PlayerTab
                                           className="mr-2"
@@ -128,7 +118,7 @@ function BoardComponent({ game }: BoardProps) {
                                         £{player.getMoney()}
                                       </TableCell>
                                       <TableCell>
-                                        £{playerNetWorth}
+                                        £{player.getNetWorth()}
                                       </TableCell>
                                     </TableRow>
                                   );
@@ -136,7 +126,6 @@ function BoardComponent({ game }: BoardProps) {
                               </TableBody>
                             </Table>
                           </div>
-                          <UserButton showName />
                         </CardContent>
                       </Card>
                     </div>

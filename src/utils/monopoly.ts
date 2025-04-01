@@ -20,7 +20,6 @@ export const playerColours = [
   "bg-purple-500",
   "bg-pink-500",
   "bg-gray-500",
-  "bg-black",
 ];
 
 export const playerColoursLight: Record<string, string> = {
@@ -32,5 +31,4 @@ export const playerColoursLight: Record<string, string> = {
   "bg-purple-500": "bg-purple-200",
   "bg-pink-500": "bg-pink-200",
   "bg-gray-500": "bg-gray-200",
-  "bg-black": "bg-black",
 };
