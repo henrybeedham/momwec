@@ -96,7 +96,7 @@ function BoardComponent({ game }: BoardProps) {
                                   <TableHead>Colour</TableHead>
                                   <TableHead>Name</TableHead>
                                   <TableHead>Cash</TableHead>
-                                  <TableHead>Cash+Properties</TableHead>
+                                  <TableHead>Net Worth</TableHead>
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
