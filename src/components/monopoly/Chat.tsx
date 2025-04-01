@@ -41,7 +41,7 @@ function Chat({ game, onSendMessage, mKey }: ChatProps) {
   };
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex flex-col">
       <div className="relative overflow-hidden rounded-xl">
         <div
           style={{

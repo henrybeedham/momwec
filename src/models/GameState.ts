@@ -97,6 +97,10 @@ export class GameState {
     return this.board;
   }
 
+  getOwner(sqId: number) {
+    return this.getPlayers().filter((p) => p.ownsProperty(sqId))[0];
+  }
+
   isGameLocked(): boolean {
     return this.gameLocked;
   }

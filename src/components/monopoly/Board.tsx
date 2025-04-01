@@ -11,7 +11,7 @@ import {
   StationSquare,
   UtilitySquare,
 } from "~/models/Square";
-import { propertyColors } from "~/utils/monopoly";
+import { playerColoursLight, propertyColors } from "~/utils/monopoly";
 import { Player } from "~/models/Player";
 import renderSquareContent from "./SquareContent";
 import SquareHoverCard from "./SquareCard";
@@ -19,6 +19,16 @@ import { GameState } from "~/models/GameState";
 import { UserButton } from "@clerk/nextjs";
 import { Card, CardContent } from "../ui/card";
 import PlayerTab from "./PlayerTab";
+import type { BuyableSquare } from "~/models/Square";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 interface BoardProps {
   game: GameState;
@@ -76,25 +86,59 @@ function BoardComponent({ game }: BoardProps) {
                         gridRow: `span ${boardSize - 2}`,
                       }}
                     >
-                      <div className="mt-4 flex flex-col items-center justify-center gap-2">
-                        <div>
-                          {players.map((player) => (
-                            <div
-                              key={player.id}
-                              className="flex items-center gap-1"
-                            >
-                              <PlayerTab
-                                className="mr-2"
-                                colour={player.getColour()}
-                              />
-                              <p className="text-lg font-bold">
-                                {player.name} £{player.getMoney()}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                        <UserButton showName />
-                      </div>
+                      <Card>
+                        <CardContent className="flex flex-col items-center justify-center gap-2 p-6">
+                          <div>
+                            <Table>
+                              <TableCaption>Player Leaderboard</TableCaption>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead>Colour</TableHead>
+                                  <TableHead>Name</TableHead>
+                                  <TableHead>Cash</TableHead>
+                                  <TableHead>Cash+Properties</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {players.map((player) => {
+                                  const playerNetWorth =
+                                    player.getMoney() +
+                                    player
+                                      .getOwnedProperties()
+                                      .reduce(
+                                        (total, property) =>
+                                          total +
+                                          (
+                                            board.getSquareFromIndex(
+                                              property.id,
+                                            ) as BuyableSquare
+                                          ).price,
+                                        0,
+                                      );
+                                  return (
+                                    <TableRow key={player.id}>
+                                      <TableCell>
+                                        <PlayerTab
+                                          className="mr-2"
+                                          colour={player.getColour()}
+                                        />
+                                      </TableCell>
+                                      <TableCell>{player.name}</TableCell>
+                                      <TableCell>
+                                        £{player.getMoney()}
+                                      </TableCell>
+                                      <TableCell>
+                                        £{playerNetWorth}
+                                      </TableCell>
+                                    </TableRow>
+                                  );
+                                })}
+                              </TableBody>
+                            </Table>
+                          </div>
+                          <UserButton showName />
+                        </CardContent>
+                      </Card>
                     </div>
                   );
                 } else return;
@@ -124,12 +168,20 @@ function BoardComponent({ game }: BoardProps) {
                 square instanceof PropertySquare
                   ? (propertyColors[square.group] ?? "bg-gray-200")
                   : "bg-gray-200";
+
+              const isBuyable =
+                square instanceof
+                (PropertySquare || UtilitySquare || StationSquare);
+              const ownerColour = game.getOwner(square.id)?.getColour();
+              const sqColour = ownerColour
+                ? playerColoursLight[ownerColour]
+                : "bg-white";
               return (
                 <HoverCard key={index}>
                   <HoverCardTrigger>
                     <div
                       className={cn(
-                        `relative flex items-center overflow-hidden bg-white text-xs ${
+                        `relative flex items-center overflow-hidden ${sqColour} text-xs ${
                           edge === "bottom"
                             ? "flex-col rounded-t-lg"
                             : edge === "top"
@@ -143,6 +195,7 @@ function BoardComponent({ game }: BoardProps) {
                       )}
                       style={{
                         height: `${80 / boardSize}vmin`,
+                        border: "2px solid black",
                       }}
                     >
                       <ColourTab

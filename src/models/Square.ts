@@ -114,9 +114,7 @@ export class PropertySquare extends Square {
     const position = player.getPosition();
 
     // Find if the property is owned by another player
-    const owner = gameState
-      .getPlayers()
-      .filter((p) => p.ownsProperty(position))[0];
+    const owner = gameState.getOwner(position);
 
     if (owner && owner.id !== player.id) {
       // Property is owned by another player
@@ -171,9 +169,7 @@ export class StationSquare extends Square {
     const position = player.getPosition();
 
     // Find if the station is owned by another player
-    const owner = gameState
-      .getPlayers()
-      .filter((p) => p.ownsProperty(position))[0];
+    const owner = gameState.getOwner(position);
 
     if (owner && owner.id !== player.id) {
       // Station is owned by another player
@@ -218,9 +214,7 @@ export class UtilitySquare extends Square {
     const position = player.getPosition();
 
     // Find if the utility is owned by another player
-    const owner = gameState
-      .getPlayers()
-      .filter((p) => p.ownsProperty(position))[0];
+    const owner = gameState.getOwner(position);
 
     if (owner && owner.id !== player.id) {
       // Utility is owned by another player
