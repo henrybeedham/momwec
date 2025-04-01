@@ -42,51 +42,69 @@ function Chat({ game, onSendMessage, mKey }: ChatProps) {
 
   return (
     <div className="flex h-screen flex-col">
-      <Card
-        key={mKey}
-        className="flex pr-2"
-        style={{
-          height: "calc(100vh - 200px)",
-          overflowY: "scroll",
-        }}
-      >
-        <div className="w-full space-y-2 p-2">
-          {messages.map((message, index) => {
-            const p = game.getPlayerById(message.user);
-            return (
-              <Card key={index} className="border shadow-sm inset-shadow-black">
-                <CardHeader className="flex flex-row items-center gap-2 px-3 py-2">
-                  <PlayerTab
-                    size={4}
-                    colour={
-                      message.type === "system"
-                        ? "bg-black"
-                        : (p?.getColour() ?? "bg-black")
-                    }
-                  />
-                  <div>
-                    <h3 className="text-sm font-medium">
-                      {message.type === "system" ? "System" : p?.name}
-                    </h3>
-                    <p className="text-muted-foreground text-xs">
-                      {message.title}
-                    </p>
-                  </div>
-                </CardHeader>
-                <CardContent className="px-3 py-1">
-                  {message.type === "system" && p && (
-                    <div className="mb-1 flex flex-row items-center gap-1">
-                      <PlayerTab size={2} colour={p.getColour()} />
-                      <p className="text-xs font-medium">{p.name}:</p>
+      <div className="relative overflow-hidden rounded-xl">
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "100px",
+            background:
+              "linear-gradient(to top, rgba(255, 255, 255, 1), transparent)",
+            pointerEvents: "none", // Prevents blocking interactions
+            zIndex: 10,
+          }}
+        />
+        <Card
+          key={mKey}
+          className="relative flex pr-2"
+          style={{
+            height: "calc(100vh - 200px)",
+            overflowY: "scroll",
+          }}
+        >
+          <div className="w-full space-y-2 p-2">
+            {messages.map((message, index) => {
+              const p = game.getPlayerById(message.user);
+              return (
+                <Card
+                  key={index}
+                  className="border shadow-sm inset-shadow-black"
+                >
+                  <CardHeader className="flex flex-row items-center gap-2 px-3 py-2">
+                    <PlayerTab
+                      size={4}
+                      colour={
+                        message.type === "system"
+                          ? "bg-black"
+                          : (p?.getColour() ?? "bg-black")
+                      }
+                    />
+                    <div>
+                      <h3 className="text-sm font-medium">
+                        {message.type === "system" ? "System" : p?.name}
+                      </h3>
+                      <p className="text-muted-foreground text-xs">
+                        {message.title}
+                      </p>
                     </div>
-                  )}
-                  <p className="text-xs">{message.description}</p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </Card>
+                  </CardHeader>
+                  <CardContent className="px-3 py-1">
+                    {message.type === "system" && p && (
+                      <div className="mb-1 flex flex-row items-center gap-1">
+                        <PlayerTab size={2} colour={p.getColour()} />
+                        <p className="text-xs font-medium">{p.name}:</p>
+                      </div>
+                    )}
+                    <p className="text-xs">{message.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
 
       <Card className="mt-2 border-t shadow-sm">
         <CardContent className="flex flex-row items-center gap-2 p-2">
