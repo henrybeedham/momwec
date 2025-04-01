@@ -68,7 +68,9 @@ function PlayerControls({
   const selectedProperty = game.getSelectedProperty();
   const dice = game.getDice();
   const params = useParams<{ gameId: string }>();
-  const properties = currentPlayer.getOwnedProperties();
+  const properties = currentPlayer
+    .getOwnedProperties()
+    .sort((a, b) => a.id - b.id);
   const { user } = useUser();
   if (!user) throw new Error("No user");
   const myTurn = user.id === currentPlayer.id;
