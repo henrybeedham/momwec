@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-red-500 to-orange-600">
-      <div className="text-center">
+      <div className="text-center p-4">
         <h1 className="mb-8 text-6xl font-bold text-white">MOMWEC</h1>
         {/* <p className="my-4 text-xl text-white">
           Hello {user?.firstName ?? user?.emailAddresses[0]?.emailAddress} welcome to MOMWEC. The start game button below will yk start a new game. From here, you can either 

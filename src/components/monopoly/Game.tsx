@@ -13,6 +13,9 @@ import { User } from "@clerk/nextjs/server";
 import Chat from "./Chat";
 import { Message } from "~/models/types";
 import { PropertySquare } from "~/models/Square";
+import { Loader, Loader2 } from "lucide-react";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -228,6 +231,36 @@ function GameComponent() {
 
   if (!gameRef.current || !uniqueGameKey) {
     return <div>Loading game...</div>;
+  }
+
+  if (gameRef.current.getPlayers().length === 1) {
+    const gameLink = `https://ilpa.co.uk/${gameId}`;
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-orange-600 to-yellow-500 text-white">
+        <h1 className="text-6xl font-bold">Game: {gameId}</h1>
+        <h1 className="text-6xl font-bold">Waiting for opponents to join...</h1>
+        <p className="text-xl">Share you game code or send link:</p>
+        <div className="flex gap-4">
+          <Input
+            readOnly
+            className="bg-white text-center text-black"
+            value={gameLink}
+          />
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(gameLink);
+              toast({
+                description: "Link successfully copied"
+              })
+            }}
+          >
+            Copy link
+          </Button>
+        </div>
+
+        <Loader2 className="animate-spin" size={80} color="#fff" />
+      </div>
+    );
   }
 
   return (
