@@ -31,16 +31,17 @@ function GameComponent() {
 
   const sendGameMove = () => {
     const data = gameRef.current?.toJSON();
-
+    if (!data) throw new Error("Game data is null. Cannot send gameMove event.");
     if (socketRef.current) {
       socketRef.current.emit("gameMove", data);
-      console.log("Sent gameMove event:", data);
+      console.log("Sent gameMove event:", JSON.parse(data));
     } else {
       console.error("Socket connection is not established. (sendGameMove)");
     }
   };
 
-  // Your useEffect hook with proper dependencies
+  // Listen for game data from the server
+  // and update the game state accordingly
   useEffect(() => {
     if (!user) return; // Early return if no user
 
@@ -98,7 +99,7 @@ function GameComponent() {
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [gameId, user]); // Include user and sendGameMove in dependencies
+  }, [gameId, user]);
 
   const initialiseGame = useCallback(() => {
     const newGame = new GameState();
