@@ -170,7 +170,7 @@ function GameComponent() {
       updateGameState(() => {
         const g = gameRef.current;
         if (!g) throw new Error("Game is not initialized");
-        const p = g.getSelectedProperty();
+        const p = g.getBoard().getSquareFromIndex(propertyId) as PropertySquare;
         if (!p) throw new Error("No property selected");
         g.sendMessage({
           user: g.getCurrentPlayer().id,
