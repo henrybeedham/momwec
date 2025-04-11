@@ -13,6 +13,7 @@ type GameStateJSON = {
   gameLocked: boolean;
   selectedProperty: number | null;
   board: ReturnType<Board["toJSON"]>;
+  proposedTrade: Trade | null;
 };
 
 export class GameState {
@@ -289,6 +290,7 @@ export class GameState {
       gameLocked: this.gameLocked,
       selectedProperty: this.selectedProperty,
       board: this.board.toJSON(),
+      proposedTrade: this.proposedTrade,
     };
 
     return JSON.stringify(gameState);
@@ -303,6 +305,7 @@ export class GameState {
       this.dice = gameState.dice;
       this.gameLocked = gameState.gameLocked;
       this.selectedProperty = gameState.selectedProperty;
+      this.proposedTrade = gameState.proposedTrade;
 
       this.board.importFromJSON(gameState.board);
       // Import players

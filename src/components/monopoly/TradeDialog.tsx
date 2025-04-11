@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Home, DollarSign } from "lucide-react";
+import { Home, DollarSign, PoundSterling } from "lucide-react";
 
 import {
   AlertDialog,
@@ -204,7 +204,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
       <AlertDialogTrigger asChild>
         <Button variant="outline">Trade</Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="max-w-3xl">
+      <AlertDialogContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <AlertDialogHeader>
@@ -280,7 +280,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                             <FormItem>
                               <FormControl>
                                 <div className="flex items-center space-x-2">
-                                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                  <PoundSterling className="h-4 w-4 text-muted-foreground" />
                                   <Input
                                     type="number"
                                     min="0"
@@ -301,7 +301,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                         />
                       </div>
                       <div className="mt-4 text-right">
-                        <p className="text-sm text-muted-foreground">Total value: ${calculateTotalGive()}</p>
+                        <p className="text-sm text-muted-foreground">Total value: £{calculateTotalGive()}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -339,7 +339,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                             <FormItem>
                               <FormControl>
                                 <div className="flex items-center space-x-2">
-                                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                  <PoundSterling className="h-4 w-4 text-muted-foreground" />
                                   <Input
                                     type="number"
                                     min="0"
@@ -360,7 +360,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                         />
                       </div>
                       <div className="mt-4 text-right">
-                        <p className="text-sm text-muted-foreground">Total value: ${calculateTotalGet()}</p>
+                        <p className="text-sm text-muted-foreground">Total value: £{calculateTotalGet()}</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -368,7 +368,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
               )}
             </div>
 
-            <AlertDialogFooter>
+            <AlertDialogFooter className="pt-4">
               <AlertDialogCancel onClick={resetTrade} type="button">
                 Cancel
               </AlertDialogCancel>

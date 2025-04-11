@@ -45,8 +45,10 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
     }, 0) + (trade.getMoney ?? 0);
 
   // Determine if the current player is the recipient
-  const isRecipient = game.getCurrentPlayer().id === recipient.id;
+  const isRecipient = game.getCurrentPlayer().id === trade.selectedPlayer;
   const open = !!game.getProposedTrade() && isRecipient;
+
+  console.log("Trade proposal dialog", { open, trade, proposer, recipient });
 
   return (
     <AlertDialog open={open}>
@@ -86,7 +88,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
                                 {propertyHouses}
                               </Badge>
                             )}
-                            <Badge variant="secondary">${isProperty ? property.calculateValue(propertyHouses) : property.price}</Badge>
+                            <Badge variant="secondary">£{isProperty ? property.calculateValue(propertyHouses) : property.price}</Badge>
                           </div>
                         </div>
                       );
@@ -101,7 +103,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
                   <h4 className="text-sm font-medium">Money:</h4>
                   <div className="bg-muted/50 p-2 rounded-md">
                     <Badge variant="outline" className="bg-green-50">
-                      ${trade.giveMoney}
+                      £{trade.giveMoney}
                     </Badge>
                   </div>
                 </div>
@@ -110,7 +112,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
               {proposerGivesProperties.length === 0 && (!trade.giveMoney || trade.giveMoney === 0) && <p className="text-sm text-muted-foreground">Nothing to receive.</p>}
 
               <div className="mt-4 text-right">
-                <p className="text-sm font-medium">Total value: ${proposerGivesValue}</p>
+                <p className="text-sm font-medium">Total value: £{proposerGivesValue}</p>
               </div>
             </CardContent>
           </Card>
@@ -142,7 +144,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
                                 {propertyHouses}
                               </Badge>
                             )}
-                            <Badge variant="secondary">${isProperty ? property.calculateValue(propertyHouses) : property.price}</Badge>
+                            <Badge variant="secondary">£{isProperty ? property.calculateValue(propertyHouses) : property.price}</Badge>
                           </div>
                         </div>
                       );
@@ -157,7 +159,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
                   <h4 className="text-sm font-medium">Money:</h4>
                   <div className="bg-muted/50 p-2 rounded-md">
                     <Badge variant="outline" className="bg-red-50">
-                      ${trade.getMoney}
+                      £{trade.getMoney}
                     </Badge>
                   </div>
                 </div>
@@ -166,7 +168,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
               {proposerGetsProperties.length === 0 && (!trade.getMoney || trade.getMoney === 0) && <p className="text-sm text-muted-foreground">Nothing to give.</p>}
 
               <div className="mt-4 text-right">
-                <p className="text-sm font-medium">Total value: ${proposerGetsValue}</p>
+                <p className="text-sm font-medium">Total value: £{proposerGetsValue}</p>
               </div>
             </CardContent>
           </Card>

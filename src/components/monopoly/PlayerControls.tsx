@@ -149,7 +149,7 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
         )}
 
         {/* Trade Dialog */}
-        <TradeDialog game={game} proposeTrade={proposeTrade} />
+        <TradeDialog game={game} proposeTrade={proposeTrade} key={keyPassthrough} />
       </div>
     </div>
   );

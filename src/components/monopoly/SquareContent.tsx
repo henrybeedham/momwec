@@ -1,4 +1,4 @@
-import { Zap, Train, Droplet, ArrowLeft, Columns4, Car, Pointer, Coins, Clover, Building, MapPin, DollarSign } from "lucide-react";
+import { Zap, Train, Droplet, ArrowLeft, Columns4, Car, Pointer, Coins, Clover, Building, MapPin, DollarSign, PoundSterling } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Square } from "~/models/Square";
 
@@ -74,7 +74,7 @@ export default function renderSquareContent(square: Square) {
   if (type === "tax") {
     return (
       <>
-        <DollarSign className="h-8 w-8" />
+        <PoundSterling className="h-8 w-8" />
         <p className={cn("text-center")}>{name}</p>
       </>
     );
