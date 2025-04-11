@@ -104,11 +104,7 @@ function GameComponent() {
   const initialiseGame = useCallback(() => {
     const newGame = new GameState();
     if (!user) return;
-    const userName =
-      user.fullName ??
-      user.emailAddresses[0]?.emailAddress ??
-      user.username ??
-      user.id;
+    const userName = getUserName(user);
     newGame.addPlayer(user.id, userName);
     gameRef.current = newGame; // Store in ref for immediate access
     setUniqueGameKey(newGame.exportGameState());
@@ -299,6 +295,7 @@ export default GameComponent;
 function getUserName(user: ReturnType<typeof useUser>["user"]): string {
   if (!user) throw new Error("Blud why you giving the getUserName no userrrr");
   return (
+    user.firstName ??
     user.fullName ??
     user.emailAddresses[0]?.emailAddress ??
     user.username ??

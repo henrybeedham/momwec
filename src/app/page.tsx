@@ -27,7 +27,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [idInput, setIdInput] = useState("");
 
-  // const { isSignedIn, user, isLoaded } = useUser();
+  const { isSignedIn, user, isLoaded } = useUser();
 
   const startNewGame = () => {
     setIsLoading(true);
@@ -48,16 +48,26 @@ export default function Home() {
   });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-red-500 to-orange-600">
-      <div className="text-center p-4">
-        <h1 className="mb-8 text-6xl font-bold text-white">MOMWEC</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-red-500 to-orange-600 ">
+      <div className="p-4 text-center max-w-6xl">
+        <h1 className="text-6xl font-bold text-white">MOMWEC</h1>
+        <h2 className="mb-8 text-xl text-gray-300">
+          Multiplayer Online Monopoly With Extra Capitalism
+        </h2>
         {/* <p className="my-4 text-xl text-white">
           Hello {user?.firstName ?? user?.emailAddresses[0]?.emailAddress} welcome to MOMWEC. The start game button below will yk start a new game. From here, you can either 
         </p> */}
         {/* TODO: FIX THIS */}
         <p className="my-4 text-xl text-white">
-          Hello {"User"} welcome to MOMWEC. The start game button below will yk
-          start a new game. From here, you can either
+          Hello{" "}
+          {user
+            ? (user.firstName ??
+              user.fullName ??
+              user.emailAddresses[0]?.emailAddress)
+            : "..."}{" "}
+          Welcome to the ultimate property trading experience! MOMWEC takes the
+          classic game you know and love to new heights with expanded capitalism
+          features and multiplayer action.
         </p>
         <Button
           onClick={startNewGame}
