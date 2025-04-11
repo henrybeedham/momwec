@@ -216,7 +216,7 @@ function GameComponent() {
         if (!g) throw new Error("Game is not initialized");
         g.proposeTrade(trade);
         g.sendMessage({
-          user: g.getCurrentPlayer().id,
+          user: trade.proposer,
           type: "system",
           title: "Trade Proposed",
           description: `You have proposed a trade with ${g.getPlayerById(trade.selectedPlayer)?.name}`,
@@ -230,12 +230,14 @@ function GameComponent() {
     updateGameState(() => {
       const g = gameRef.current;
       if (!g) throw new Error("Game is not initialized");
+      const trade = g.getProposedTrade();
+      if (!trade) throw new Error("No trade proposed");
       g.executeTrade();
       g.sendMessage({
-        user: g.getCurrentPlayer().id,
+        user: trade.selectedPlayer,
         type: "system",
         title: "Trade Accepted",
-        description: `You have accepted a trade with ${g.getPlayerById(g.getProposedTrade()?.selectedPlayer ?? "")?.name}`,
+        description: `You have accepted a trade with ${g.getPlayerById(trade.proposer)?.name}`,
       });
     });
   }, [updateGameState, gameRef.current]);
