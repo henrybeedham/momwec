@@ -256,7 +256,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
               </div>
 
               {selectedPlayer && (
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-4">
                   {/* What you give */}
                   <Card>
                     <CardContent className="pt-6">

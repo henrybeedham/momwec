@@ -67,7 +67,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
           </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className="grid md:grid-cols-2 gap-6 my-4">
+        <div className="flex flex-col gap-4 my-4">
           {/* What recipient gets */}
           <Card className="border-green-200">
             <CardContent className="pt-6">
