@@ -7,7 +7,7 @@ import { useToast } from "~/hooks/use-toast";
 import Popups from "./Popups";
 import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
-import { playerColoursLight } from "~/utils/monopoly";
+import { getUserName, playerColoursLight } from "~/utils/monopoly";
 import { useUser } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/server";
 import Chat from "./Chat";
@@ -52,10 +52,7 @@ function GameComponent() {
     });
 
     socketRef.current.on("connect", () => {
-      console.log(
-        "Connected to Socket.IO server with id:",
-        socketRef.current?.id,
-      );
+      console.log("Connected to Socket.IO server with id:", socketRef.current?.id);
       console.log("Asking for game data/Checking if game exists...");
       socketRef.current?.emit("getGameData", gameId);
     });
@@ -80,9 +77,7 @@ function GameComponent() {
       gameRef.current = newGame;
 
       // check if I am a player
-      const isUserAPlayer = newGame
-        .getPlayers()
-        .some((player) => player.id === user.id);
+      const isUserAPlayer = newGame.getPlayers().some((player) => player.id === user.id);
 
       const userName = getUserName(user);
 
@@ -217,6 +212,26 @@ function GameComponent() {
     initialiseGame();
   }, [initialiseGame]);
 
+  const handleKeyPress = (event: KeyboardEvent) => {
+    if (event.key === "t" && gameRef.current?.getPlayers().length === 1) {
+      updateGameState(() => {
+        const g = gameRef.current;
+        if (!g) throw new Error("Game is not initialized");
+        const userName = getUserName(user);
+        g.addPlayer("test user", userName);
+        sendGameMove();
+        window.removeEventListener("keypress", handleKeyPress);
+      });
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keypress", handleKeyPress);
+    return () => {
+      window.removeEventListener("keypress", handleKeyPress);
+    };
+  }, []);
+
   // Now you can add your conditional return
   if (!user) {
     return (
@@ -232,17 +247,15 @@ function GameComponent() {
 
   if (gameRef.current.getPlayers().length === 1) {
     const gameLink = `https://ilpa.co.uk/${gameId}`;
+    // log in green saying if t is pressed, a test user will be added
+    console.log("%cPress t to add a test user", "background: #222; color: #bada55");
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-orange-600 to-yellow-500 p-4 text-center text-white">
         <h1 className="text-6xl font-bold">Game: {gameId}</h1>
         <h1 className="text-6xl font-bold">Waiting for opponents to join...</h1>
         <p className="text-xl">Share you game code or send link:</p>
         <div className="flex gap-4">
-          <Input
-            readOnly
-            className="bg-white text-center text-black"
-            value={gameLink}
-          />
+          <Input readOnly className="bg-white text-center text-black" value={gameLink} />
           <Button
             onClick={() => {
               navigator.clipboard.writeText(gameLink);
@@ -261,44 +274,15 @@ function GameComponent() {
   }
 
   return (
-    <div
-      className={`${playerColoursLight[gameRef.current?.getCurrentPlayer().getColour()]} flex min-h-screen items-center justify-center`}
-    >
+    <div className={`${playerColoursLight[gameRef.current?.getCurrentPlayer().getColour()]} flex min-h-screen items-center justify-center`}>
       <div className="flex flex-col p-4 md:flex-row">
-        <Popups
-          game={gameRef.current}
-          buyProperty={buyProperty}
-          passProperty={passProperty}
-          key={`Popups-${uniqueGameKey}`}
-        />
-        <PlayerControls
-          game={gameRef.current}
-          onRollDice={playerMove}
-          onEndTurn={endTurn}
-          onBuyHouse={buyHouse}
-          onMortgage={mortgage}
-          keyPassthrough={`Controls-${uniqueGameKey}`}
-        />
+        <Popups game={gameRef.current} buyProperty={buyProperty} passProperty={passProperty} key={`Popups-${uniqueGameKey}`} />
+        <PlayerControls game={gameRef.current} onRollDice={playerMove} onEndTurn={endTurn} onBuyHouse={buyHouse} onMortgage={mortgage} keyPassthrough={`Controls-${uniqueGameKey}`} />
         <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
-        <Chat
-          game={gameRef.current}
-          onSendMessage={sendMessage}
-          keyPassthrough={`Chat-${uniqueMessagesKey}`}
-        />
+        <Chat game={gameRef.current} onSendMessage={sendMessage} keyPassthrough={`Chat-${uniqueMessagesKey}`} />
       </div>
     </div>
   );
 }
 
 export default GameComponent;
-
-function getUserName(user: ReturnType<typeof useUser>["user"]): string {
-  if (!user) throw new Error("Blud why you giving the getUserName no userrrr");
-  return (
-    user.firstName ??
-    user.fullName ??
-    user.emailAddresses[0]?.emailAddress ??
-    user.username ??
-    user.id
-  );
-}

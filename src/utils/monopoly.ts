@@ -1,3 +1,5 @@
+import { useUser } from "@clerk/nextjs";
+
 export const propertyColors: Record<string, string> = {
   brown: "bg-amber-900",
   "light-blue": "bg-sky-400",
@@ -11,16 +13,7 @@ export const propertyColors: Record<string, string> = {
   utility: "bg-gray-400",
 };
 
-export const playerColours = [
-  "bg-red-500",
-  "bg-orange-500",
-  "bg-yellow-500",
-  "bg-green-500",
-  "bg-blue-500",
-  "bg-purple-500",
-  "bg-pink-500",
-  "bg-gray-500",
-];
+export const playerColours = ["bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500", "bg-blue-500", "bg-purple-500", "bg-pink-500", "bg-gray-500"];
 
 export const playerColoursLight: Record<string, string> = {
   "bg-red-500": "bg-red-200",
@@ -32,3 +25,8 @@ export const playerColoursLight: Record<string, string> = {
   "bg-pink-500": "bg-pink-200",
   "bg-gray-500": "bg-gray-200",
 };
+
+export function getUserName(user: ReturnType<typeof useUser>["user"]): string {
+  if (!user) return "Unknown User";
+  return user.firstName ?? user.fullName ?? user.emailAddresses[0]?.emailAddress ?? user.username ?? user.id;
+}

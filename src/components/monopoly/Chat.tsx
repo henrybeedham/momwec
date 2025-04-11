@@ -50,8 +50,7 @@ function Chat({ game, onSendMessage, keyPassthrough }: ChatProps) {
             left: 0,
             right: 0,
             height: "100px",
-            background:
-              "linear-gradient(to top, rgba(255, 255, 255, 1), transparent)",
+            background: "linear-gradient(to top, rgba(255, 255, 255, 1), transparent)",
             pointerEvents: "none", // Prevents blocking interactions
             zIndex: 10,
           }}
@@ -68,26 +67,12 @@ function Chat({ game, onSendMessage, keyPassthrough }: ChatProps) {
             {messages.map((message, index) => {
               const p = game.getPlayerById(message.user);
               return (
-                <Card
-                  key={index}
-                  className="border shadow-sm inset-shadow-black"
-                >
+                <Card key={index} className="border shadow-sm inset-shadow-black">
                   <CardHeader className="flex flex-row items-center gap-2 px-3 py-2">
-                    <PlayerTab
-                      size={4}
-                      colour={
-                        message.type === "system"
-                          ? "bg-black"
-                          : (p?.getColour() ?? "bg-black")
-                      }
-                    />
+                    <PlayerTab size={4} colour={message.type === "system" ? "bg-black" : (p?.getColour() ?? "bg-black")} />
                     <div>
-                      <h3 className="text-sm font-medium">
-                        {message.type === "system" ? "System" : p?.name}
-                      </h3>
-                      <p className="text-muted-foreground text-xs">
-                        {message.title}
-                      </p>
+                      <h3 className="text-sm font-medium">{message.type === "system" ? "System" : p?.name}</h3>
+                      <p className="text-muted-foreground text-xs">{message.title}</p>
                     </div>
                   </CardHeader>
                   <CardContent className="px-3 py-1">
@@ -108,10 +93,7 @@ function Chat({ game, onSendMessage, keyPassthrough }: ChatProps) {
 
       <Card className="mt-2 border-t shadow-sm">
         <CardContent className="flex flex-row items-center gap-2 p-2">
-          <PlayerTab
-            size={4}
-            colour={game.getPlayerById(user.id)?.getColour() ?? "bg-black"}
-          />
+          <PlayerTab size={4} colour={game.getPlayerById(user.id)?.getColour() ?? "bg-black"} />
           <Input
             value={message}
             onChange={(e) => {
