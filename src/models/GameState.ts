@@ -281,12 +281,16 @@ export class GameState {
   }
 
   exportGameState(): string {
-    return JSON.stringify({
-      currentPlayerIndex: this.getCurrentPlayerId(),
-      playerPositions: this.getPlayers().map((p) => p.getPosition()),
-      playerMoney: this.getPlayers().map((p) => p.getMoney()),
-      timestamp: Date.now(), // Ensures a unique key each time
-    });
+    const gameState = {
+      players: this.players.map((player) => player.toJSON()),
+      currentPlayerIndex: this.currentPlayerIndex,
+      dice: this.dice,
+      gameLocked: this.gameLocked,
+      selectedProperty: this.selectedProperty,
+      board: this.board.toJSON(),
+    };
+
+    return JSON.stringify(gameState);
   }
 
   toJSON(): string {

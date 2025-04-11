@@ -120,6 +120,8 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
     return null;
   }
 
+  const myTurn = user.id === game.getCurrentPlayer().id;
+
   const players = game.getPlayers();
   const me = game.getPlayerById(user.id);
   if (!me) {
@@ -218,9 +220,11 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="outline">Trade</Button>
-      </AlertDialogTrigger>
+      {myTurn && (
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">Trade</Button>
+        </AlertDialogTrigger>
+      )}
       <AlertDialogContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
