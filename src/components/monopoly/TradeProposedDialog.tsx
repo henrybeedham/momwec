@@ -105,7 +105,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
               )}
 
               {/* Money */}
-              {trade.giveMoney && trade.giveMoney > 0 && (
+              {!!trade.giveMoney && trade.giveMoney > 0 && (
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium">Money:</h4>
                   <div className="bg-muted/50 p-2 rounded-md">
@@ -161,7 +161,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
               )}
 
               {/* Money */}
-              {trade.getMoney && trade.getMoney > 0 && (
+              {!!trade.getMoney && trade.getMoney > 0 && (
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium">Money:</h4>
                   <div className="bg-muted/50 p-2 rounded-md">
@@ -182,7 +182,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
         </div>
 
         {isRecipient && (
-          <AlertDialogFooter className="gap-2 sm:gap-0">
+          <AlertDialogFooter>
             <AlertDialogCancel type="button" onClick={onDeny}>
               Deny Trade
             </AlertDialogCancel>

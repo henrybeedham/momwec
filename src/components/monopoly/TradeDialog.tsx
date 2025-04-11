@@ -382,10 +382,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
               <AlertDialogCancel onClick={resetTrade} type="button">
                 Cancel
               </AlertDialogCancel>
-              <AlertDialogAction
-                type="submit"
-                disabled={!selectedPlayer || (giveProperties.length === 0 && form.watch("giveMoney") === 0) || (getProperties.length === 0 && form.watch("getMoney") === 0)}
-              >
+              <AlertDialogAction type="submit" disabled={!selectedPlayer || (!giveProperties.length && !getProperties.length && !form.watch("giveMoney") && !form.watch("getMoney"))}>
                 Propose Trade
               </AlertDialogAction>
             </AlertDialogFooter>
