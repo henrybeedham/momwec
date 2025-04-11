@@ -8,6 +8,7 @@ import { Separator } from "~/components/ui/separator";
 import { Trade } from "./TradeDialog";
 import { GameState } from "~/models/GameState";
 import { BuyableSquare, PropertySquare } from "~/models/Square";
+import { useUser } from "@clerk/nextjs";
 
 type TradeProposalDialogProps = {
   game: GameState;
@@ -22,6 +23,10 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
   const proposer = game.getPlayerById(trade.proposer);
   const recipient = game.getPlayerById(trade.selectedPlayer);
   if (!proposer || !recipient) return null;
+  const { user } = useUser();
+  if (!user) {
+    return null;
+  }
 
   // Get properties involved in the trade
   const proposerGivesProperties = trade.giveProperties.map((id) => game.getBoard().getSquareFromIndex(id)).filter((p): p is BuyableSquare => !!p);
@@ -45,10 +50,12 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
     }, 0) + (trade.getMoney ?? 0);
 
   // Determine if the current player is the recipient
-  const isRecipient = game.getCurrentPlayer().id === trade.selectedPlayer;
-  const open = !!game.getProposedTrade() && isRecipient;
+  console.log(`user id: ${user.id} selected player: ${trade.selectedPlayer}`);
 
-  console.log("Trade proposal dialog", { open, trade, proposer, recipient });
+  const isRecipient = user.id === trade.selectedPlayer;
+  const open = isRecipient;
+
+  console.log("Trade proposal dialog", { open, trade, proposer, recipient, isRecipient });
 
   return (
     <AlertDialog open={open}>

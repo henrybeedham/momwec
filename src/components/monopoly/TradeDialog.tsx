@@ -27,6 +27,7 @@ import { GameState } from "~/models/GameState";
 import { BuyableSquare, PropertySquare } from "~/models/Square";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/ui/form";
 import { Player } from "~/models/Player";
+import { useUser } from "@clerk/nextjs";
 
 // Define schema for the form
 const tradeFormSchema = z.object({
@@ -110,6 +111,11 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
       getMoney: null,
     },
   });
+
+  const { user } = useUser();
+  if (!user) {
+    return null;
+  }
 
   const players = game.getPlayers();
   const me = game.getCurrentPlayer();
@@ -196,7 +202,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
       return;
     }
     console.log("Trade proposal:", data);
-    proposeTrade({ ...data, proposer: me.id });
+    proposeTrade({ ...data, proposer: user.id });
   };
 
   return (
@@ -228,7 +234,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                         </SelectTrigger>
                         <SelectContent>
                           {players
-                            .filter((p) => p.id !== me.id)
+                            .filter((p) => p.id !== user.id)
                             .map((player) => (
                               <SelectItem key={player.id} value={player.id}>
                                 <div className="flex items-center gap-2">
