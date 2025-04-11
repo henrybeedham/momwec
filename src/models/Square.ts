@@ -4,13 +4,7 @@ import { Player } from "./Player";
 
 import type { Group, ToastCallback } from "~/models/types";
 
-type SquareType =
-  | "property"
-  | "station"
-  | "utility"
-  | "tax"
-  | "corner"
-  | "card";
+type SquareType = "property" | "station" | "utility" | "tax" | "corner" | "card";
 
 // Base Square class
 export abstract class Square {
@@ -24,12 +18,7 @@ export abstract class Square {
     this.type = type;
   }
 
-  abstract handleLanding(
-    player: Player,
-    gameState: GameState,
-    diceRoll: number,
-    toastCallback: ToastCallback,
-  ): void;
+  abstract handleLanding(player: Player, gameState: GameState, diceRoll: number, toastCallback: ToastCallback): void;
 
   toJSON() {
     return {
@@ -49,12 +38,7 @@ export class CornerSquare extends Square {
     this.action = action;
   }
 
-  handleLanding(
-    player: Player,
-    gameState: GameState,
-    diceRoll: number,
-    toastCallback: ToastCallback,
-  ): void {
+  handleLanding(player: Player, gameState: GameState, diceRoll: number, toastCallback: ToastCallback): void {
     switch (this.name) {
       case "Go To Jail":
         player.setPosition(10); // Move to jail
@@ -90,14 +74,7 @@ export class PropertySquare extends Square {
   readonly houseCost: number;
   readonly group: Group;
 
-  constructor(
-    id: number,
-    name: string,
-    price: number,
-    rent: number[],
-    houseCost: number,
-    group: Group,
-  ) {
+  constructor(id: number, name: string, price: number, rent: number[], houseCost: number, group: Group) {
     super(id, name, "property");
     this.price = price;
     this.rent = rent;
@@ -105,12 +82,7 @@ export class PropertySquare extends Square {
     this.group = group;
   }
 
-  handleLanding(
-    player: Player,
-    gameState: GameState,
-    diceRoll: number,
-    toastCallback: ToastCallback,
-  ): void {
+  handleLanding(player: Player, gameState: GameState, diceRoll: number, toastCallback: ToastCallback): void {
     const position = player.getPosition();
 
     // Find if the property is owned by another player
@@ -118,9 +90,7 @@ export class PropertySquare extends Square {
 
     if (owner && owner.id !== player.id) {
       // Property is owned by another player
-      const property = owner
-        .getOwnedProperties()
-        .find((p) => p.id === position);
+      const property = owner.getOwnedProperties().find((p) => p.id === position);
       const rentAmount = this.rent[property?.houses ?? 0] ?? 0;
 
       payRent(player, owner, rentAmount, toastCallback, this);
@@ -132,6 +102,10 @@ export class PropertySquare extends Square {
 
   calculateRent(houses: number): number {
     return this.rent[houses] ?? 0;
+  }
+
+  calculateValue(houses: number): number {
+    return this.price + houses * this.houseCost;
   }
 
   getPropertyColour(): string {
@@ -160,12 +134,7 @@ export class StationSquare extends Square {
     this.rent = rent;
   }
 
-  handleLanding(
-    player: Player,
-    gameState: GameState,
-    diceRoll: number,
-    toastCallback: ToastCallback,
-  ): void {
+  handleLanding(player: Player, gameState: GameState, diceRoll: number, toastCallback: ToastCallback): void {
     const position = player.getPosition();
 
     // Find if the station is owned by another player
@@ -205,12 +174,7 @@ export class UtilitySquare extends Square {
     this.multipliers = multipliers;
   }
 
-  handleLanding(
-    player: Player,
-    gameState: GameState,
-    diceRoll: number,
-    toastCallback: ToastCallback,
-  ): void {
+  handleLanding(player: Player, gameState: GameState, diceRoll: number, toastCallback: ToastCallback): void {
     const position = player.getPosition();
 
     // Find if the utility is owned by another player
@@ -249,12 +213,7 @@ export class TaxSquare extends Square {
     this.amount = amount;
   }
 
-  handleLanding(
-    player: Player,
-    gameState: GameState,
-    diceRoll: number,
-    toastCallback: ToastCallback,
-  ): void {
+  handleLanding(player: Player, gameState: GameState, diceRoll: number, toastCallback: ToastCallback): void {
     player.removeMoney(this.amount);
     toastCallback({
       title: "Tax Paid",
@@ -279,16 +238,8 @@ export class CardSquare extends Square {
     this.cardType = cardType;
   }
 
-  handleLanding(
-    player: Player,
-    gameState: GameState,
-    diceRoll: number,
-    toastCallback: ToastCallback,
-  ): void {
-    const card =
-      this.cardType === "community"
-        ? gameState.getBoard().drawCommunityChestCard()
-        : gameState.getBoard().drawChanceCard();
+  handleLanding(player: Player, gameState: GameState, diceRoll: number, toastCallback: ToastCallback): void {
+    const card = this.cardType === "community" ? gameState.getBoard().drawCommunityChestCard() : gameState.getBoard().drawChanceCard();
 
     card.applyEffect(player, gameState, toastCallback);
   }
@@ -301,24 +252,11 @@ export class CardSquare extends Square {
   }
 }
 
-export type AllSquares =
-  | Square
-  | CornerSquare
-  | PropertySquare
-  | StationSquare
-  | UtilitySquare
-  | TaxSquare
-  | CardSquare;
+export type AllSquares = Square | CornerSquare | PropertySquare | StationSquare | UtilitySquare | TaxSquare | CardSquare;
 
 export type BuyableSquare = PropertySquare | StationSquare | UtilitySquare;
 
-function payRent(
-  player: Player,
-  owner: Player,
-  rentAmount: number,
-  toastCallback: ToastCallback,
-  square: BuyableSquare,
-) {
+function payRent(player: Player, owner: Player, rentAmount: number, toastCallback: ToastCallback, square: BuyableSquare) {
   // if morgaged, skip rent
   if (owner.isPropertyMortgaged(square.id)) {
     toastCallback({

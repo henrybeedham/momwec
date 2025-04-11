@@ -1,15 +1,6 @@
 import { BuyableSquare, PropertySquare } from "~/models/Square";
 import { Button } from "../ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "../ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import SquareCard from "./SquareCard";
 import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "~/models/GameState";
@@ -21,10 +12,8 @@ type PopupProps = {
   passProperty: () => void;
 };
 
-function Popups({ game, buyProperty, passProperty }: PopupProps) {
-  const property = game
-    .getBoard()
-    .getSquareFromIndex(game.getSelectedProperty() ?? -1) as BuyableSquare;
+function PurchaseDialog({ game, buyProperty, passProperty }: PopupProps) {
+  const property = game.getBoard().getSquareFromIndex(game.getSelectedProperty() ?? -1) as BuyableSquare;
 
   const { user } = useUser();
   if (!user) throw new Error("No user");
@@ -38,14 +27,7 @@ function Popups({ game, buyProperty, passProperty }: PopupProps) {
             <AlertDialogTitle>You landed on {property.name}</AlertDialogTitle>
           </AlertDialogHeader>
 
-          <SquareCard
-            square={property}
-            colourClass={
-              property instanceof PropertySquare
-                ? (propertyColors[property.group] ?? "bg-gray-200")
-                : "bg-gray-200"
-            }
-          />
+          <SquareCard square={property} colourClass={property instanceof PropertySquare ? (propertyColors[property.group] ?? "bg-gray-200") : "bg-gray-200"} />
 
           <AlertDialogFooter>
             <AlertDialogCancel onClick={passProperty}>Pass</AlertDialogCancel>
@@ -57,4 +39,4 @@ function Popups({ game, buyProperty, passProperty }: PopupProps) {
   );
 }
 
-export default Popups;
+export default PurchaseDialog;

@@ -1,10 +1,5 @@
 import { Board } from "./Board";
-import {
-  BuyableSquare,
-  PropertySquare,
-  StationSquare,
-  UtilitySquare,
-} from "./Square";
+import { BuyableSquare, PropertySquare, StationSquare, UtilitySquare } from "./Square";
 import { Group } from "./types";
 
 export class Player {
@@ -22,13 +17,7 @@ export class Player {
   private pardons: number;
   private board: Board;
 
-  constructor(
-    id: string,
-    name: string,
-    colour: string,
-    board: Board,
-    initialMoney = 1500,
-  ) {
+  constructor(id: string, name: string, colour: string, board: Board, initialMoney = 1500) {
     this.id = id;
     this.name = name;
     this.position = 0;
@@ -58,19 +47,15 @@ export class Player {
   }
 
   getNetWorth(): number {
-    return (
-      this.getMoney() +
-      this.getOwnedProperties().reduce(
-        (total, property) =>
-          total +
-          (this.board.getSquareFromIndex(property.id) as BuyableSquare).price,
-        0,
-      )
-    );
+    return this.getMoney() + this.getOwnedProperties().reduce((total, property) => total + (this.board.getSquareFromIndex(property.id) as BuyableSquare).price, 0);
   }
 
   getOwnedProperties() {
     return this.ownedProperties;
+  }
+
+  getOwnedPropertyById(propertyId: number) {
+    return this.ownedProperties.find((property) => property.id === propertyId);
   }
 
   getPardons(): number {
@@ -78,9 +63,7 @@ export class Player {
   }
 
   isPropertyMortgaged(propertyId: number): boolean {
-    const property = this.ownedProperties.find(
-      (prop) => prop.id === propertyId,
-    );
+    const property = this.ownedProperties.find((prop) => prop.id === propertyId);
     if (!property) return false;
     return property ? (property.mortgaged ?? false) : false;
   }
@@ -91,9 +74,7 @@ export class Player {
     this.position = position;
   }
 
-  setOwnedProperties(
-    properties: Array<{ id: number; houses?: number; mortgaged?: boolean }>,
-  ): void {
+  setOwnedProperties(properties: Array<{ id: number; houses?: number; mortgaged?: boolean }>): void {
     this.ownedProperties = properties;
   }
 
@@ -131,8 +112,17 @@ export class Player {
     this.money -= amount;
   }
 
-  addProperty(propertyId: number): void {
-    this.ownedProperties.push({ id: propertyId });
+  addProperty(propertyId: number, houses = 0): void {
+    this.ownedProperties.push({ id: propertyId, houses });
+  }
+
+  removeProperty(propertyId: number): boolean {
+    const propertyIndex = this.ownedProperties.findIndex((property) => property.id === propertyId);
+    if (propertyIndex !== -1) {
+      this.ownedProperties.splice(propertyIndex, 1);
+      return true;
+    }
+    return false;
   }
 
   ownsProperty(propertyId: number): boolean {
@@ -140,9 +130,7 @@ export class Player {
   }
 
   ownsPropertyGroup(group: Group): boolean {
-    return !this.board
-      .getPropertiesByGroup(group)
-      .some((property) => !this.ownsProperty(property.id));
+    return !this.board.getPropertiesByGroup(group).some((property) => !this.ownsProperty(property.id));
   }
 
   buyProperty(square: PropertySquare | StationSquare | UtilitySquare): boolean {
@@ -155,9 +143,7 @@ export class Player {
   }
 
   buyHouse(property: PropertySquare): boolean {
-    const ownedProperty = this.ownedProperties.find(
-      (prop) => prop.id === property.id,
-    );
+    const ownedProperty = this.ownedProperties.find((prop) => prop.id === property.id);
 
     if (!ownedProperty) return false;
     if (this.money < property.houseCost) return false;
@@ -170,9 +156,7 @@ export class Player {
   }
 
   mortgage(square: BuyableSquare): boolean {
-    const ownedProperty = this.ownedProperties.find(
-      (prop) => prop.id === square.id,
-    );
+    const ownedProperty = this.ownedProperties.find((prop) => prop.id === square.id);
 
     if (!ownedProperty) return false;
     if (ownedProperty.mortgaged) {

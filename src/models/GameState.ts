@@ -1,14 +1,9 @@
 import { Player } from "./Player";
 import { Board } from "./Board";
-import {
-  PropertySquare,
-  StationSquare,
-  UtilitySquare,
-  Square,
-  BuyableSquare,
-} from "./Square";
+import { PropertySquare, StationSquare, UtilitySquare, Square, BuyableSquare } from "./Square";
 import { playerColours } from "~/utils/monopoly";
 import { Message, ToastCallback } from "./types";
+import { Trade, TradeFormValues } from "~/components/monopoly/TradeDialog";
 
 type GameStateJSON = {
   players: ReturnType<Player["toJSON"]>[];
@@ -28,32 +23,18 @@ export class GameState {
   private selectedProperty: number | null;
   private board: Board;
   private messages: Message[];
+  private proposedTrade: Trade | null;
 
   constructor(boardSize = 11) {
     this.board = new Board(boardSize);
     this.players = [];
     this.messages = [];
 
-    // this.players[0]?.buyProperty(
-    //   this.board.getSquareFromIndex(1) as PropertySquare,
-    // );
-    // this.players[0]?.buyProperty(
-    //   this.board.getSquareFromIndex(3) as PropertySquare,
-    // );
-    // this.players[0]?.buyProperty(
-    //   this.board.getSquareFromIndex(6) as PropertySquare,
-    // );
-    // this.players[0]?.buyProperty(
-    //   this.board.getSquareFromIndex(8) as PropertySquare,
-    // );
-    // this.players[0]?.buyProperty(
-    //   this.board.getSquareFromIndex(9) as PropertySquare,
-    // );
-
     this.currentPlayerIndex = 0;
     this.dice = [1, 1];
     this.gameLocked = false;
     this.selectedProperty = null;
+    this.proposedTrade = null;
   }
 
   // Getters
@@ -113,6 +94,10 @@ export class GameState {
     return this.messages;
   }
 
+  getProposedTrade(): Trade | null {
+    return this.proposedTrade;
+  }
+
   // Setters
   setPlayers(players: Player[]): void {
     this.players = players;
@@ -137,13 +122,8 @@ export class GameState {
   // Game logic methods
   addPlayer(id: string, name: string): void {
     if (this.players.length < playerColours.length) {
-      const availableColours = playerColours.filter(
-        (colour) =>
-          !this.players.some((player) => player.getColour() === colour),
-      );
-      const randomColour =
-        availableColours[Math.floor(Math.random() * availableColours.length)] ??
-        "bg-black-500";
+      const availableColours = playerColours.filter((colour) => !this.players.some((player) => player.getColour() === colour));
+      const randomColour = availableColours[Math.floor(Math.random() * availableColours.length)] ?? "bg-black-500";
       const newPlayer = new Player(id, name, randomColour, this.board, 1500);
       this.players.push(newPlayer);
     }
@@ -161,16 +141,13 @@ export class GameState {
   }
 
   endTurn(): void {
-    this.currentPlayerIndex =
-      (this.currentPlayerIndex + 1) % this.players.length;
+    this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
     this.gameLocked = false;
   }
 
   buyHouse(propertyId: number): boolean {
     const currentPlayer = this.getCurrentPlayer();
-    const propertySquare = this.board.getSquareFromIndex(
-      propertyId,
-    ) as PropertySquare;
+    const propertySquare = this.board.getSquareFromIndex(propertyId) as PropertySquare;
 
     if (!propertySquare || !(propertySquare instanceof PropertySquare)) {
       throw new Error("Invalid property square");
@@ -193,13 +170,7 @@ export class GameState {
   buyProperty(): boolean {
     const currentPlayer = this.getCurrentPlayer();
     const square = this.board.getSquareFromIndex(this.selectedProperty ?? -1);
-    if (
-      !(
-        square instanceof PropertySquare ||
-        square instanceof StationSquare ||
-        square instanceof UtilitySquare
-      )
-    ) {
+    if (!(square instanceof PropertySquare || square instanceof StationSquare || square instanceof UtilitySquare)) {
       throw new Error("Invalid square");
     }
 
@@ -229,12 +200,69 @@ export class GameState {
       });
     }
 
-    const newSquare = this.board.getSquareFromIndex(
-      currentPlayer.getPosition(),
-    );
+    const newSquare = this.board.getSquareFromIndex(currentPlayer.getPosition());
     if (!newSquare) return;
 
     newSquare.handleLanding(currentPlayer, this, total, toastCallback);
+  }
+
+  proposeTrade(trade: Trade): boolean {
+    const proposer = this.getPlayerById(trade.proposer);
+    if (!proposer) {
+      throw new Error("Proposer not found");
+    }
+    const tradee = this.getPlayerById(trade.selectedPlayer);
+    if (!tradee) {
+      throw new Error("Tradee not found");
+    }
+
+    if (proposer === tradee) {
+      throw new Error("You cannot trade with yourself");
+    }
+
+    this.proposedTrade = trade;
+    return true;
+  }
+
+  executeTrade(trade: Trade): boolean {
+    const proposer = this.getPlayerById(trade.proposer);
+    if (!proposer) {
+      throw new Error("Proposer not found");
+    }
+    const tradee = this.getPlayerById(trade.selectedPlayer);
+    if (!tradee) {
+      throw new Error("Tradee not found");
+    }
+    if (proposer === tradee) {
+      throw new Error("You cannot trade with yourself");
+    }
+    if (!trade.giveMoney || !trade.getMoney) {
+      throw new Error("Invalid trade");
+    }
+    trade.giveProperties.forEach((propertyId) => {
+      const property = proposer.getOwnedPropertyById(propertyId);
+      if (!property) {
+        throw new Error("Property not found");
+      }
+      proposer.removeProperty(propertyId);
+      tradee.addProperty(property.id, property.houses);
+    });
+
+    trade.getProperties.forEach((propertyId) => {
+      const property = tradee.getOwnedPropertyById(propertyId);
+      if (!property) {
+        throw new Error("Property not found");
+      }
+      tradee.removeProperty(propertyId);
+      proposer.addProperty(property.id, property.houses);
+    });
+
+    proposer.removeMoney(trade.giveMoney);
+    tradee.addMoney(trade.giveMoney);
+    tradee.removeMoney(trade.getMoney);
+    proposer.addMoney(trade.getMoney);
+    this.proposedTrade = null;
+    return true;
   }
 
   exportMessagesKey(): string {
@@ -278,22 +306,14 @@ export class GameState {
 
       this.board.importFromJSON(gameState.board);
       // Import players
-      this.players = gameState.players.map(
-        (playerData: ReturnType<Player["toJSON"]>) => {
-          const player = new Player(
-            playerData.id,
-            playerData.name,
-            playerData.colour,
-            this.board,
-            playerData.money,
-          );
-          player.setPosition(playerData.position);
-          player.setOwnedProperties(playerData.ownedProperties);
-          player.setPardons(playerData.pardons);
-          player.setPreviousPosition(playerData.previousPosition);
-          return player;
-        },
-      );
+      this.players = gameState.players.map((playerData: ReturnType<Player["toJSON"]>) => {
+        const player = new Player(playerData.id, playerData.name, playerData.colour, this.board, playerData.money);
+        player.setPosition(playerData.position);
+        player.setOwnedProperties(playerData.ownedProperties);
+        player.setPardons(playerData.pardons);
+        player.setPreviousPosition(playerData.previousPosition);
+        return player;
+      });
     } catch (error) {
       console.error("Error importing game state:", error);
       throw new Error("Invalid game state JSON");

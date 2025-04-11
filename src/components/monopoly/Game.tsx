@@ -4,7 +4,6 @@ import { GameState } from "~/models/GameState";
 import BoardComponent from "./Board";
 import PlayerControls from "./PlayerControls";
 import { useToast } from "~/hooks/use-toast";
-import Popups from "./Popups";
 import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { getUserName, playerColoursLight } from "~/utils/monopoly";
@@ -16,6 +15,9 @@ import { PropertySquare } from "~/models/Square";
 import { Loader, Loader2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import PurchaseDialog from "./PurchaseDialog";
+import TradeDialog, { Trade } from "./TradeDialog";
+import TradeProposalDialog from "./TradeProposedDialog";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -207,6 +209,23 @@ function GameComponent() {
     });
   }, [updateGameState, gameRef.current]);
 
+  const proposeTrade = useCallback(
+    (trade: Trade) => {
+      updateGameState(() => {
+        const g = gameRef.current;
+        if (!g) throw new Error("Game is not initialized");
+        g.proposeTrade(trade);
+        g.sendMessage({
+          user: g.getCurrentPlayer().id,
+          type: "system",
+          title: "Trade Proposed",
+          description: `You have proposed a trade with ${g.getPlayerById(trade.selectedPlayer)?.name}`,
+        });
+      });
+    },
+    [updateGameState, gameRef.current],
+  );
+
   // Initialize game on component mount
   React.useEffect(() => {
     initialiseGame();
@@ -276,8 +295,17 @@ function GameComponent() {
   return (
     <div className={`${playerColoursLight[gameRef.current?.getCurrentPlayer().getColour()]} flex min-h-screen items-center justify-center`}>
       <div className="flex flex-col p-4 md:flex-row">
-        <Popups game={gameRef.current} buyProperty={buyProperty} passProperty={passProperty} key={`Popups-${uniqueGameKey}`} />
-        <PlayerControls game={gameRef.current} onRollDice={playerMove} onEndTurn={endTurn} onBuyHouse={buyHouse} onMortgage={mortgage} keyPassthrough={`Controls-${uniqueGameKey}`} />
+        <PurchaseDialog game={gameRef.current} buyProperty={buyProperty} passProperty={passProperty} key={`Popups-${uniqueGameKey}`} />
+        <TradeProposalDialog onAccept={() => {}} onDeny={() => {}} game={gameRef.current} key={`Trade-${uniqueGameKey}`} />
+        <PlayerControls
+          game={gameRef.current}
+          onRollDice={playerMove}
+          onEndTurn={endTurn}
+          onBuyHouse={buyHouse}
+          onMortgage={mortgage}
+          proposeTrade={proposeTrade}
+          keyPassthrough={`Controls-${uniqueGameKey}`}
+        />
         <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
         <Chat game={gameRef.current} onSendMessage={sendMessage} keyPassthrough={`Chat-${uniqueMessagesKey}`} />
       </div>

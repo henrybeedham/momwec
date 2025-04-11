@@ -2,40 +2,17 @@
 import React, { JSX } from "react";
 import { useToast } from "~/hooks/use-toast";
 import { GameState } from "~/models/GameState";
-import {
-  Dice1,
-  Dice2,
-  Dice3,
-  Dice4,
-  Dice5,
-  Dice6,
-  Hotel,
-  House,
-  ShieldCheck,
-} from "lucide-react";
+import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Hotel, House, ShieldCheck } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Button } from "~/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { Card } from "../ui/card";
 import { PropertySquare } from "~/models/Square";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { cn } from "~/lib/utils";
 import PlayerTab from "./PlayerTab";
+import TradeDialog, { Trade } from "./TradeDialog";
 
 interface PlayerControlsProps {
   game: GameState;
@@ -43,6 +20,7 @@ interface PlayerControlsProps {
   onEndTurn: () => void;
   onBuyHouse: (propertyId: number) => void;
   onMortgage: (propertyId: number) => void;
+  proposeTrade: (trade: Trade) => void;
   keyPassthrough: string;
 }
 
@@ -57,14 +35,7 @@ const diceIcon: Record<DiceIconType, JSX.Element> = {
   6: <Dice6 className={diceClasses} />,
 };
 
-function PlayerControls({
-  game,
-  onRollDice,
-  onEndTurn,
-  onBuyHouse,
-  onMortgage,
-  keyPassthrough,
-}: PlayerControlsProps) {
+function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, proposeTrade, keyPassthrough }: PlayerControlsProps) {
   const currentPlayer = game.getCurrentPlayer();
   const isGameLocked = game.isGameLocked();
   const selectedProperty = game.getSelectedProperty();
@@ -103,31 +74,19 @@ function PlayerControls({
           <div className="flex items-center gap-1">
             {/* Roll dice button */}
             {myTurn && (
-              <Button
-                onClick={onRollDice}
-                disabled={dice[0] === dice[1] ? false : isGameLocked}
-              >
+              <Button onClick={onRollDice} disabled={dice[0] === dice[1] ? false : isGameLocked}>
                 Roll Dice
               </Button>
             )}
             <div>{diceIcon[dice[0] as DiceIconType]}</div>
             <div>{diceIcon[dice[1] as DiceIconType]}</div>
             {myTurn && (
-              <Button
-                disabled={
-                  dice[0] === dice[1] ||
-                  !isGameLocked ||
-                  currentPlayer.getMoney() < 0
-                }
-                onClick={onEndTurn}
-              >
+              <Button disabled={dice[0] === dice[1] || !isGameLocked || currentPlayer.getMoney() < 0} onClick={onEndTurn}>
                 End Turn
               </Button>
             )}
           </div>
-          <div className="flex items-center gap-1">
-            {/* {myTurn && <Button>Give money</Button>} */}
-          </div>
+          <div className="flex items-center gap-1">{/* {myTurn && <Button>Give money</Button>} */}</div>
         </div>
 
         {/* Properties list */}
@@ -145,18 +104,10 @@ function PlayerControls({
                   const p = game.getBoard().getSquareFromIndex(property.id);
                   const isProperty = p instanceof PropertySquare;
                   return (
-                    <TableRow
-                      key={property.id}
-                      className={cn(property.mortgaged && "bg-red-100")}
-                    >
+                    <TableRow key={property.id} className={cn(property.mortgaged && "bg-red-100")}>
                       <TableCell className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
-                          {isProperty && (
-                            <PlayerTab
-                              className="mr-2"
-                              colour={p.getPropertyColour()}
-                            />
-                          )}
+                          {isProperty && <PlayerTab className="mr-2" colour={p.getPropertyColour()} />}
                           {p?.name}
                           {/* Show houses icons for house and 5 houses  for a hotel */}
                           {isProperty && (
@@ -164,15 +115,8 @@ function PlayerControls({
                               {(property.houses ?? 0) < 5 &&
                                 Array(property.houses ?? 0)
                                   .fill(null)
-                                  .map((_, index) => (
-                                    <House
-                                      key={index}
-                                      className="h-5 w-5 text-green-700"
-                                    />
-                                  ))}
-                              {property.houses === 5 && (
-                                <Hotel className="h-5 w-5 text-red-700" />
-                              )}
+                                  .map((_, index) => <House key={index} className="h-5 w-5 text-green-700" />)}
+                              {property.houses === 5 && <Hotel className="h-5 w-5 text-red-700" />}
                             </>
                           )}
                         </div>
@@ -188,16 +132,11 @@ function PlayerControls({
                             >
                               {property.mortgaged ? "Unmortgage" : "Mortgage"}
                             </Button>
-                            {isProperty &&
-                              (property.houses ?? 0) < 5 &&
-                              currentPlayer.ownsPropertyGroup(p.group) && (
-                                <Button
-                                  className="text-xs"
-                                  onClick={() => onBuyHouse(property.id)}
-                                >
-                                  Buy house
-                                </Button>
-                              )}
+                            {isProperty && (property.houses ?? 0) < 5 && currentPlayer.ownsPropertyGroup(p.group) && (
+                              <Button className="text-xs" onClick={() => onBuyHouse(property.id)}>
+                                Buy house
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       )}
@@ -208,6 +147,9 @@ function PlayerControls({
             </Table>
           </Card>
         )}
+
+        {/* Trade Dialog */}
+        <TradeDialog game={game} proposeTrade={proposeTrade} />
       </div>
     </div>
   );
