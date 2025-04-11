@@ -245,7 +245,7 @@ export class GameState {
     if (proposer === tradee) {
       throw new Error("You cannot trade with yourself");
     }
-    if (!trade.giveMoney || !trade.getMoney) {
+    if (trade.giveMoney === null || trade.getMoney === null) {
       throw new Error("Invalid trade");
     }
     trade.giveProperties.forEach((propertyId) => {
