@@ -118,7 +118,11 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
   }
 
   const players = game.getPlayers();
-  const me = game.getCurrentPlayer();
+  const me = game.getPlayerById(user.id);
+  if (!me) {
+    console.error("Player not found");
+    throw new Error("Player not found");
+  }
   const myProperties = me.getOwnedProperties() || [];
 
   const selectedPlayer = form.watch("selectedPlayer");

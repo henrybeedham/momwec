@@ -35,9 +35,9 @@ function BoardComponent({ game }: BoardProps) {
   const myColour = myPlayer?.getColour();
 
   return (
-    <div className="w-full max-w-4xl">
+    <div className="w-full max-w-4xl aspect-square">
       <div
-        className={`m-4 grid gap-1 aspect-square`}
+        className={`m-4 grid gap-1`}
         style={{
           gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
           gridTemplateRows: `repeat(${boardSize}, 1fr)`,
