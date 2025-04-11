@@ -224,7 +224,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
       <AlertDialogContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <AlertDialogHeader>
+            <AlertDialogHeader className="mb-4">
               <AlertDialogTitle>Trade Properties and Money</AlertDialogTitle>
               <AlertDialogDescription>Select a player to trade with and choose what to give and what to get.</AlertDialogDescription>
             </AlertDialogHeader>
