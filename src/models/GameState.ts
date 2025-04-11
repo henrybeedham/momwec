@@ -120,6 +120,10 @@ export class GameState {
     this.selectedProperty = property;
   }
 
+  setTrade(trade: Trade | null): void {
+    this.proposedTrade = trade;
+  }
+
   // Game logic methods
   addPlayer(id: string, name: string): void {
     if (this.players.length < playerColours.length) {
@@ -225,7 +229,11 @@ export class GameState {
     return true;
   }
 
-  executeTrade(trade: Trade): boolean {
+  executeTrade(): boolean {
+    const trade = this.proposedTrade;
+    if (!trade) {
+      throw new Error("No trade proposed");
+    }
     const proposer = this.getPlayerById(trade.proposer);
     if (!proposer) {
       throw new Error("Proposer not found");

@@ -226,6 +226,34 @@ function GameComponent() {
     [updateGameState, gameRef.current],
   );
 
+  const acceptTrade = useCallback(() => {
+    updateGameState(() => {
+      const g = gameRef.current;
+      if (!g) throw new Error("Game is not initialized");
+      g.executeTrade();
+      g.sendMessage({
+        user: g.getCurrentPlayer().id,
+        type: "system",
+        title: "Trade Accepted",
+        description: `You have accepted a trade with ${g.getPlayerById(g.getProposedTrade()?.selectedPlayer ?? "")?.name}`,
+      });
+    });
+  }, [updateGameState, gameRef.current]);
+
+  const denyTrade = useCallback(() => {
+    updateGameState(() => {
+      const g = gameRef.current;
+      if (!g) throw new Error("Game is not initialized");
+      g.setTrade(null);
+      g.sendMessage({
+        user: g.getCurrentPlayer().id,
+        type: "system",
+        title: "Trade Denied",
+        description: `You have denied a trade with ${g.getPlayerById(g.getProposedTrade()?.selectedPlayer ?? "")?.name}`,
+      });
+    });
+  }, [updateGameState, gameRef.current]);
+
   // Initialize game on component mount
   React.useEffect(() => {
     initialiseGame();
@@ -296,7 +324,7 @@ function GameComponent() {
     <div className={`${playerColoursLight[gameRef.current?.getCurrentPlayer().getColour()]} flex min-h-screen items-center justify-center`}>
       <div className="flex flex-col p-4 md:flex-row">
         <PurchaseDialog game={gameRef.current} buyProperty={buyProperty} passProperty={passProperty} key={`Popups-${uniqueGameKey}`} />
-        <TradeProposalDialog onAccept={() => {}} onDeny={() => {}} game={gameRef.current} key={`Trade-${uniqueGameKey}`} />
+        <TradeProposalDialog onAccept={acceptTrade} onDeny={denyTrade} game={gameRef.current} key={`Trade-${uniqueGameKey}`} />
         <PlayerControls
           game={gameRef.current}
           onRollDice={playerMove}

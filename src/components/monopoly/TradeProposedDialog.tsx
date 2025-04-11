@@ -183,10 +183,10 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
 
         {isRecipient && (
           <AlertDialogFooter className="gap-2 sm:gap-0">
-            <AlertDialogCancel type="button" onClick={onDeny} className="border-red-200 text-red-600 hover:bg-red-50">
+            <AlertDialogCancel type="button" onClick={onDeny}>
               Deny Trade
             </AlertDialogCancel>
-            <AlertDialogAction type="submit" onClick={onAccept} className="bg-green-600 hover:bg-green-700">
+            <AlertDialogAction type="submit" onClick={onAccept}>
               Accept Trade
             </AlertDialogAction>
           </AlertDialogFooter>
