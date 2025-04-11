@@ -112,6 +112,8 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
     },
   });
 
+  const { toast } = useToast();
+
   const { user } = useUser();
   if (!user) {
     return null;
@@ -201,7 +203,11 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
       return;
     }
     if ((data.giveMoney ?? 0) > me.getMoney() || (data.getMoney ?? 0) > selectedPlayerData?.getMoney()) {
-      console.error("Insufficient funds");
+      toast({
+        title: "Trade Error",
+        description: "You cannot give more money than you have.",
+        variant: "destructive",
+      });
       resetTrade();
       return;
     }
