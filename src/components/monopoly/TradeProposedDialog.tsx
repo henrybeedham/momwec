@@ -59,7 +59,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
 
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent className="max-w-3xl">
+      <AlertDialogContent className="max-h-[90vh] overflow-y-auto">
         <AlertDialogHeader>
           <AlertDialogTitle>Trade Proposal</AlertDialogTitle>
           <AlertDialogDescription>

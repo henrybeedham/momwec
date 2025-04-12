@@ -52,7 +52,8 @@ export class GameState {
   }
 
   getCurrentPlayer(): Player {
-    const player = this.players[this.currentPlayerIndex];
+    // sort by id alphabetically
+    const player = this.players.sort((a, b) => a.id.localeCompare(b.id))[this.currentPlayerIndex];
     if (!player) {
       throw new Error("Current player is undefined");
     }
