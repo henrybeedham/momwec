@@ -35,84 +35,82 @@ function BoardComponent({ game }: BoardProps) {
   const myColour = myPlayer?.getColour();
 
   return (
-    <div className="w-full">
-      <div
-        className={`m-4 grid gap-1`}
-        style={{
-          gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
-          gridTemplateRows: `repeat(${boardSize}, 1fr)`,
-          height: "85vmin",
-          width: "85vmin",
-        }}
-      >
-        {Array(boardSize * boardSize)
-          .fill(null)
-          .map((_, index) => {
-            const row = Math.floor(index / boardSize);
-            const col = index % boardSize;
-            const isEdge = row === 0 || row === boardSize - 1 || col === 0 || col === boardSize - 1;
-            // Calculate the square index based on the position on the board edge
-            const squareIndex = isEdge
-              ? row === boardSize - 1 // If Bottom Row
-                ? boardSize - col - 1 // Then this
-                : col === 0 // If Left column
-                  ? 2 * boardSize - 2 - row // Then this
-                  : row === 0 // If Top row
-                    ? 2 * boardSize - 2 + col // Then this
-                    : totalSquares - (boardSize - 1 - row) // Otherwise (Right column) this
-              : null;
-            if (!isEdge) {
-              if (row === 1 && col === 1) {
-                return <CenterOfBoard boardSize={boardSize} players={players} key={index} />;
-              } else return;
-            }
-            if (squareIndex === null) return <div key={index}></div>;
-            if (squareIndex > squares.length) throw new Error("SqIndex > #of squares");
-            const square = squares[squareIndex];
-            if (!square) throw new Error("No square");
-            const isCorner = (row === 0 && col === 0) || (row === 0 && col === boardSize - 1) || (row === boardSize - 1 && col === 0) || (row === boardSize - 1 && col === boardSize - 1);
-            const edge: Edge = isCorner ? "corner" : isEdge ? (row === boardSize - 1 ? "bottom" : col === 0 ? "left" : row === 0 ? "top" : "right") : "";
-            const colourClass = square instanceof PropertySquare ? (propertyColors[square.group] ?? "bg-gray-200") : "bg-gray-200";
+    <div
+      className={`m-4 grid gap-1`}
+      style={{
+        gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
+        gridTemplateRows: `repeat(${boardSize}, 1fr)`,
+        height: "85vmin",
+        width: "85vmin",
+      }}
+    >
+      {Array(boardSize * boardSize)
+        .fill(null)
+        .map((_, index) => {
+          const row = Math.floor(index / boardSize);
+          const col = index % boardSize;
+          const isEdge = row === 0 || row === boardSize - 1 || col === 0 || col === boardSize - 1;
+          // Calculate the square index based on the position on the board edge
+          const squareIndex = isEdge
+            ? row === boardSize - 1 // If Bottom Row
+              ? boardSize - col - 1 // Then this
+              : col === 0 // If Left column
+                ? 2 * boardSize - 2 - row // Then this
+                : row === 0 // If Top row
+                  ? 2 * boardSize - 2 + col // Then this
+                  : totalSquares - (boardSize - 1 - row) // Otherwise (Right column) this
+            : null;
+          if (!isEdge) {
+            if (row === 1 && col === 1) {
+              return <CenterOfBoard boardSize={boardSize} players={players} key={index} />;
+            } else return;
+          }
+          if (squareIndex === null) return <div key={index}></div>;
+          if (squareIndex > squares.length) throw new Error("SqIndex > #of squares");
+          const square = squares[squareIndex];
+          if (!square) throw new Error("No square");
+          const isCorner = (row === 0 && col === 0) || (row === 0 && col === boardSize - 1) || (row === boardSize - 1 && col === 0) || (row === boardSize - 1 && col === boardSize - 1);
+          const edge: Edge = isCorner ? "corner" : isEdge ? (row === boardSize - 1 ? "bottom" : col === 0 ? "left" : row === 0 ? "top" : "right") : "";
+          const colourClass = square instanceof PropertySquare ? (propertyColors[square.group] ?? "bg-gray-200") : "bg-gray-200";
 
-            const isBuyable = square instanceof (PropertySquare || UtilitySquare || StationSquare);
-            const ownerColour = game.getOwner(square.id)?.getColour();
-            const sqColour = ownerColour ? playerColoursLight[ownerColour] : "bg-white";
-            return (
-              <HoverCard key={index}>
-                <HoverCardTrigger>
-                  <div
-                    className={cn(
-                      `relative flex items-center overflow-hidden ${sqColour} text-xs ${
-                        edge === "bottom"
-                          ? "flex-col rounded-t-lg"
-                          : edge === "top"
-                            ? "flex-col-reverse rounded-b-lg"
-                            : edge === "right"
-                              ? "flex-row rounded-l-lg"
-                              : edge === "left"
-                                ? "flex-row-reverse rounded-r-lg"
-                                : "rounded-lg"
-                      }`,
-                    )}
-                    style={{
-                      height: `${80 / boardSize}vmin`,
-                      width: `${80 / boardSize}vmin`,
-                      border: `${squareIndex === myPosition ? `5px solid black` : "2px solid black"}`,
-                    }}
-                  >
-                    <ColourTab colourClass={colourClass} edge={edge} square={square} />
-                    <PlayerTokens players={players} squareIndex={squareIndex} />
-                    <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden p-1 text-2xs">{renderSquareContent(square)}</div>
-                  </div>
-                </HoverCardTrigger>
-                <HoverCardContent>
-                  <h1 className="text-lg">{square.name}</h1>
-                  <SquareHoverCard square={square} colourClass={colourClass} />
-                </HoverCardContent>
-              </HoverCard>
-            );
-          })}
-      </div>
+          const isBuyable = square instanceof (PropertySquare || UtilitySquare || StationSquare);
+          const ownerColour = game.getOwner(square.id)?.getColour();
+          const sqColour = ownerColour ? playerColoursLight[ownerColour] : "bg-white";
+          return (
+            <HoverCard key={index}>
+              <HoverCardTrigger>
+                <div
+                  className={cn(
+                    `relative flex items-center overflow-hidden ${sqColour} text-xs ${
+                      edge === "bottom"
+                        ? "flex-col rounded-t-lg"
+                        : edge === "top"
+                          ? "flex-col-reverse rounded-b-lg"
+                          : edge === "right"
+                            ? "flex-row rounded-l-lg"
+                            : edge === "left"
+                              ? "flex-row-reverse rounded-r-lg"
+                              : "rounded-lg"
+                    }`,
+                  )}
+                  style={{
+                    height: `${80 / boardSize}vmin`,
+                    width: `${80 / boardSize}vmin`,
+                    border: `${squareIndex === myPosition ? `5px solid black` : "2px solid black"}`,
+                  }}
+                >
+                  <ColourTab colourClass={colourClass} edge={edge} square={square} />
+                  <PlayerTokens players={players} squareIndex={squareIndex} />
+                  <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden p-1 text-2xs">{renderSquareContent(square)}</div>
+                </div>
+              </HoverCardTrigger>
+              <HoverCardContent>
+                <h1 className="text-lg">{square.name}</h1>
+                <SquareHoverCard square={square} colourClass={colourClass} />
+              </HoverCardContent>
+            </HoverCard>
+          );
+        })}
     </div>
   );
 }
