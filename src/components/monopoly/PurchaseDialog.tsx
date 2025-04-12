@@ -14,7 +14,7 @@ type PopupProps = {
 
 function PurchaseDialog({ game, buyProperty, passProperty }: PopupProps) {
   const property = game.getBoard().getSquareFromIndex(game.getSelectedProperty() ?? -1) as BuyableSquare;
-
+  if (!property) return null;
   const { user } = useUser();
   if (!user) throw new Error("No user");
   const me = game.getCurrentPlayer();

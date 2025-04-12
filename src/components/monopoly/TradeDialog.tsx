@@ -222,7 +222,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="outline" disabled={isTradeDisabled}>
-          ${isTradeDisabled ? "Someone is already trading" : "Trade"}
+          {isTradeDisabled ? "Someone is already trading" : "Trade"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
