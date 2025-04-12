@@ -14,6 +14,12 @@ type GameStateJSON = {
   selectedProperty: number | null;
   board: ReturnType<Board["toJSON"]>;
   proposedTrade: Trade | null;
+  bids: Bids[] | null;
+};
+
+type Bids = {
+  playerId: string;
+  amount: number;
 };
 
 export class GameState {
@@ -25,6 +31,7 @@ export class GameState {
   private board: Board;
   private messages: Message[];
   private proposedTrade: Trade | null;
+  private bids: Bids[] | null;
 
   constructor(boardSize = 11) {
     this.board = new Board(boardSize);
@@ -36,6 +43,7 @@ export class GameState {
     this.gameLocked = false;
     this.selectedProperty = null;
     this.proposedTrade = null;
+    this.bids = null;
   }
 
   // Getters
@@ -99,6 +107,10 @@ export class GameState {
     return this.proposedTrade;
   }
 
+  getBids(): Bids[] | null {
+    return this.bids ? this.bids.sort((a, b) => a.amount - b.amount) : null;
+  }
+
   // Setters
   setPlayers(players: Player[]): void {
     this.players = players;
@@ -132,6 +144,40 @@ export class GameState {
       const newPlayer = new Player(id, name, randomColour, this.board, 1500);
       this.players.push(newPlayer);
     }
+  }
+
+  placeBid(playerId: string, amount: number): void {
+    const player = this.getPlayerById(playerId);
+    if (!player) {
+      throw new Error("Player not found");
+    }
+    if (this.bids) {
+      const existingBid = this.bids.find((bid) => bid.playerId === playerId);
+      if (existingBid) {
+        existingBid.amount = amount;
+      } else {
+        this.bids.push({ playerId, amount });
+      }
+    } else {
+      this.bids = [{ playerId, amount }];
+    }
+  }
+
+  removeBid(playerId: string): void {
+    if (this.bids) {
+      const index = this.bids.findIndex((bid) => bid.playerId === playerId);
+      if (index !== -1) {
+        this.bids.splice(index, 1);
+      }
+    }
+  }
+
+  clearBids(): void {
+    this.bids = null;
+  }
+
+  setBids(bids: Bids[]): void {
+    this.bids = bids;
   }
 
   sendMessage(message: Message): void {
@@ -303,6 +349,7 @@ export class GameState {
       selectedProperty: this.selectedProperty,
       board: this.board.toJSON(),
       proposedTrade: this.proposedTrade,
+      bids: this.bids,
     };
 
     return JSON.stringify(gameState);
@@ -318,6 +365,7 @@ export class GameState {
       this.gameLocked = gameState.gameLocked;
       this.selectedProperty = gameState.selectedProperty;
       this.proposedTrade = gameState.proposedTrade;
+      this.bids = gameState.bids;
 
       this.board.importFromJSON(gameState.board);
       // Import players

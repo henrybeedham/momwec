@@ -205,7 +205,10 @@ function GameComponent() {
 
   const passProperty = useCallback(() => {
     updateGameState(() => {
-      gameRef.current?.setSelectedProperty(null);
+      const g = gameRef.current;
+      if (!g) throw new Error("Game is not initialized");
+      // g.placeBid(g.getCurrentPlayer().id, -1);
+      g.setSelectedProperty(null);
     });
   }, [updateGameState, gameRef.current]);
 

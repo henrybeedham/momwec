@@ -17,8 +17,10 @@ function PurchaseDialog({ game, buyProperty, passProperty }: PopupProps) {
 
   const { user } = useUser();
   if (!user) throw new Error("No user");
-  const myTurn = user.id === game.getCurrentPlayer().id;
+  const me = game.getCurrentPlayer();
+  const myTurn = user.id === me.id;
   const shouldBeOpen = !!property && myTurn;
+  const buyDisabled = me.getMoney() < property.price;
   return (
     <AlertDialog open={shouldBeOpen}>
       {!!property && (
@@ -31,7 +33,9 @@ function PurchaseDialog({ game, buyProperty, passProperty }: PopupProps) {
 
           <AlertDialogFooter>
             <AlertDialogCancel onClick={passProperty}>Pass</AlertDialogCancel>
-            <AlertDialogAction onClick={buyProperty}>Buy</AlertDialogAction>
+            <AlertDialogAction onClick={buyProperty} disabled={buyDisabled}>
+              Buy
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       )}

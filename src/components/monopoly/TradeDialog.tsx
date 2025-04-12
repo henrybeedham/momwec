@@ -120,8 +120,6 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
     return null;
   }
 
-  const myTurn = user.id === game.getCurrentPlayer().id;
-
   const players = game.getPlayers();
   const me = game.getPlayerById(user.id);
   if (!me) {
@@ -205,7 +203,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
       console.error("Selected player not found.");
       return;
     }
-    if ((data.giveMoney ?? 0) > me.getMoney() || (data.getMoney ?? 0) > selectedPlayerData?.getMoney()) {
+    if ((data.giveMoney ?? 0) > (me.getMoney() < 0 ? 0 : me.getMoney()) || (data.getMoney ?? 0) > (selectedPlayerData?.getMoney() < 0 ? 0 : selectedPlayerData?.getMoney())) {
       toast({
         title: "Trade Error",
         description: "You cannot give more money than you have.",
@@ -218,13 +216,15 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
     proposeTrade({ ...data, proposer: user.id });
   };
 
+  const isTradeDisabled = !!game.getProposedTrade();
+
   return (
     <AlertDialog>
-      {myTurn && (
-        <AlertDialogTrigger asChild>
-          <Button variant="outline">Trade</Button>
-        </AlertDialogTrigger>
-      )}
+      <AlertDialogTrigger asChild>
+        <Button variant="outline" disabled={isTradeDisabled}>
+          ${isTradeDisabled ? "Someone is already trading" : "Trade"}
+        </Button>
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
