@@ -65,7 +65,7 @@ function PropertyList({
   }
 
   return (
-    <div className="space-y-2 max-h-60 overflow-y-auto">
+    <div className="space-y-2 max-h-30 overflow-y-auto">
       {properties.map((property) => {
         if (!property) return null;
         const isProperty = property instanceof PropertySquare;
@@ -225,7 +225,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
           {isTradeDisabled ? "Someone is already trading" : "Trade"}
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="max-h-[90vh] overflow-y-auto">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <AlertDialogHeader className="mb-4">
