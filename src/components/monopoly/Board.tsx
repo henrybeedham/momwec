@@ -35,12 +35,14 @@ function BoardComponent({ game }: BoardProps) {
   const myColour = myPlayer?.getColour();
 
   return (
-    <div className="w-full max-w-4xl aspect-square">
+    <div className="w-full">
       <div
         className={`m-4 grid gap-1`}
         style={{
           gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
           gridTemplateRows: `repeat(${boardSize}, 1fr)`,
+          height: "85vmin",
+          width: "85vmin",
         }}
       >
         {Array(boardSize * boardSize)
@@ -94,12 +96,13 @@ function BoardComponent({ game }: BoardProps) {
                     )}
                     style={{
                       height: `${80 / boardSize}vmin`,
+                      width: `${80 / boardSize}vmin`,
                       border: `${squareIndex === myPosition ? `5px solid black` : "2px solid black"}`,
                     }}
                   >
                     <ColourTab colourClass={colourClass} edge={edge} square={square} />
                     <PlayerTokens players={players} squareIndex={squareIndex} />
-                    <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden p-1 text-xs">{renderSquareContent(square)}</div>
+                    <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden p-1 text-2xs">{renderSquareContent(square)}</div>
                   </div>
                 </HoverCardTrigger>
                 <HoverCardContent>
