@@ -1,5 +1,5 @@
 import { Player } from "./Player";
-import { Board } from "./Board";
+import { Board, BoardName } from "./Board";
 import { PropertySquare, StationSquare, UtilitySquare, Square, BuyableSquare } from "./Square";
 import { playerColours } from "~/utils/monopoly";
 import { Message, ToastCallback } from "./types";
@@ -33,8 +33,8 @@ export class GameState {
   private proposedTrade: Trade | null;
   private bids: Bids[] | null;
 
-  constructor(boardSize = 11) {
-    this.board = new Board(boardSize);
+  constructor(boardName: BoardName = "uk", boardSize = 11) {
+    this.board = new Board(boardName, boardSize);
     this.players = [];
     this.messages = [];
 

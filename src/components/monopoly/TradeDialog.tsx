@@ -269,9 +269,10 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
               {selectedPlayer && (
                 <div className="flex flex-col gap-4">
                   {/* What you give */}
-                  <Card>
+                  <Card className="border-red-200">
                     <CardContent className="pt-6">
-                      <h3 className="text-lg font-semibold mb-4">What You Give</h3>
+                      <h3 className="text-lg font-semibold mb-2 text-red-600">What You Give</h3>
+                      {/* Properties */}
                       <div className="space-y-4 mt-4">
                         <FormField
                           control={form.control}
@@ -293,6 +294,8 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                           )}
                         />
                       </div>
+                      <h3 className="text-lg font-semibold mt-2 text-red-600">and</h3>
+                      {/* Money */}
                       <div className="space-y-4 mt-4">
                         <FormField
                           control={form.control}
@@ -328,9 +331,10 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                   </Card>
 
                   {/* What you get */}
-                  <Card>
+                  <Card className="border-green-200">
                     <CardContent className="pt-6">
-                      <h3 className="text-lg font-semibold mb-4">What You Get</h3>
+                      <h3 className="text-lg font-semibold mb-2 text-green-600">What You Get</h3>
+                      {/* Properties */}
                       <div className="space-y-4 mt-4">
                         <FormField
                           control={form.control}
@@ -352,6 +356,8 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
                           )}
                         />
                       </div>
+                      <h3 className="text-lg font-semibold mt-2 text-green-600">and</h3>
+                      {/* Money */}
                       <div className="space-y-4 mt-4">
                         <FormField
                           control={form.control}

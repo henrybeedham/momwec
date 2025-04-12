@@ -18,11 +18,11 @@ import { Button } from "../ui/button";
 import PurchaseDialog from "./PurchaseDialog";
 import TradeDialog, { Trade } from "./TradeDialog";
 import TradeProposalDialog from "./TradeProposedDialog";
+import { BoardName } from "~/models/Board";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
 function GameComponent() {
-  // Move ALL hooks to the top, before any conditional logic
   const gameRef = useRef<GameState | null>(null);
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
   const [uniqueGameKey, setUniqueGameKey] = useState("");
@@ -98,15 +98,18 @@ function GameComponent() {
     };
   }, [gameId, user]);
 
-  const initialiseGame = useCallback(() => {
-    const newGame = new GameState();
-    if (!user) return;
-    const userName = getUserName(user);
-    newGame.addPlayer(user.id, userName);
-    gameRef.current = newGame; // Store in ref for immediate access
-    setUniqueGameKey(newGame.exportGameState());
-    setUniqueMessagesKey(newGame?.exportMessagesKey() ?? "");
-  }, [user]);
+  const initialiseGame = useCallback(
+    (boardName: BoardName) => {
+      const newGame = new GameState(boardName);
+      if (!user) return;
+      const userName = getUserName(user);
+      newGame.addPlayer(user.id, userName);
+      gameRef.current = newGame; // Store in ref for immediate access
+      setUniqueGameKey(newGame.exportGameState());
+      setUniqueMessagesKey(newGame?.exportMessagesKey() ?? "");
+    },
+    [user],
+  );
 
   const updateGameState = useCallback(
     (action: () => void) => {
@@ -249,20 +252,17 @@ function GameComponent() {
     updateGameState(() => {
       const g = gameRef.current;
       if (!g) throw new Error("Game is not initialized");
-      g.setTrade(null);
+      const trade = g.getProposedTrade();
+      if (!trade) throw new Error("No trade proposed");
       g.sendMessage({
-        user: g.getCurrentPlayer().id,
+        user: trade.selectedPlayer,
         type: "system",
         title: "Trade Denied",
-        description: `You have denied a trade with ${g.getPlayerById(g.getProposedTrade()?.selectedPlayer ?? "")?.name}`,
+        description: `You have denied a trade with ${g.getPlayerById(trade.proposer ?? "")?.name}`,
       });
+      g.setTrade(null);
     });
   }, [updateGameState, gameRef.current]);
-
-  // Initialize game on component mount
-  React.useEffect(() => {
-    initialiseGame();
-  }, [initialiseGame]);
 
   const handleKeyPress = (event: KeyboardEvent) => {
     if (event.key === "t" && gameRef.current?.getPlayers().length === 1) {
@@ -284,6 +284,22 @@ function GameComponent() {
     };
   }, []);
 
+  // Show UI to pick board ("uk", "us", "bry")
+  if (!gameRef.current) {
+    return (
+      <div className="flex flex-col gap-4 min-h-screen items-center justify-center bg-gradient-to-r from-orange-600 to-yellow-500 p-4 text-center text-white">
+        <h1 className="text-6xl font-bold">Welcome to Monopoly</h1>
+        <p className="text-xl">Choose a board to start a game:</p>
+        <div className="flex gap-4">
+          <Button onClick={() => initialiseGame("uk")}>UK</Button>
+          <Button onClick={() => initialiseGame("us")}>US</Button>
+          <Button onClick={() => initialiseGame("bry")}>Bry</Button>
+          <Button onClick={() => initialiseGame("world")}>World</Button>
+        </div>
+      </div>
+    );
+  }
+
   // Now you can add your conditional return
   if (!user) {
     return (
@@ -293,7 +309,7 @@ function GameComponent() {
     );
   }
 
-  if (!gameRef.current || !uniqueGameKey) {
+  if (!uniqueGameKey) {
     return <div>Loading game...</div>;
   }
 
@@ -302,7 +318,7 @@ function GameComponent() {
     // log in green saying if t is pressed, a test user will be added
     console.log("%cPress t to add a test user", "background: #222; color: #bada55");
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-orange-600 to-yellow-500 p-4 text-center text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-yellow-500 to-green-500 p-4 text-center text-white">
         <h1 className="text-6xl font-bold">Game: {gameId}</h1>
         <h1 className="text-6xl font-bold">Waiting for opponents to join...</h1>
         <p className="text-xl">Share you game code or send link:</p>

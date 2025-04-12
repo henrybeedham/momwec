@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Square, PropertySquare, StationSquare, UtilitySquare, CornerSquare, TaxSquare, CardSquare } from "./Square";
 import { Card, CardDeck } from "./Card";
-import { Group } from "./types";
+
+export type BoardName = "uk" | "us" | "world" | "bry";
 
 export class Board {
   private squares: Square[];
@@ -10,15 +11,15 @@ export class Board {
   private chanceDeck: CardDeck;
   private communityChestDeck: CardDeck;
 
-  constructor(size = 11) {
+  constructor(boardName: BoardName, size = 11) {
     this.size = size;
     this.totalSquares = (size - 1) * 4;
     this.chanceDeck = CardDeck.createChanceDeck();
     this.communityChestDeck = CardDeck.createCommunityChestDeck();
-    this.squares = this.initializeSquares();
+    this.squares = this.initializeSquares(boardName);
   }
 
-  private initializeSquares(boardName = "uk"): Square[] {
+  private initializeSquares(boardName: BoardName): Square[] {
     const squares: Square[] = [];
 
     switch (boardName) {
