@@ -201,6 +201,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
   const onSubmit = (data: TradeFormValues) => {
     if (!selectedPlayerData) {
       console.error("Selected player not found.");
+      resetTrade();
       return;
     }
     if ((data.giveMoney ?? 0) > (me.getMoney() < 0 ? 0 : me.getMoney()) || (data.getMoney ?? 0) > (selectedPlayerData?.getMoney() < 0 ? 0 : selectedPlayerData?.getMoney())) {
@@ -214,6 +215,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
     }
     console.log("Trade proposal:", data);
     proposeTrade({ ...data, proposer: user.id });
+    resetTrade();
   };
 
   const isTradeDisabled = !!game.getProposedTrade();
