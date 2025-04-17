@@ -3,7 +3,6 @@ import "./globals.css";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
-import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "~/components/ui/toaster";
 
 import { ClerkProvider, SignIn, SignedIn, SignedOut } from "@clerk/nextjs";
@@ -140,15 +139,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
         <body>
-          <TRPCReactProvider>
-            <SignedOut>
-              <div className="flex min-h-screen items-center justify-center bg-red-500 p-4">
-                <SignIn withSignUp />
-              </div>
-            </SignedOut>
-            <SignedIn>{children}</SignedIn>
-            <Toaster />
-          </TRPCReactProvider>
+          <SignedOut>
+            <div className="flex min-h-screen items-center justify-center bg-red-500 p-4">
+              <SignIn withSignUp />
+            </div>
+          </SignedOut>
+          <SignedIn>{children}</SignedIn>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>
