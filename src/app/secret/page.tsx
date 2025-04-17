@@ -1,27 +1,12 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Banknote, Search } from "lucide-react";
+import { Banknote } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { toast } from "~/hooks/use-toast";
 import { io } from "socket.io-client";
 import { useUser } from "@clerk/nextjs";
@@ -48,10 +33,7 @@ export default function AdminPage() {
     });
 
     socketRef.current.on("connect", () => {
-      console.log(
-        "Connected to Socket.IO server with id:",
-        socketRef.current?.id,
-      );
+      console.log("Connected to Socket.IO server with id:", socketRef.current?.id);
       console.log("Asking for game data/Checking if game exists...");
       socketRef.current?.emit("getGameData", gameId);
     });
@@ -81,8 +63,7 @@ export default function AdminPage() {
 
     gameData.getPlayerById(selectedPlayer)?.addMoney(Number(amount));
     const data = gameData.toJSON();
-    if (!data)
-      throw new Error("Game data is null. Cannot send gameMove event.");
+    if (!data) throw new Error("Game data is null. Cannot send gameMove event.");
     if (!socketRef.current) {
       console.error("Socket connection is not established. (sendGameMove)");
       return;
@@ -100,20 +81,13 @@ export default function AdminPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Monopoly Admin</CardTitle>
-          <CardDescription>
-            Add money to players in your Monopoly game
-          </CardDescription>
+          <CardDescription>Add money to players in your Monopoly game</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="gameId">Game ID</Label>
             <div className="flex space-x-2">
-              <Input
-                id="gameId"
-                placeholder="Enter game ID"
-                value={gameId}
-                onChange={(e) => setGameId(e.target.value)}
-              />
+              <Input id="gameId" placeholder="Enter game ID" value={gameId} onChange={(e) => setGameId(e.target.value)} />
             </div>
           </div>
 
@@ -121,11 +95,7 @@ export default function AdminPage() {
             <>
               <div className="space-y-2">
                 <Label htmlFor="player">Select Player</Label>
-                <Select
-                  value={selectedPlayer}
-                  onValueChange={setSelectedPlayer}
-                  disabled={loading}
-                >
+                <Select value={selectedPlayer} onValueChange={setSelectedPlayer} disabled={loading}>
                   <SelectTrigger id="player">
                     <SelectValue placeholder="Select a player" />
                   </SelectTrigger>
@@ -141,24 +111,13 @@ export default function AdminPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="amount">Amount to Add (£)</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  placeholder="Enter amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  disabled={loading || !selectedPlayer}
-                />
+                <Input id="amount" type="number" placeholder="Enter amount" value={amount} onChange={(e) => setAmount(e.target.value)} disabled={loading || !selectedPlayer} />
               </div>
             </>
           )}
         </CardContent>
         <CardFooter>
-          <Button
-            className="w-full"
-            onClick={handleAddMoney}
-            disabled={loading || !gameData || !selectedPlayer || !amount}
-          >
+          <Button className="w-full" onClick={handleAddMoney} disabled={loading || !gameData || !selectedPlayer || !amount}>
             <Banknote className="mr-2 h-4 w-4" />
             Add Money
           </Button>

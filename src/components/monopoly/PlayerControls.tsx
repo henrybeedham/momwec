@@ -1,11 +1,10 @@
 // In your PlayerControls.tsx
-import React, { JSX } from "react";
-import { useToast } from "~/hooks/use-toast";
+import { JSX } from "react";
 import { GameState } from "~/models/GameState";
 import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Hotel, House, ShieldCheck } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Button } from "~/components/ui/button";
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "~/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { Card } from "../ui/card";
 import { PropertySquare } from "~/models/Square";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";

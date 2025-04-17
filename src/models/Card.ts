@@ -14,11 +14,7 @@ export abstract class Card {
     this.type = type;
   }
 
-  abstract applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void;
+  abstract applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void;
 
   toJSON(): object {
     return {
@@ -34,22 +30,13 @@ export class MoveCard extends Card {
   readonly destinationPosition: number;
   readonly collectPassGo: boolean;
 
-  constructor(
-    title: string,
-    description: string,
-    destinationPosition: number,
-    collectPassGo = true,
-  ) {
+  constructor(title: string, description: string, destinationPosition: number, collectPassGo = true) {
     super(title, description, "move");
     this.destinationPosition = destinationPosition;
     this.collectPassGo = collectPassGo;
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     const currentPosition = player.getPosition();
 
     // Check if we're passing GO
@@ -69,9 +56,7 @@ export class MoveCard extends Card {
     });
 
     // Handle the square the player lands on
-    const square = gameState
-      .getBoard()
-      .getSquareFromIndex(this.destinationPosition);
+    const square = gameState.getBoard().getSquareFromIndex(this.destinationPosition);
 
     if (square) {
       const diceRoll = gameState.getDice()[0] + gameState.getDice()[1];
@@ -97,11 +82,7 @@ export class MoveRelativeCard extends Card {
     this.spaces = spaces;
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     const currentPosition = player.getPosition();
     const board = gameState.getBoard();
     const totalSquares = board.getTotalSquares();
@@ -145,11 +126,7 @@ export class CollectCard extends Card {
     this.amount = amount;
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     player.addMoney(this.amount);
 
     toastCallback({
@@ -175,11 +152,7 @@ export class PayCard extends Card {
     this.amount = amount;
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     player.removeMoney(this.amount);
 
     toastCallback({
@@ -202,11 +175,7 @@ export class JailCard extends Card {
     super(title, description, "jail");
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     player.setPosition(10); // Jail position
 
     toastCallback({
@@ -222,11 +191,7 @@ export class GetOutOfJailCard extends Card {
     super(title, description, "pardon");
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     player.addPardon();
 
     toastCallback({
@@ -241,22 +206,13 @@ export class PayPerBuildingCard extends Card {
   readonly perHouse: number;
   readonly perHotel: number;
 
-  constructor(
-    title: string,
-    description: string,
-    perHouse: number,
-    perHotel: number,
-  ) {
+  constructor(title: string, description: string, perHouse: number, perHotel: number) {
     super(title, description, "payPerBuilding");
     this.perHouse = perHouse;
     this.perHotel = perHotel;
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     let totalCost = 0;
     let houses = 0;
     let hotels = 0;
@@ -297,11 +253,7 @@ export class CollectFromPlayersCard extends Card {
     this.amount = amount;
   }
 
-  applyEffect(
-    player: Player,
-    gameState: GameState,
-    toastCallback: ToastCallback,
-  ): void {
+  applyEffect(player: Player, gameState: GameState, toastCallback: ToastCallback): void {
     const players = gameState.getPlayers();
     let totalCollected = 0;
 
@@ -366,106 +318,36 @@ export class CardDeck {
   static createChanceDeck(): CardDeck {
     return new CardDeck([
       new MoveCard("Advance to GO", "Advance to GO. Collect £200.", 0),
-      new MoveCard(
-        "Advance to Trafalgar Square",
-        "Advance to Trafalgar Square. If you pass GO, collect £200.",
-        24,
-      ),
+      new MoveCard("Advance to Trafalgar Square", "Advance to Trafalgar Square. If you pass GO, collect £200.", 24),
       new MoveCard("Advance to Mayfair", "Advance to Mayfair.", 39),
-      new MoveCard(
-        "Advance to Pall Mall",
-        "Advance to Pall Mall. If you pass GO, collect £200.",
-        11,
-      ),
+      new MoveCard("Advance to Pall Mall", "Advance to Pall Mall. If you pass GO, collect £200.", 11),
       new MoveRelativeCard("Go Back 3 Spaces", "Go back 3 spaces.", -3),
-      new JailCard(
-        "Go to Jail",
-        "Go directly to Jail. Do not pass GO. Do not collect £200.",
-      ),
-      new PayPerBuildingCard(
-        "Make general repairs",
-        "Make general repairs on all your property. For each house pay £25. For each hotel pay £100.",
-        25,
-        100,
-      ),
+      new JailCard("Go to Jail", "Go directly to Jail. Do not pass GO. Do not collect £200."),
+      new PayPerBuildingCard("Make general repairs", "Make general repairs on all your property. For each house pay £25. For each hotel pay £100.", 25, 100),
       new PayCard("Pay speeding fine", "Pay speeding fine of £15.", 15),
-      new CollectCard(
-        "Bank pays you dividend",
-        "Bank pays you dividend of £50.",
-        50,
-      ),
-      new GetOutOfJailCard(
-        "Get Out of Jail Free",
-        "This card may be kept until needed or traded.",
-      ),
-      new CollectFromPlayersCard(
-        "It's your birthday",
-        "It's your birthday. Collect £10 from each player.",
-        10,
-      ),
+      new CollectCard("Bank pays you dividend", "Bank pays you dividend of £50.", 50),
+      new GetOutOfJailCard("Get Out of Jail Free", "This card may be kept until needed or traded."),
+      new CollectFromPlayersCard("It's your birthday", "It's your birthday. Collect £10 from each player.", 10),
     ]);
   }
 
   static createCommunityChestDeck(): CardDeck {
     return new CardDeck([
       new MoveCard("Advance to GO", "Advance to GO. Collect £200.", 0),
-      new CollectCard(
-        "Bank error in your favor",
-        "Bank error in your favor. Collect £200.",
-        200,
-      ),
+      new CollectCard("Bank error in your favor", "Bank error in your favor. Collect £200.", 200),
       new PayCard("Doctor's fee", "Doctor's fee. Pay £50.", 50),
-      new CollectCard(
-        "From sale of stock you get",
-        "From sale of stock you get £50.",
-        50,
-      ),
-      new GetOutOfJailCard(
-        "Get Out of Jail Free",
-        "This card may be kept until needed or traded.",
-      ),
-      new JailCard(
-        "Go to Jail",
-        "Go directly to Jail. Do not pass GO. Do not collect £200.",
-      ),
-      new CollectFromPlayersCard(
-        "Grand Opera Night",
-        "Grand Opera Night. Collect £50 from every player for opening night seats.",
-        50,
-      ),
-      new CollectCard(
-        "Holiday fund matures",
-        "Holiday fund matures. Receive £100.",
-        100,
-      ),
-      new CollectCard(
-        "Income tax refund",
-        "Income tax refund. Collect £20.",
-        20,
-      ),
-      new CollectCard(
-        "Life insurance matures",
-        "Life insurance matures. Collect £100.",
-        100,
-      ),
+      new CollectCard("From sale of stock you get", "From sale of stock you get £50.", 50),
+      new GetOutOfJailCard("Get Out of Jail Free", "This card may be kept until needed or traded."),
+      new JailCard("Go to Jail", "Go directly to Jail. Do not pass GO. Do not collect £200."),
+      new CollectFromPlayersCard("Grand Opera Night", "Grand Opera Night. Collect £50 from every player for opening night seats.", 50),
+      new CollectCard("Holiday fund matures", "Holiday fund matures. Receive £100.", 100),
+      new CollectCard("Income tax refund", "Income tax refund. Collect £20.", 20),
+      new CollectCard("Life insurance matures", "Life insurance matures. Collect £100.", 100),
       new PayCard("Pay hospital fees", "Pay hospital fees of £100.", 100),
       new PayCard("Pay school fees", "Pay school fees of £50.", 50),
-      new CollectCard(
-        "Receive consultancy fee",
-        "Receive consultancy fee of £25.",
-        25,
-      ),
-      new PayPerBuildingCard(
-        "You are assessed for street repairs",
-        "You are assessed for street repairs. £40 per house. £115 per hotel.",
-        40,
-        115,
-      ),
-      new CollectCard(
-        "You have won second prize in a beauty contest",
-        "You have won second prize in a beauty contest. Collect £10.",
-        10,
-      ),
+      new CollectCard("Receive consultancy fee", "Receive consultancy fee of £25.", 25),
+      new PayPerBuildingCard("You are assessed for street repairs", "You are assessed for street repairs. £40 per house. £115 per hotel.", 40, 115),
+      new CollectCard("You have won second prize in a beauty contest", "You have won second prize in a beauty contest. Collect £10.", 10),
       new CollectCard("You inherit", "You inherit £100.", 100),
     ]);
   }

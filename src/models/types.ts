@@ -1,10 +1,3 @@
-// export interface Property {
-//   id: number;
-//   houses?: number;
-// }
-
-import { ToastCallbackType } from "~/hooks/use-toast";
-
 // export interface Player {
 //   id: number;
 //   position: number;
@@ -17,28 +10,16 @@ import { ToastCallbackType } from "~/hooks/use-toast";
 
 export type Edge = "top" | "right" | "bottom" | "left" | "corner" | "";
 
-export type ToastCallback = (message: {
-  title: string;
-  description: string;
-  variant?: "destructive" | "default";
-}) => void;
+export type ToastCallback = (message: { title: string; description: string; variant?: "destructive" | "default" }) => void;
 
 export type Message = {
   user: string;
   type?: "system" | "player";
   title: string;
   description: string;
-}
+};
 
-export type Group =
-  | "brown"
-  | "light-blue"
-  | "pink"
-  | "orange"
-  | "red"
-  | "yellow"
-  | "green"
-  | "dark-blue";
+export type Group = "brown" | "light-blue" | "pink" | "orange" | "red" | "yellow" | "green" | "dark-blue";
 
 // type SquareType = "property" | "utility" | "station" | "other";
 

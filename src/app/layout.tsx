@@ -6,15 +6,7 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import { Toaster } from "~/components/ui/toaster";
 
-import {
-  ClerkProvider,
-  SignIn,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider, SignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 
 export const metadata: Metadata = {
   title: "MOMWEC",
@@ -143,9 +135,7 @@ export const metadata: Metadata = {
   manifest: "/favicon/manifest.json",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>

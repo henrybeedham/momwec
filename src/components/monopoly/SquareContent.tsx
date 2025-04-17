@@ -1,4 +1,4 @@
-import { Zap, Train, Droplet, ArrowLeft, Columns4, Car, Pointer, Coins, Clover, Building, MapPin, DollarSign, PoundSterling } from "lucide-react";
+import { Zap, Train, Droplet, ArrowLeft, Columns4, Car, Pointer, Clover, PoundSterling } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Square } from "~/models/Square";
 

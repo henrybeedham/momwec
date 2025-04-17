@@ -3,15 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -52,23 +44,16 @@ export default function Home() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-red-500 to-orange-600">
       <div className="max-w-6xl p-4 text-center">
         <h1 className="text-6xl font-bold text-white">MOMWEC</h1>
-        <h2 className="mb-8 text-xl text-gray-300">
-          Multiplayer Online Monopoly With Extra Capitalism
-        </h2>
+        <h2 className="mb-8 text-xl text-gray-300">Multiplayer Online Monopoly With Extra Capitalism</h2>
         {/* <p className="my-4 text-xl text-white">
           Hello {user?.firstName ?? user?.emailAddresses[0]?.emailAddress} welcome to MOMWEC. The start game button below will yk start a new game. From here, you can either 
         </p> */}
         {/* TODO: FIX THIS */}
         <p className="my-4 text-xl text-white">
-          Hello {getUserName(user)}! Welcome to the ultimate property trading
-          experience! MOMWEC takes the classic game you know and love to new
-          heights with expanded capitalism features and multiplayer action.
+          Hello {getUserName(user)}! Welcome to the ultimate property trading experience! MOMWEC takes the classic game you know and love to new heights with expanded capitalism features and
+          multiplayer action.
         </p>
-        <Button
-          onClick={startNewGame}
-          disabled={isLoading}
-          className="px-8 py-6 text-xl"
-        >
+        <Button onClick={startNewGame} disabled={isLoading} className="px-8 py-6 text-xl">
           {isLoading ? "Creating Game..." : "Start New Game"}
         </Button>
         <p className="my-4 text-lg text-white">or</p>
@@ -82,11 +67,7 @@ export default function Home() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      className="bg-white"
-                      placeholder="Enter Game ID"
-                      {...field}
-                    />
+                    <Input className="bg-white" placeholder="Enter Game ID" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

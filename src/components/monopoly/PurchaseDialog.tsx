@@ -1,6 +1,5 @@
 import { BuyableSquare, PropertySquare } from "~/models/Square";
-import { Button } from "../ui/button";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import SquareCard from "./SquareCard";
 import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "~/models/GameState";

@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { GameState } from "~/models/GameState";
 import BoardComponent from "./Board";
 import PlayerControls from "./PlayerControls";
@@ -8,15 +8,14 @@ import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { getUserName, playerColoursLight } from "~/utils/monopoly";
 import { useUser } from "@clerk/nextjs";
-import { User } from "@clerk/nextjs/server";
 import Chat from "./Chat";
 import { Message } from "~/models/types";
 import { PropertySquare } from "~/models/Square";
-import { Loader, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import PurchaseDialog from "./PurchaseDialog";
-import TradeDialog, { Trade } from "./TradeDialog";
+import { Trade } from "./TradeDialog";
 import TradeProposalDialog from "./TradeProposedDialog";
 import { BoardName } from "~/models/Board";
 

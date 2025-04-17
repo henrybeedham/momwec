@@ -1,11 +1,8 @@
 import { Home } from "lucide-react";
-
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "~/components/ui/alert-dialog";
-import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
-import { Trade } from "./TradeDialog";
 import { GameState } from "~/models/GameState";
 import { BuyableSquare, PropertySquare } from "~/models/Square";
 import { useUser } from "@clerk/nextjs";

@@ -1,9 +1,9 @@
 import { Player } from "./Player";
 import { Board, BoardName } from "./Board";
-import { PropertySquare, StationSquare, UtilitySquare, Square, BuyableSquare } from "./Square";
+import { PropertySquare, StationSquare, UtilitySquare, BuyableSquare } from "./Square";
 import { playerColours } from "~/utils/monopoly";
 import { Message, ToastCallback } from "./types";
-import { Trade, TradeFormValues } from "~/components/monopoly/TradeDialog";
+import { Trade } from "~/components/monopoly/TradeDialog";
 
 type GameStateJSON = {
   players: ReturnType<Player["toJSON"]>[];

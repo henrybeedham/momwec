@@ -1,28 +1,10 @@
-import {
-  PropertySquare,
-  Square,
-  StationSquare,
-  UtilitySquare,
-} from "~/models/Square";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
+import { PropertySquare, Square, StationSquare, UtilitySquare } from "~/models/Square";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
 import { Badge } from "~/components/ui/badge";
 import { cn } from "~/lib/utils";
 import { Separator } from "~/components/ui/separator";
 
-export default function SquareCard({
-  square,
-  colourClass,
-}: {
-  square: Square;
-  colourClass: string;
-}) {
+export default function SquareCard({ square, colourClass }: { square: Square; colourClass: string }) {
   if (square instanceof PropertySquare) {
     return (
       <>
@@ -77,29 +59,18 @@ export default function SquareCard({
   if (square instanceof UtilitySquare) {
     return (
       <>
-        <div>
-          Rent: 4x dice roll if one utility is owned, 10x dice roll if both
-          utilities are owned.
-        </div>
+        <div>Rent: 4x dice roll if one utility is owned, 10x dice roll if both utilities are owned.</div>
         <HasPrice square={square} colourClass={colourClass} />
       </>
     );
   }
 }
 
-function HasPrice({
-  colourClass,
-  square,
-}: {
-  colourClass: string;
-  square: PropertySquare | UtilitySquare | StationSquare;
-}) {
+function HasPrice({ colourClass, square }: { colourClass: string; square: PropertySquare | UtilitySquare | StationSquare }) {
   return (
     <>
       <Separator className="my-2" />
-      <Badge className={cn(colourClass, "hover:bg-current")}>
-        {square instanceof PropertySquare ? square.group : square.type}
-      </Badge>
+      <Badge className={cn(colourClass, "hover:bg-current")}>{square instanceof PropertySquare ? square.group : square.type}</Badge>
       <div className="font-semibold">Price: £{square.price}</div>
     </>
   );

@@ -1,4 +1,3 @@
-import React from "react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "~/components/ui/hover-card";
 import { cn } from "~/lib/utils";
 import { PropertySquare, Square, StationSquare, UtilitySquare } from "~/models/Square";
@@ -7,10 +6,9 @@ import { Player } from "~/models/Player";
 import renderSquareContent from "./SquareContent";
 import SquareHoverCard from "./SquareCard";
 import { GameState } from "~/models/GameState";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import { Card, CardContent } from "../ui/card";
 import PlayerTab from "./PlayerTab";
-import type { BuyableSquare } from "~/models/Square";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 
 interface BoardProps {
