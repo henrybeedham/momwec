@@ -11,6 +11,7 @@ import { getUserName } from "~/utils/monopoly";
 import { Github } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "~/lib/user-context";
+import posthog from "posthog-js";
 
 const formSchema = z.object({
   gameId: z.string().min(4).max(4),
@@ -27,6 +28,9 @@ export default function Home() {
     setIsLoading(true);
     // Generate a unique game ID (you might want to use a more robust method in production)
     const gameId = Math.random().toString(10).substring(2, 6);
+    posthog.capture("userCreatedGame", {
+      gameId,
+    });
     router.push(`/${gameId}`);
   };
 

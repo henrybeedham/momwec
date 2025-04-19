@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useUser } from "~/lib/user-context";
+import posthog from "posthog-js";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useUser();
@@ -13,6 +14,9 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     // If not loading and no user is found, redirect to home page
     if (!isLoading && !user) {
       router.push("/join");
+    }
+    if (user) {
+      posthog.identify(user?.id, { username: user?.username, createdAt: user?.createdAt });
     }
   }, [user, isLoading, router]);
 

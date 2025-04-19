@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 
 import { Toaster } from "~/components/ui/toaster";
 import { UserProvider } from "~/lib/user-context";
+import { PostHogProvider } from "~/components/PostHogProvider";
 
 export const metadata: Metadata = {
   title: "MOMWEC",
@@ -137,10 +138,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        <UserProvider>
-          {children}
-          <Toaster />
-        </UserProvider>
+        <PostHogProvider>
+          <UserProvider>
+            {children}
+            <Toaster />
+          </UserProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

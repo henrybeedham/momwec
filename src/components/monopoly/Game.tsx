@@ -18,6 +18,7 @@ import { Trade } from "./TradeDialog";
 import TradeProposalDialog from "./TradeProposedDialog";
 import { BoardName } from "~/models/Board";
 import { useUser } from "~/lib/user-context";
+import posthog from "posthog-js";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -45,6 +46,10 @@ function GameComponent() {
   // and update the game state accordingly
   useEffect(() => {
     if (!user) return; // Early return if no user
+
+    posthog.capture("userJoinedGame", {
+      gameId,
+    });
 
     // Establish a Socket.IO connection
     socketRef.current = io(SOCKET_SERVER_URL, {
