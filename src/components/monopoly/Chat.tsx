@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import PlayerTab from "./PlayerTab";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
+import { getUser } from "~/lib/user";
 
 interface ChatProps {
   game: GameState;
@@ -15,7 +15,7 @@ interface ChatProps {
 
 function Chat({ game, onSendMessage, keyPassthrough }: ChatProps) {
   const messages = [...game.getMessages()].reverse();
-  const { user } = useUser();
+  const user = getUser();
   const [message, setMessage] = useState("");
 
   if (!user) {

@@ -8,10 +8,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~
 import { Card } from "../ui/card";
 import { PropertySquare } from "~/models/Square";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip";
-import { UserButton, useUser } from "@clerk/nextjs";
 import { cn } from "~/lib/utils";
 import PlayerTab from "./PlayerTab";
 import TradeDialog, { Trade } from "./TradeDialog";
+import { getUser } from "~/lib/user";
+import Link from "next/link";
 
 interface PlayerControlsProps {
   game: GameState;
@@ -40,7 +41,7 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
   const selectedProperty = game.getSelectedProperty();
   const dice = game.getDice();
   const params = useParams<{ gameId: string }>();
-  const { user } = useUser();
+  const user = getUser();
   if (!user) throw new Error("No user");
   const me = game.getPlayerById(user.id);
   if (!me) throw new Error("I don't exist :(");
@@ -49,7 +50,9 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
 
   return (
     <div>
-      <UserButton showName />
+      <Link href="/profile">
+        <Button>Profile</Button>
+      </Link>
       <div className="mt-4 flex flex-col gap-4 *:relative" key={keyPassthrough}>
         <h1 className="text-2xl font-bold">MOMWEC Game: {params.gameId}</h1>
         <div className="flex items-center gap-1">
