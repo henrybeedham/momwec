@@ -6,10 +6,10 @@ import { Player } from "~/models/Player";
 import renderSquareContent from "./SquareContent";
 import SquareHoverCard from "./SquareCard";
 import { GameState } from "~/models/GameState";
-import { useUser } from "@clerk/nextjs";
 import { Card, CardContent } from "../ui/card";
 import PlayerTab from "./PlayerTab";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { getUser } from "~/lib/user";
 
 interface BoardProps {
   game: GameState;
@@ -24,7 +24,7 @@ function BoardComponent({ game }: BoardProps) {
   const totalSquares = board.getTotalSquares();
   const squares = board.getSquares();
   const currentPlayer = game.getCurrentPlayer();
-  const { user } = useUser();
+  const user = getUser();
   if (!user) {
     return <div>Please log in to view the game.</div>;
   }

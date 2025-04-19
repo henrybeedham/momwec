@@ -5,8 +5,6 @@ import { type Metadata } from "next";
 
 import { Toaster } from "~/components/ui/toaster";
 
-import { ClerkProvider, SignIn, SignedIn, SignedOut } from "@clerk/nextjs";
-
 export const metadata: Metadata = {
   title: "MOMWEC",
   description: "Multiplayer Online Monopoly With Extra Capitalism",
@@ -136,18 +134,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={`${GeistSans.variable}`}>
-        <body>
-          <SignedOut>
-            <div className="flex min-h-screen items-center justify-center bg-red-500 p-4">
-              <SignIn withSignUp />
-            </div>
-          </SignedOut>
-          <SignedIn>{children}</SignedIn>
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={`${GeistSans.variable}`}>
+      <body>
+        {children}
+        <Toaster />
+      </body>
+    </html>
   );
 }

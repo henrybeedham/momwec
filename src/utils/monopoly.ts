@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/nextjs";
+import { User } from "~/lib/user";
 
 export const propertyColors: Record<string, string> = {
   brown: "bg-amber-900",
@@ -26,7 +26,7 @@ export const playerColoursLight: Record<string, string> = {
   "bg-gray-500": "bg-gray-200",
 };
 
-export function getUserName(user: ReturnType<typeof useUser>["user"]): string {
+export function getUserName(user: User | null): string {
   if (!user) return "Unknown User";
-  return user.firstName ?? user.fullName ?? user.emailAddresses[0]?.emailAddress ?? user.username ?? user.id;
+  return user.username ?? user.id;
 }

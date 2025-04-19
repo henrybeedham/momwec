@@ -27,8 +27,8 @@ import { GameState } from "~/models/GameState";
 import { BuyableSquare, PropertySquare } from "~/models/Square";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/ui/form";
 import { Player } from "~/models/Player";
-import { useUser } from "@clerk/nextjs";
 import { useToast } from "~/hooks/use-toast";
+import { getUser } from "~/lib/user";
 
 // Define schema for the form
 const tradeFormSchema = z.object({
@@ -115,7 +115,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
 
   const { toast } = useToast();
 
-  const { user } = useUser();
+  const user = getUser();
   if (!user) {
     return null;
   }

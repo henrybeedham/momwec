@@ -7,7 +7,6 @@ import { useToast } from "~/hooks/use-toast";
 import { io } from "socket.io-client";
 import { useParams } from "next/navigation";
 import { getUserName, playerColoursLight } from "~/utils/monopoly";
-import { useUser } from "@clerk/nextjs";
 import Chat from "./Chat";
 import { Message } from "~/models/types";
 import { PropertySquare } from "~/models/Square";
@@ -18,6 +17,7 @@ import PurchaseDialog from "./PurchaseDialog";
 import { Trade } from "./TradeDialog";
 import TradeProposalDialog from "./TradeProposedDialog";
 import { BoardName } from "~/models/Board";
+import { getUser } from "~/lib/user";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -28,7 +28,7 @@ function GameComponent() {
   const [uniqueMessagesKey, setUniqueMessagesKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
-  const { user } = useUser();
+  const user = getUser();
 
   const sendGameMove = () => {
     const data = gameRef.current?.toJSON();
