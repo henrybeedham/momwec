@@ -268,8 +268,7 @@ function GameComponent() {
       updateGameState(() => {
         const g = gameRef.current;
         if (!g) throw new Error("Game is not initialized");
-        const userName = getUserName(user);
-        g.addPlayer("test user", userName);
+        g.addPlayer("testuserid", "TestUser");
         sendGameMove();
         window.removeEventListener("keypress", handleKeyPress);
       });
