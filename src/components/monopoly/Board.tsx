@@ -75,32 +75,30 @@ function BoardComponent({ game }: BoardProps) {
           const ownerColour = game.getOwner(square.id)?.getColour();
           const sqColour = ownerColour ? playerColoursLight[ownerColour] : "bg-white";
           return (
-            <HoverCard key={index}>
-              <HoverCardTrigger>
-                <div
-                  className={cn(
-                    `relative flex items-center overflow-hidden ${sqColour} text-xs ${
-                      edge === "bottom"
-                        ? "flex-col rounded-t-lg"
-                        : edge === "top"
-                          ? "flex-col-reverse rounded-b-lg"
-                          : edge === "right"
-                            ? "flex-row rounded-l-lg"
-                            : edge === "left"
-                              ? "flex-row-reverse rounded-r-lg"
-                              : "rounded-lg"
-                    }`,
-                  )}
-                  style={{
-                    height: `${80 / boardSize}vmin`,
-                    width: `${80 / boardSize}vmin`,
-                    border: `${squareIndex === myPosition ? `5px solid black` : "2px solid black"}`,
-                  }}
-                >
-                  <ColourTab colourClass={colourClass} edge={edge} square={square} />
-                  <PlayerTokens players={players} squareIndex={squareIndex} />
-                  <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden p-1 text-2xs">{renderSquareContent(square)}</div>
-                </div>
+            <HoverCard key={index} openDelay={100} closeDelay={50}>
+              <HoverCardTrigger
+                className={cn(
+                  `relative flex items-center overflow-hidden hover:underline  ${sqColour} text-xs ${
+                    edge === "bottom"
+                      ? "flex-col rounded-t-lg"
+                      : edge === "top"
+                        ? "flex-col-reverse rounded-b-lg"
+                        : edge === "right"
+                          ? "flex-row rounded-l-lg"
+                          : edge === "left"
+                            ? "flex-row-reverse rounded-r-lg"
+                            : "rounded-lg"
+                  }`,
+                )}
+                style={{
+                  height: `${80 / boardSize}vmin`,
+                  width: `${80 / boardSize}vmin`,
+                  border: `${squareIndex === myPosition ? `5px solid black` : "2px solid black"}`,
+                }}
+              >
+                <ColourTab colourClass={colourClass} edge={edge} square={square} />
+                <PlayerTokens players={players} squareIndex={squareIndex} />
+                <div className="flex h-full w-full flex-col items-center justify-center overflow-hidden p-1 text-2xs">{renderSquareContent(square)}</div>
               </HoverCardTrigger>
               <HoverCardContent>
                 <h1 className="text-lg">{square.name}</h1>
