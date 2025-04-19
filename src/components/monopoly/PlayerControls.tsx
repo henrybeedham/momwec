@@ -12,7 +12,6 @@ import { cn } from "~/lib/utils";
 import PlayerTab from "./PlayerTab";
 import TradeDialog, { Trade } from "./TradeDialog";
 import { getUser } from "~/lib/user";
-import Link from "next/link";
 
 interface PlayerControlsProps {
   game: GameState;
@@ -50,9 +49,6 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
 
   return (
     <div>
-      <Link href="/profile">
-        <Button>Profile</Button>
-      </Link>
       <div className="mt-4 flex flex-col gap-4 *:relative" key={keyPassthrough}>
         <h1 className="text-2xl font-bold">MOMWEC Game: {params.gameId}</h1>
         <div className="flex items-center gap-1">
