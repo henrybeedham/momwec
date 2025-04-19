@@ -28,7 +28,7 @@ import { BuyableSquare, PropertySquare } from "~/models/Square";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/ui/form";
 import { Player } from "~/models/Player";
 import { useToast } from "~/hooks/use-toast";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 
 // Define schema for the form
 const tradeFormSchema = z.object({

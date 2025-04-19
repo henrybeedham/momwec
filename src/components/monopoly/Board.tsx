@@ -9,7 +9,7 @@ import { GameState } from "~/models/GameState";
 import { Card, CardContent } from "../ui/card";
 import PlayerTab from "./PlayerTab";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 
 interface BoardProps {
   game: GameState;

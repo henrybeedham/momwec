@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { Toaster } from "~/components/ui/toaster";
-import { UserProvider } from "~/lib/user-context";
+import { UserProvider } from "~/components/UserProvider";
 import { PostHogProvider } from "~/components/PostHogProvider";
 
 export const metadata: Metadata = {

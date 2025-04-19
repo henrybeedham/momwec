@@ -5,7 +5,7 @@ import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { GameState } from "~/models/GameState";
 import { BuyableSquare, PropertySquare } from "~/models/Square";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 
 type TradeProposalDialogProps = {
   game: GameState;

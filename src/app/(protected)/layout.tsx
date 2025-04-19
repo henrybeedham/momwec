@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 import posthog from "posthog-js";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {

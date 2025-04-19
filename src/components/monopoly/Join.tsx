@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import { CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 import { toast } from "~/hooks/use-toast";
 import { useRouter } from "next/navigation";
 

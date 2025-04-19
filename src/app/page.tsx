@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUserName } from "~/utils/monopoly";
 import { Github, DollarSign, Users, Dice1Icon as Dice, Building, Loader2 } from "lucide-react";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 import posthog from "posthog-js";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";

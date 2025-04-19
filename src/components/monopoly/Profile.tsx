@@ -2,7 +2,7 @@
 import { Button } from "~/components/ui/button";
 import { User, LogOut, Users, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
 
 export default function Profile() {

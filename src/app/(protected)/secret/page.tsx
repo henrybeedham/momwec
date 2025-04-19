@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { toast } from "~/hooks/use-toast";
 import { io } from "socket.io-client";
 import { GameState } from "~/models/GameState";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 

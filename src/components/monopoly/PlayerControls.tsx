@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/comp
 import { cn } from "~/lib/utils";
 import PlayerTab from "./PlayerTab";
 import TradeDialog, { Trade } from "./TradeDialog";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 
 interface PlayerControlsProps {
   game: GameState;

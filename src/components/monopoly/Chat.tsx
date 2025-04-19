@@ -5,7 +5,7 @@ import PlayerTab from "./PlayerTab";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 
 interface ChatProps {
   game: GameState;

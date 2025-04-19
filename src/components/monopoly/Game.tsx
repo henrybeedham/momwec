@@ -17,7 +17,7 @@ import PurchaseDialog from "./PurchaseDialog";
 import { Trade } from "./TradeDialog";
 import TradeProposalDialog from "./TradeProposedDialog";
 import { BoardName } from "~/models/Board";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 import posthog from "posthog-js";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";

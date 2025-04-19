@@ -3,7 +3,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import SquareCard from "./SquareCard";
 import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "~/models/GameState";
-import { useUser } from "~/lib/user-context";
+import { useUser } from "~/components/UserProvider";
 
 type PopupProps = {
   game: GameState;
