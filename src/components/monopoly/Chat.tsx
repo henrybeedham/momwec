@@ -5,7 +5,7 @@ import PlayerTab from "./PlayerTab";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
-import { getUser } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
 
 interface ChatProps {
   game: GameState;
@@ -15,7 +15,7 @@ interface ChatProps {
 
 function Chat({ game, onSendMessage, keyPassthrough }: ChatProps) {
   const messages = [...game.getMessages()].reverse();
-  const user = getUser();
+  const { user, isLoading } = useUser();
   const [message, setMessage] = useState("");
 
   if (!user) {

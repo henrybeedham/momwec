@@ -9,7 +9,7 @@ import { GameState } from "~/models/GameState";
 import { Card, CardContent } from "../ui/card";
 import PlayerTab from "./PlayerTab";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { getUser } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
 
 interface BoardProps {
   game: GameState;
@@ -24,7 +24,7 @@ function BoardComponent({ game }: BoardProps) {
   const totalSquares = board.getTotalSquares();
   const squares = board.getSquares();
   const currentPlayer = game.getCurrentPlayer();
-  const user = getUser();
+  const { user, isLoading } = useUser();
   if (!user) {
     return <div>Please log in to view the game.</div>;
   }

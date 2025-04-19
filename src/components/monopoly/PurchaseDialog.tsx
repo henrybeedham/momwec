@@ -3,7 +3,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import SquareCard from "./SquareCard";
 import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "~/models/GameState";
-import { getUser } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
 
 type PopupProps = {
   game: GameState;
@@ -14,7 +14,7 @@ type PopupProps = {
 function PurchaseDialog({ game, buyProperty, passProperty }: PopupProps) {
   const property = game.getBoard().getSquareFromIndex(game.getSelectedProperty() ?? -1) as BuyableSquare;
   if (!property) return null;
-  const user = getUser();
+  const { user, isLoading } = useUser();
   if (!user) throw new Error("No user");
   const me = game.getCurrentPlayer();
   const myTurn = user.id === me.id;

@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/comp
 import { cn } from "~/lib/utils";
 import PlayerTab from "./PlayerTab";
 import TradeDialog, { Trade } from "./TradeDialog";
-import { getUser } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
 
 interface PlayerControlsProps {
   game: GameState;
@@ -40,7 +40,7 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
   const selectedProperty = game.getSelectedProperty();
   const dice = game.getDice();
   const params = useParams<{ gameId: string }>();
-  const user = getUser();
+  const { user, isLoading } = useUser();
   if (!user) throw new Error("No user");
   const me = game.getPlayerById(user.id);
   if (!me) throw new Error("I don't exist :(");

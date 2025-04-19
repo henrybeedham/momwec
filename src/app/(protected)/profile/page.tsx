@@ -1,37 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { User, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getUser, logoutUser, type User as UserType } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
+import { useEffect } from "react";
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<UserType | null>(null);
+  const { user, logout, isLoading } = useUser();
   const router = useRouter();
 
   useEffect(() => {
-    // Get user data when component mounts
-    const userData = getUser();
-
-    if (userData) {
-      setUser(userData);
-    } else {
-      // Redirect to join page if no user is found
+    // Redirect to home if not logged in and not loading
+    if (!isLoading && !user) {
       router.push("/join");
     }
-  }, [router]);
-
-  const handleLogout = () => {
-    logoutUser();
-    router.push("/join");
-  };
+  }, [user, isLoading, router]);
 
   // Show loading state while checking for user
-  if (!user) {
-    return <div className="flex justify-center items-center h-screen bg-gradient-to-r from-red-500 to-orange-600">Loading...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gradient-to-r from-red-500 to-orange-600">
+        <div className="bg-white/10 backdrop-blur-sm p-6 rounded-lg text-white">Loading...</div>
+      </div>
+    );
   }
+
+  // If no user is found after loading, don't render anything (will redirect)
+  if (!user) {
+    return null;
+  }
+
+  const handleLogout = () => {
+    logout();
+    router.push("/join");
+  };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-red-500 to-orange-600 p-4">

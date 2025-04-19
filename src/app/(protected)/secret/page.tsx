@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~
 import { toast } from "~/hooks/use-toast";
 import { io } from "socket.io-client";
 import { GameState } from "~/models/GameState";
-import { getUser } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -20,7 +20,7 @@ export default function AdminPage() {
   const [selectedPlayer, setSelectedPlayer] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const user = getUser();
+  const { user, isLoading } = useUser();
 
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
   useEffect(() => {

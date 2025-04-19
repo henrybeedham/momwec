@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { Toaster } from "~/components/ui/toaster";
+import { UserProvider } from "~/lib/user-context";
 
 export const metadata: Metadata = {
   title: "MOMWEC",
@@ -136,8 +137,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
-        {children}
-        <Toaster />
+        <UserProvider>
+          {children}
+          <Toaster />
+        </UserProvider>
       </body>
     </html>
   );

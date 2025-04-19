@@ -1,4 +1,4 @@
-import { User } from "~/lib/user";
+import { User } from "~/lib/user-context";
 
 export const propertyColors: Record<string, string> = {
   brown: "bg-amber-900",

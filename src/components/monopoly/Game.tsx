@@ -17,7 +17,7 @@ import PurchaseDialog from "./PurchaseDialog";
 import { Trade } from "./TradeDialog";
 import TradeProposalDialog from "./TradeProposedDialog";
 import { BoardName } from "~/models/Board";
-import { getUser } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
 
 const SOCKET_SERVER_URL = "https://socket.ilpa.co.uk";
 
@@ -28,7 +28,7 @@ function GameComponent() {
   const [uniqueMessagesKey, setUniqueMessagesKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
-  const user = getUser();
+  const { user, isLoading } = useUser();
 
   const sendGameMove = () => {
     const data = gameRef.current?.toJSON();
@@ -292,7 +292,7 @@ function GameComponent() {
         <div className="flex gap-4">
           <Button onClick={() => initialiseGame("uk")}>UK</Button>
           <Button onClick={() => initialiseGame("us")}>US</Button>
-          <Button onClick={() => initialiseGame("bry")}>Bry</Button>
+          {/* <Button onClick={() => initialiseGame("bry")}>Bry</Button> */}
           <Button onClick={() => initialiseGame("world")}>World</Button>
         </div>
       </div>

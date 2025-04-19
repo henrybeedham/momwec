@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -9,9 +9,9 @@ import { Input } from "~/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { UserIcon } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { useUser } from "~/lib/user-context";
 import { toast } from "~/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import type { User } from "~/lib/user";
 
 // Define the form schema with Zod
 const formSchema = z.object({
@@ -26,7 +26,16 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function JoinForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user, isLoading, login } = useUser();
   const router = useRouter();
+
+  useEffect(() => {
+    // If not loading and no user is found, redirect to home page
+    if (!isLoading && user) {
+      router.push("/");
+    }
+  }, [user, isLoading, router]);
+
   // Initialize react-hook-form with Zod validation
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -43,14 +52,14 @@ export default function JoinForm() {
       const userId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
 
       // Create user object
-      const userData: User = {
+      const userData = {
         id: userId,
         username: values.username,
         createdAt: new Date().toISOString(),
       };
 
-      // Store in localStorage
-      localStorage.setItem("user", JSON.stringify(userData));
+      // Use the login function from context
+      login(userData);
 
       // Show success message
       toast({

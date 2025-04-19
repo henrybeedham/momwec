@@ -9,8 +9,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUserName } from "~/utils/monopoly";
 import { Github } from "lucide-react";
-import { getUser } from "~/lib/user";
 import Link from "next/link";
+import { useUser } from "~/lib/user-context";
 
 const formSchema = z.object({
   gameId: z.string().min(4).max(4),
@@ -21,7 +21,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [idInput, setIdInput] = useState("");
 
-  const user = getUser();
+  const { user } = useUser();
 
   const startNewGame = () => {
     setIsLoading(true);

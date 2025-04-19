@@ -5,7 +5,7 @@ import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
 import { GameState } from "~/models/GameState";
 import { BuyableSquare, PropertySquare } from "~/models/Square";
-import { getUser } from "~/lib/user";
+import { useUser } from "~/lib/user-context";
 
 type TradeProposalDialogProps = {
   game: GameState;
@@ -20,7 +20,7 @@ export default function TradeProposalDialog({ game, onAccept, onDeny }: TradePro
   const proposer = game.getPlayerById(trade.proposer);
   const recipient = game.getPlayerById(trade.selectedPlayer);
   if (!proposer || !recipient) return null;
-  const user = getUser();
+  const { user, isLoading } = useUser();
   if (!user) {
     return null;
   }
