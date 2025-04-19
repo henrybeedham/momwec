@@ -13,7 +13,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     // If not loading and no user is found, redirect to home page
     if (!isLoading && !user) {
-      router.push("/join");
+      router.push("/");
     }
     if (user) {
       posthog.identify(user?.id, { username: user?.username, createdAt: user?.createdAt });
