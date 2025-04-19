@@ -10,10 +10,13 @@ MOMWEC is a modern twist on the classic Monopoly game, designed for online multi
 - **Leaderboards:** Track your progress and compete for the top spot.
 - **In-Game Chat:** Communicate with other players in real-time.
 
+## To play
+Go to [ilpa.co.uk](https://ilpa.co.uk) and start a new game.
+
 ## Installation
 1. Clone the repository:
   ```bash
-  git clone https://github.com/yourusername/momwec.git
+  git clone https://github.com/henrybeedham/momwec.git
   ```
 2. Navigate to the project directory:
   ```bash
@@ -35,10 +38,8 @@ MOMWEC is a modern twist on the classic Monopoly game, designed for online multi
 4. Use new capitalism mechanics to outsmart your opponents.
 5. The player with the most assets at the end wins!
 
-## Features
-
 
 ## Contact
-For any questions or feedback, please open an issue on GitHub or contact us at support@momwec.com.
+For any questions or feedback, please open an issue on GitHub.
 
 Enjoy playing MOMWEC!
