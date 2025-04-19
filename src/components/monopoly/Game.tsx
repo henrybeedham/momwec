@@ -290,7 +290,7 @@ function GameComponent() {
   // Show UI to pick board ("uk", "us", "bry")
   if (!gameRef.current) {
     return (
-      <div className="flex flex-col gap-4 min-h-screen items-center justify-center bg-gradient-to-r from-orange-600 to-yellow-500 p-4 text-center text-white">
+      <div className="flex flex-col gap-4 min-h-screen items-center justify-center bg-gradient-to-b from-emerald-50 to-emerald-100 dark:from-slate-900 dark:to-slate-800 p-4 text-center text-emerald-800 dark:text-emerald-300">
         <h1 className="text-6xl font-bold">Welcome to Monopoly</h1>
         <p className="text-xl">Choose a board to start a game:</p>
         <div className="flex gap-4">
@@ -321,7 +321,7 @@ function GameComponent() {
     // log in green saying if t is pressed, a test user will be added
     console.log("%cPress t to add a test user", "background: #222; color: #bada55");
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-r from-yellow-500 to-green-500 p-4 text-center text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-b from-emerald-50 to-emerald-100 dark:from-slate-900 dark:to-slate-800 p-4 text-center text-emerald-800 dark:text-emerald-300">
         <h1 className="text-6xl font-bold">Game: {gameId}</h1>
         <h1 className="text-6xl font-bold">Waiting for opponents to join...</h1>
         <p className="text-xl">Share you game code or send link:</p>
@@ -339,7 +339,7 @@ function GameComponent() {
           </Button>
         </div>
 
-        <Loader2 className="animate-spin" size={80} color="#fff" />
+        <Loader2 className="animate-spin" size={80} color="#000" />
       </div>
     );
   }

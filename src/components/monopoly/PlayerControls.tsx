@@ -1,7 +1,7 @@
 // In your PlayerControls.tsx
 import { JSX } from "react";
 import { GameState } from "~/models/GameState";
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Hotel, House, ShieldCheck } from "lucide-react";
+import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, HandCoins, Hotel, House, ShieldCheck } from "lucide-react";
 import { useParams } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "~/components/ui/table";
@@ -102,7 +102,7 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
                   const p = game.getBoard().getSquareFromIndex(property.id);
                   const isProperty = p instanceof PropertySquare;
                   return (
-                    <TableRow key={property.id} className={cn(property.mortgaged && "bg-red-100")}>
+                    <TableRow key={property.id} className={cn(property.mortgaged && "bg-red-100 hover:bg-red-200")}>
                       <TableCell className="flex flex-col gap-2">
                         <div className="flex items-center gap-2">
                           {isProperty && <PlayerTab className="mr-2" colour={p.getPropertyColour()} />}
@@ -121,19 +121,34 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
                       </TableCell>
                       {myTurn && (
                         <TableCell>
-                          <div className="flex flex-col gap-2">
-                            <Button
-                              className="text-xs"
-                              onClick={() => {
-                                onMortgage(property.id);
-                              }}
-                            >
-                              {property.mortgaged ? "Unmortgage" : "Mortgage"}
-                            </Button>
+                          <div className="flex gap-1">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  size="icon"
+                                  onClick={() => {
+                                    onMortgage(property.id);
+                                  }}
+                                >
+                                  <HandCoins />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{property.mortgaged ? "Unmortgage" : "Mortgage"}</p>
+                              </TooltipContent>
+                            </Tooltip>
+
                             {isProperty && (property.houses ?? 0) < 5 && currentPlayer.ownsPropertyGroup(p.group) && (
-                              <Button className="text-xs" onClick={() => onBuyHouse(property.id)}>
-                                Buy house
-                              </Button>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button size="icon" onClick={() => onBuyHouse(property.id)}>
+                                    <House />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Buy house/hotel</p>
+                                </TooltipContent>
+                              </Tooltip>
                             )}
                           </div>
                         </TableCell>

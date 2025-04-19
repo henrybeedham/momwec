@@ -13,7 +13,7 @@ import { useUser } from "~/components/UserProvider";
 import posthog from "posthog-js";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
-import JoinForm from "~/components/monopoly/Join";
+import JoinForm from "~/components/monopoly/CreateAccount";
 import Profile from "~/components/monopoly/Profile";
 
 const formSchema = z.object({

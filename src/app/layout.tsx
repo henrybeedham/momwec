@@ -6,6 +6,7 @@ import { type Metadata } from "next";
 import { Toaster } from "~/components/ui/toaster";
 import { UserProvider } from "~/components/UserProvider";
 import { PostHogProvider } from "~/components/PostHogProvider";
+import { TooltipProvider } from "~/components/ui/tooltip";
 
 export const metadata: Metadata = {
   title: "MOMWEC",
@@ -140,7 +141,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <PostHogProvider>
           <UserProvider>
-            {children}
+            <TooltipProvider>{children}</TooltipProvider>
             <Toaster />
           </UserProvider>
         </PostHogProvider>

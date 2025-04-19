@@ -223,9 +223,7 @@ export default function TradeDialog({ game, proposeTrade }: TradeDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" disabled={isTradeDisabled}>
-          {isTradeDisabled ? "Someone is already trading" : "Trade"}
-        </Button>
+        <Button disabled={isTradeDisabled}>{isTradeDisabled ? "Someone is already trading" : "Trade"}</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-h-[90vh] overflow-y-auto">
         <Form {...form}>
