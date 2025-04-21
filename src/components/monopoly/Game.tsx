@@ -78,7 +78,7 @@ function GameComponent() {
       console.log("Received gameMove event:", JSON.parse(data as string));
 
       const newGame = new GameState();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
       newGame.importFromJSON(data);
       gameRef.current = newGame;
 
