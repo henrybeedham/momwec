@@ -50,7 +50,7 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
 
   return (
     <div>
-      <div className="mt-4 flex flex-col gap-4 *:relative" key={keyPassthrough}>
+      <div className="mt-4 flex flex-col gap-4 *:relative">
         <div key={keyPassthrough}>
           <h1 className="text-2xl font-bold">MOMWEC Game: {params.gameId}</h1>
           <div className="flex items-center gap-1">
