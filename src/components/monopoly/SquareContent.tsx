@@ -1,4 +1,4 @@
-import { Zap, Train, Droplet, ArrowLeft, Columns4, Car, Pointer, Clover, PoundSterling } from "lucide-react";
+import { Zap, Train, Droplet, ArrowLeft, Columns4, Car, Pointer, Clover, PoundSterling, Gift } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Square } from "~/models/Square";
 
@@ -86,6 +86,7 @@ export default function renderSquareContent(square: Square) {
       case "Community Chest":
         return (
           <>
+            <Gift />
             <p className={cn("font-bold text-blue-600")}>COMMUNITY</p>
             <p className={cn("font-bold text-blue-600")}>CHEST</p>
           </>

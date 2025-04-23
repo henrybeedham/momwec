@@ -157,8 +157,8 @@ export class Board {
         squares.push(new CornerSquare(10, "Detention"));
         squares.push(new CornerSquare(20, "Free Cafe"));
         squares.push(new CornerSquare(30, "Go To Detention", "jail"));
-        squares.push(new PropertySquare(1, "Old Kent Road", 60, [2, 10, 30, 90, 160, 250], 50, "brown"));
-        squares.push(new PropertySquare(3, "Whitechapel Road", 60, [4, 20, 60, 180, 320, 450], 50, "brown"));
+        squares.push(new PropertySquare(1, "Room 6", 60, [2, 10, 30, 90, 160, 250], 50, "brown"));
+        squares.push(new PropertySquare(3, "Room 8", 60, [4, 20, 60, 180, 320, 450], 50, "brown"));
         squares.push(new CardSquare(2, "Community Chest", "community"));
         squares.push(new CardSquare(17, "Community Chest", "community"));
         squares.push(new CardSquare(33, "Community Chest", "community"));
