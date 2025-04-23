@@ -357,6 +357,7 @@ function GameComponent() {
           onMortgage={mortgage}
           proposeTrade={proposeTrade}
           keyPassthrough={`Controls-${uniqueGameKey}`}
+          tradeKeyPassthrough={`Controls-${uniqueGameKey}`}
         />
         <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
         <Chat game={gameRef.current} onSendMessage={sendMessage} keyPassthrough={`Chat-${uniqueMessagesKey}`} />

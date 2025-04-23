@@ -72,7 +72,8 @@ function BoardComponent({ game }: BoardProps) {
           const colourClass = square instanceof PropertySquare ? (propertyColors[square.group] ?? "bg-gray-200") : "bg-gray-200";
 
           const isBuyable = square instanceof (PropertySquare || UtilitySquare || StationSquare);
-          const ownerColour = game.getOwner(square.id)?.getColour();
+          const owner = game.getOwner(square.id);
+          const ownerColour = owner?.getColour();
           const sqColour = ownerColour ? playerColoursLight[ownerColour] : "bg-white";
           return (
             <HoverCard key={index} openDelay={100} closeDelay={50}>
@@ -103,6 +104,12 @@ function BoardComponent({ game }: BoardProps) {
               <HoverCardContent>
                 <h1 className="text-lg">{square.name}</h1>
                 <SquareHoverCard square={square} colourClass={colourClass} />
+                {!!ownerColour && !!owner && (
+                  <div className="flex">
+                    <PlayerTab colour={ownerColour} />
+                    <h1>{owner.name}</h1>
+                  </div>
+                )}
               </HoverCardContent>
             </HoverCard>
           );

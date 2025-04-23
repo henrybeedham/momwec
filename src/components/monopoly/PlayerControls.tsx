@@ -21,6 +21,7 @@ interface PlayerControlsProps {
   onMortgage: (propertyId: number) => void;
   proposeTrade: (trade: Trade) => void;
   keyPassthrough: string;
+  tradeKeyPassthrough: string;
 }
 
 const diceClasses = "h-8 w-8";
@@ -34,7 +35,7 @@ const diceIcon: Record<DiceIconType, JSX.Element> = {
   6: <Dice6 className={diceClasses} />,
 };
 
-function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, proposeTrade, keyPassthrough }: PlayerControlsProps) {
+function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, proposeTrade, keyPassthrough, tradeKeyPassthrough }: PlayerControlsProps) {
   const currentPlayer = game.getCurrentPlayer();
   const isGameLocked = game.isGameLocked();
   const selectedProperty = game.getSelectedProperty();
@@ -50,119 +51,118 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
   return (
     <div>
       <div className="mt-4 flex flex-col gap-4 *:relative" key={keyPassthrough}>
-        <h1 className="text-2xl font-bold">MOMWEC Game: {params.gameId}</h1>
-        <div className="flex items-center gap-1">
-          <PlayerTab className="mr-2" colour={me.getColour()} />
-          <p className="text-lg font-bold">
-            {me.name} £{me.getMoney()}
-          </p>
-          {/* Show get out of jail card if you have one */}
-          {!!me.getPardons() && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <ShieldCheck />
-                </TooltipTrigger>
-                <TooltipContent>Get out of jail free card</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
-        <div className="flex flex-col gap-1">
+        <div key={keyPassthrough}>
+          <h1 className="text-2xl font-bold">MOMWEC Game: {params.gameId}</h1>
           <div className="flex items-center gap-1">
-            {/* Roll dice button */}
-            {myTurn && (
-              <Button onClick={onRollDice} disabled={dice[0] === dice[1] ? false : isGameLocked}>
-                Roll Dice
-              </Button>
-            )}
-            <div>{diceIcon[dice[0] as DiceIconType]}</div>
-            <div>{diceIcon[dice[1] as DiceIconType]}</div>
-            {myTurn && (
-              <Button disabled={dice[0] === dice[1] || !isGameLocked || currentPlayer.getMoney() < 0} onClick={onEndTurn}>
-                End Turn
-              </Button>
+            <PlayerTab className="mr-2" colour={me.getColour()} />
+            <p className="text-lg font-bold">
+              {me.name} £{me.getMoney()}
+            </p>
+            {/* Show get out of jail card if you have one */}
+            {!!me.getPardons() && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <ShieldCheck />
+                  </TooltipTrigger>
+                  <TooltipContent>Get out of jail free card</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
-          <div className="flex items-center gap-1">{/* {myTurn && <Button>Give money</Button>} */}</div>
-        </div>
-
-        {/* Properties list */}
-        {properties.length >= 1 && (
-          <Card>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Properties</TableHead>
-                  {myTurn && <TableHead>Actions</TableHead>}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {properties.map((property) => {
-                  const p = game.getBoard().getSquareFromIndex(property.id);
-                  const isProperty = p instanceof PropertySquare;
-                  return (
-                    <TableRow key={property.id} className={cn(property.mortgaged && "bg-red-100 hover:bg-red-200")}>
-                      <TableCell className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          {isProperty && <PlayerTab className="mr-2" colour={p.getPropertyColour()} />}
-                          {p?.name}
-                          {/* Show houses icons for house and 5 houses  for a hotel */}
-                          {isProperty && (
-                            <>
-                              {(property.houses ?? 0) < 5 &&
-                                Array(property.houses ?? 0)
-                                  .fill(null)
-                                  .map((_, index) => <House key={index} className="h-5 w-5 text-green-700" />)}
-                              {property.houses === 5 && <Hotel className="h-5 w-5 text-red-700" />}
-                            </>
-                          )}
-                        </div>
-                      </TableCell>
-                      {myTurn && (
-                        <TableCell>
-                          <div className="flex gap-1">
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  size="icon"
-                                  onClick={() => {
-                                    onMortgage(property.id);
-                                  }}
-                                >
-                                  <HandCoins />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>{property.mortgaged ? "Unmortgage" : "Mortgage"}</p>
-                              </TooltipContent>
-                            </Tooltip>
-
-                            {isProperty && (property.houses ?? 0) < 5 && currentPlayer.ownsPropertyGroup(p.group) && (
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button size="icon" onClick={() => onBuyHouse(property.id)}>
-                                    <House />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Buy house/hotel</p>
-                                </TooltipContent>
-                              </Tooltip>
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-1">
+              {/* Roll dice button */}
+              {myTurn && (
+                <Button onClick={onRollDice} disabled={dice[0] === dice[1] ? false : isGameLocked}>
+                  Roll Dice
+                </Button>
+              )}
+              <div>{diceIcon[dice[0] as DiceIconType]}</div>
+              <div>{diceIcon[dice[1] as DiceIconType]}</div>
+              {myTurn && (
+                <Button disabled={dice[0] === dice[1] || !isGameLocked || currentPlayer.getMoney() < 0} onClick={onEndTurn}>
+                  End Turn
+                </Button>
+              )}
+            </div>
+            <div className="flex items-center gap-1">{/* {myTurn && <Button>Give money</Button>} */}</div>
+          </div>
+          {/* Properties list */}
+          {properties.length >= 1 && (
+            <Card>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Properties</TableHead>
+                    {myTurn && <TableHead>Actions</TableHead>}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {properties.map((property) => {
+                    const p = game.getBoard().getSquareFromIndex(property.id);
+                    const isProperty = p instanceof PropertySquare;
+                    return (
+                      <TableRow key={property.id} className={cn(property.mortgaged && "bg-red-100 hover:bg-red-200")}>
+                        <TableCell className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            {isProperty && <PlayerTab className="mr-2" colour={p.getPropertyColour()} />}
+                            {p?.name}
+                            {/* Show houses icons for house and 5 houses  for a hotel */}
+                            {isProperty && (
+                              <>
+                                {(property.houses ?? 0) < 5 &&
+                                  Array(property.houses ?? 0)
+                                    .fill(null)
+                                    .map((_, index) => <House key={index} className="h-5 w-5 text-green-700" />)}
+                                {property.houses === 5 && <Hotel className="h-5 w-5 text-red-700" />}
+                              </>
                             )}
                           </div>
                         </TableCell>
-                      )}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </Card>
-        )}
-
-        {/* Trade Dialog */}
-        <TradeDialog game={game} proposeTrade={proposeTrade} key={keyPassthrough} />
+                        {myTurn && (
+                          <TableCell>
+                            <div className="flex gap-1">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    onClick={() => {
+                                      onMortgage(property.id);
+                                    }}
+                                  >
+                                    <HandCoins />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>{property.mortgaged ? "Unmortgage" : "Mortgage"}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              {isProperty && (property.houses ?? 0) < 5 && currentPlayer.ownsPropertyGroup(p.group) && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button size="icon" onClick={() => onBuyHouse(property.id)}>
+                                      <House />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Buy house/hotel</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              )}
+                            </div>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </Card>
+          )}
+          {/* Trade Dialog */}
+        </div>
+        <TradeDialog game={game} proposeTrade={proposeTrade} key={tradeKeyPassthrough} />
       </div>
     </div>
   );
