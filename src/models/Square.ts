@@ -268,6 +268,7 @@ function payRent(player: Player, owner: Player, rentAmount: number, toastCallbac
       title: "Rent Paid",
       description: `${player.name} paid £${rentAmount} to ${owner.name} for staying at ${square.name}`,
     });
+    owner.addMoney(rentAmount);
   } else {
     toastCallback({
       title: "Insufficient Funds",
@@ -275,6 +276,6 @@ function payRent(player: Player, owner: Player, rentAmount: number, toastCallbac
       variant: "destructive",
     });
     player.forceRemoveMoney(rentAmount);
+    owner.addMoney(rentAmount);
   }
-  owner.addMoney(rentAmount);
 }

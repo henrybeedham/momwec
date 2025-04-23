@@ -158,7 +158,7 @@ function CenterOfBoard({ boardSize, players, currentPlayerId }: { boardSize: num
               <TableBody>
                 {sortedPlayers.map((player, i) => {
                   return (
-                    <TableRow key={player.id} className={currentPlayerId === player.id ? "bg-red-100" : ""}>
+                    <TableRow key={player.id} className={currentPlayerId === player.id ? "bg-red-100 hover:bg-red-200" : ""}>
                       <TableCell>#{i + 1}</TableCell>
                       <TableCell>
                         <PlayerTab className="mr-2" colour={player.getColour()} />
