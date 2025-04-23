@@ -327,6 +327,12 @@ export class GameState {
     });
   }
 
+  exportTradeKey(): string {
+    return JSON.stringify({
+      trade: this.proposeTrade,
+    });
+  }
+
   exportGameState(): string {
     const gameState = {
       players: this.players.map((player) => player.toJSON()),

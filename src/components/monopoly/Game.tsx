@@ -27,6 +27,7 @@ function GameComponent() {
   const socketRef = useRef<ReturnType<typeof io> | null>(null);
   const [uniqueGameKey, setUniqueGameKey] = useState("");
   const [uniqueMessagesKey, setUniqueMessagesKey] = useState("");
+  const [uniqueTradeKey, setUniqueTradeKey] = useState("");
   const { toast } = useToast();
   const { gameId } = useParams<{ gameId: string }>();
   const { user, isLoading } = useUser();
@@ -94,6 +95,7 @@ function GameComponent() {
 
       setUniqueGameKey(newGame?.exportGameState() ?? "");
       setUniqueMessagesKey(newGame?.exportMessagesKey() ?? "");
+      setUniqueTradeKey(newGame?.exportTradeKey() ?? "");
     });
 
     // Cleanup on component unmount
@@ -111,6 +113,7 @@ function GameComponent() {
       gameRef.current = newGame; // Store in ref for immediate access
       setUniqueGameKey(newGame.exportGameState());
       setUniqueMessagesKey(newGame?.exportMessagesKey() ?? "");
+      setUniqueTradeKey(newGame?.exportTradeKey() ?? "");
     },
     [user],
   );
@@ -123,6 +126,7 @@ function GameComponent() {
         sendGameMove();
         setUniqueGameKey(gameRef.current.exportGameState());
         setUniqueMessagesKey(gameRef.current?.exportMessagesKey() ?? "");
+        setUniqueTradeKey(gameRef.current?.exportTradeKey() ?? "");
       }
     },
     [gameRef.current],
@@ -357,7 +361,7 @@ function GameComponent() {
           onMortgage={mortgage}
           proposeTrade={proposeTrade}
           keyPassthrough={`Controls-${uniqueGameKey}`}
-          tradeKeyPassthrough={`Controls-${uniqueGameKey}`}
+          tradeKeyPassthrough={`Trade-${uniqueTradeKey}`}
         />
         <BoardComponent game={gameRef.current} key={`Board-${uniqueGameKey}`} />
         <Chat game={gameRef.current} onSendMessage={sendMessage} keyPassthrough={`Chat-${uniqueMessagesKey}`} />

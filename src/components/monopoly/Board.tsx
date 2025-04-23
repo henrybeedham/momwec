@@ -105,7 +105,8 @@ function BoardComponent({ game }: BoardProps) {
                 <h1 className="text-lg">{square.name}</h1>
                 <SquareHoverCard square={square} colourClass={colourClass} />
                 {!!ownerColour && !!owner && (
-                  <div className="flex">
+                  <div className="flex justify-center items-center gap-2">
+                    <h1>Owner:</h1>
                     <PlayerTab colour={ownerColour} />
                     <h1>{owner.name}</h1>
                   </div>
