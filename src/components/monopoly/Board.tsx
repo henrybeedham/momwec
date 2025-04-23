@@ -60,7 +60,7 @@ function BoardComponent({ game }: BoardProps) {
             : null;
           if (!isEdge) {
             if (row === 1 && col === 1) {
-              return <CenterOfBoard boardSize={boardSize} players={players} key={index} />;
+              return <CenterOfBoard boardSize={boardSize} players={players} currentPlayerId={currentPlayer.id} key={index} />;
             } else return;
           }
           if (squareIndex === null) return <div key={index}></div>;
@@ -131,7 +131,7 @@ function PlayerTokens({ players, squareIndex }: { players: Player[]; squareIndex
   );
 }
 
-function CenterOfBoard({ boardSize, players }: { boardSize: number; players: Player[] }) {
+function CenterOfBoard({ boardSize, players, currentPlayerId }: { boardSize: number; players: Player[]; currentPlayerId: string }) {
   const sortedPlayers = players.sort((a, b) => b.getNetWorth() - a.getNetWorth());
   return (
     <div
@@ -158,7 +158,7 @@ function CenterOfBoard({ boardSize, players }: { boardSize: number; players: Pla
               <TableBody>
                 {sortedPlayers.map((player, i) => {
                   return (
-                    <TableRow key={player.id} className={i === 0 ? "bg-yellow-100" : ""}>
+                    <TableRow key={player.id} className={currentPlayerId === player.id ? "bg-red-100" : ""}>
                       <TableCell>#{i + 1}</TableCell>
                       <TableCell>
                         <PlayerTab className="mr-2" colour={player.getColour()} />
