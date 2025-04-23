@@ -266,7 +266,7 @@ function payRent(player: Player, owner: Player, rentAmount: number, toastCallbac
   } else if (player.removeMoney(rentAmount)) {
     toastCallback({
       title: "Rent Paid",
-      description: `${player.name} paid £${rentAmount} to Player ${owner.name} for staying at ${square.name}`,
+      description: `${player.name} paid £${rentAmount} to ${owner.name} for staying at ${square.name}`,
     });
   } else {
     toastCallback({

@@ -132,6 +132,7 @@ function PlayerTokens({ players, squareIndex }: { players: Player[]; squareIndex
 }
 
 function CenterOfBoard({ boardSize, players }: { boardSize: number; players: Player[] }) {
+  const sortedPlayers = players.sort((a, b) => b.getNetWorth() - a.getNetWorth());
   return (
     <div
       className="flex items-center justify-center gap-2"
@@ -155,7 +156,7 @@ function CenterOfBoard({ boardSize, players }: { boardSize: number; players: Pla
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {players.map((player, i) => {
+                {sortedPlayers.map((player, i) => {
                   return (
                     <TableRow key={player.id} className={i === 0 ? "bg-yellow-100" : ""}>
                       <TableCell>#{i + 1}</TableCell>
