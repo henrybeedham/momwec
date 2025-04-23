@@ -10,6 +10,8 @@ import { Card, CardContent } from "../ui/card";
 import PlayerTab from "./PlayerTab";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { useUser } from "~/components/UserProvider";
+import { Badge } from "../ui/badge";
+import { Home } from "lucide-react";
 
 interface BoardProps {
   game: GameState;
@@ -74,6 +76,7 @@ function BoardComponent({ game }: BoardProps) {
           const isBuyable = square instanceof (PropertySquare || UtilitySquare || StationSquare);
           const owner = game.getOwner(square.id);
           const ownerColour = owner?.getColour();
+          const house = owner?.getOwnedPropertyById(square.id);
           const sqColour = ownerColour ? playerColoursLight[ownerColour] : "bg-white";
           return (
             <HoverCard key={index} openDelay={100} closeDelay={50}>
@@ -109,6 +112,12 @@ function BoardComponent({ game }: BoardProps) {
                     <h1>Owner:</h1>
                     <PlayerTab colour={ownerColour} />
                     <h1>{owner.name}</h1>
+                    {(house?.houses ?? 0) > 0 && (
+                      <Badge variant="outline" className="flex items-center gap-1">
+                        <Home className="h-3 w-3" />
+                        {house?.houses}
+                      </Badge>
+                    )}
                   </div>
                 )}
               </HoverCardContent>
