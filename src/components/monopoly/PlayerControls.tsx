@@ -91,7 +91,7 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
           {/* Properties list */}
           {properties.length >= 1 && (
             <Card>
-              <Table>
+              <Table className="max-h-[80vmin] overflow-auto">
                 <TableHeader>
                   <TableRow>
                     <TableHead>Properties</TableHead>
