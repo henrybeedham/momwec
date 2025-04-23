@@ -176,13 +176,14 @@ function GameComponent() {
         if (!g) throw new Error("Game is not initialized");
         const p = g.getBoard().getSquareFromIndex(propertyId) as PropertySquare;
         if (!p) throw new Error("No property selected");
-        g.sendMessage({
-          user: g.getCurrentPlayer().id,
-          type: "system",
-          title: "House Purchased",
-          description: `You have purchased a house on ${g.getBoard().getSquareFromIndex(propertyId)?.name}`,
-        });
-        g.buyHouse(propertyId);
+        if (g.buyHouse(propertyId)) {
+          g.sendMessage({
+            user: g.getCurrentPlayer().id,
+            type: "system",
+            title: "House Purchased",
+            description: `You have purchased a house on ${g.getBoard().getSquareFromIndex(propertyId)?.name}`,
+          });
+        }
       });
     },
     [updateGameState, gameRef.current],

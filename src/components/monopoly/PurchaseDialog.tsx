@@ -30,7 +30,7 @@ function PurchaseDialog({ game, buyProperty, passProperty }: PopupProps) {
           </AlertDialogHeader>
 
           <Card className="bg-gray-100">
-            <CardContent>
+            <CardContent className="pt-4">
               <SquareCard square={property} colourClass={property instanceof PropertySquare ? (propertyColors[property.group] ?? "bg-gray-200") : "bg-gray-200"} />
             </CardContent>
           </Card>

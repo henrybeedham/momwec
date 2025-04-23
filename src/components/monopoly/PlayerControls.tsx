@@ -141,7 +141,7 @@ function PlayerControls({ game, onRollDice, onEndTurn, onBuyHouse, onMortgage, p
                               {isProperty && (property.houses ?? 0) < 5 && currentPlayer.ownsPropertyGroup(p.group) && (
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Button size="icon" onClick={() => onBuyHouse(property.id)}>
+                                    <Button disabled={me.getMoney() < p.houseCost} size="icon" onClick={() => onBuyHouse(property.id)}>
                                       <House />
                                     </Button>
                                   </TooltipTrigger>
