@@ -65,7 +65,7 @@ function PropertyList({
   }
 
   return (
-    <div className="space-y-2 max-h-30 overflow-y-auto bg-gray-100 rounded">
+    <div className="space-y-2 max-h-28 overflow-y-auto bg-gray-100 rounded p-2">
       {properties.map((property) => {
         if (!property) return null;
         const isProperty = property instanceof PropertySquare;
