@@ -138,7 +138,7 @@ function ColourTab({ colourClass, edge, square }: { colourClass: string; edge: E
 function PlayerTokens({ players, squareIndex }: { players: Player[]; squareIndex: number }) {
   const playersOnSquare = players.filter((player) => player.getPosition() === squareIndex);
   return (
-    <div className="absolute inset-2 z-50 flex items-center justify-center opacity-85">
+    <div className="absolute inset-2 z-49 flex items-center justify-center opacity-85">
       <div className="flex flex-wrap gap-1">
         {playersOnSquare.map((player) => (
           <div key={player.id} className={`h-4 w-4 rounded-full ${player.getColour()} shadow-md`} />

@@ -4,7 +4,7 @@ import SquareCard from "./SquareCard";
 import { propertyColors } from "~/utils/monopoly";
 import { GameState } from "~/models/GameState";
 import { useUser } from "~/components/UserProvider";
-import { Card } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 
 type PopupProps = {
   game: GameState;
@@ -29,8 +29,10 @@ function PurchaseDialog({ game, buyProperty, passProperty }: PopupProps) {
             <AlertDialogTitle>You landed on {property.name}</AlertDialogTitle>
           </AlertDialogHeader>
 
-          <Card className="bg-slate-100">
-            <SquareCard square={property} colourClass={property instanceof PropertySquare ? (propertyColors[property.group] ?? "bg-gray-200") : "bg-gray-200"} />
+          <Card className="bg-gray-100">
+            <CardContent>
+              <SquareCard square={property} colourClass={property instanceof PropertySquare ? (propertyColors[property.group] ?? "bg-gray-200") : "bg-gray-200"} />
+            </CardContent>
           </Card>
 
           <AlertDialogFooter>
