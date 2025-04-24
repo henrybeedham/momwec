@@ -69,19 +69,13 @@ function Chat({ game, onSendMessage, keyPassthrough }: ChatProps) {
               return (
                 <Card key={index} className="border shadow-sm inset-shadow-black">
                   <CardHeader className="flex flex-row items-center gap-2 px-3 py-2">
-                    <PlayerTab size={4} colour={message.type === "system" ? "bg-black" : (p?.getColour() ?? "bg-black")} />
+                    <PlayerTab size={4} colour={p?.getColour() ?? "bg-black"} />
                     <div>
-                      <h3 className="text-sm font-medium">{message.type === "system" ? "System" : p?.name}</h3>
+                      <h3 className="text-sm font-medium">{message.type === "system" ? `System: ${p?.name}` : p?.name}</h3>
                       <p className="text-muted-foreground text-xs">{message.title}</p>
                     </div>
                   </CardHeader>
                   <CardContent className="px-3 py-1">
-                    {message.type === "system" && p && (
-                      <div className="mb-1 flex flex-row items-center gap-1">
-                        <PlayerTab size={2} colour={p.getColour()} />
-                        <p className="text-xs font-medium">{p.name}:</p>
-                      </div>
-                    )}
                     <p className="text-xs">{message.description}</p>
                   </CardContent>
                 </Card>
