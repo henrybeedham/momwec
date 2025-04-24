@@ -8,7 +8,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getUserName } from "~/utils/monopoly";
-import { Github, DollarSign, Users, Dice1Icon as Dice, Building, Loader2 } from "lucide-react";
+import { Github, DollarSign, Users, Dice1Icon as Dice, Building, Loader2, PoundSterling } from "lucide-react";
 import { useUser } from "~/components/UserProvider";
 import posthog from "posthog-js";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~/components/ui/card";
@@ -52,7 +52,7 @@ export default function Home() {
       <div className="container mx-auto px-4 py-12">
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <DollarSign className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+            <PoundSterling className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
             <h1 className="text-3xl font-bold tracking-tight text-emerald-800 dark:text-emerald-300">MOMWEC</h1>
           </div>
           <div className="flex items-center gap-4">
