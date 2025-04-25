@@ -27,7 +27,7 @@ export default function Home() {
 
   const startNewGame = () => {
     setIsLoading(true);
-    // Generate a unique game ID (you might want to use a more robust method in production)
+    // Generate a unique game ID
     const gameId = Math.random().toString(10).substring(2, 6);
     posthog.capture("userCreatedGame", {
       gameId,

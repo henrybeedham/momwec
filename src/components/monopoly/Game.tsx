@@ -308,7 +308,6 @@ function GameComponent() {
     );
   }
 
-  // Now you can add your conditional return
   if (!user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-red-500 p-4">

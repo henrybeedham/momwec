@@ -14,6 +14,5 @@ COPY . .
 # Expose the port the app runs on (adjust if needed)
 EXPOSE 3000
 
-# Define the command to run your app
 CMD ["node", "index.js"]
 

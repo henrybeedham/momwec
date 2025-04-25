@@ -67,7 +67,7 @@ export class Board {
         squares.push(new TaxSquare(38, "Super Tax", 100));
         break;
       case "us":
-        // US board setup (example)
+        // US board setup
         squares.push(new CornerSquare(0, "Go"));
         squares.push(new CornerSquare(10, "Jail"));
         squares.push(new CornerSquare(20, "Free Parking"));
@@ -110,7 +110,7 @@ export class Board {
         squares.push(new TaxSquare(38, "Luxury Tax", 100));
         break;
       case "world":
-        // World board setup (example)
+        // World board setup
         squares.push(new CornerSquare(0, "Go"));
         squares.push(new CornerSquare(10, "Jail"));
         squares.push(new CornerSquare(20, "Free Parking"));

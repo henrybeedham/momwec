@@ -1,4 +1,3 @@
-// In your PlayerControls.tsx
 import { JSX } from "react";
 import { GameState } from "~/models/GameState";
 import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, HandCoins, Hotel, House, ShieldCheck } from "lucide-react";
